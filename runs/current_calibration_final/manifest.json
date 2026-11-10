@@ -1,0 +1,42 @@
+{
+  "state": "completed",
+  "judge_config_sha256": "80b00a74028d3115cbf47250e15ecfed974ace9db114ad8a3393395836496180",
+  "started_at_utc": "2026-11-10T19:36:07.581643+00:00",
+  "inputs": {
+    "labels.jsonl": "c502fcefa4c50b4e766f2afb5beadc66ba9b672b43baa5a2960c9b311b10410b",
+    "cases.jsonl": "1cf593e366f576f167c3de0305b6f0fb231ce36c8f8a87d04a3b3bb31b47e1a2",
+    "rubrics.jsonl": "c4661d48c460803fedffb3d0bb1fb867db712495a4e038ac96e58a9309daabe8",
+    "judge.json": "993dd4c8e85b683471a47a1c2656de584f4157a25e142fb95dfefbf71107bc4c"
+  },
+  "code_sha256": {
+    "__init__.py": "bc93e28a33f055cf83c087ea9763fab9158482757b1c65d4584c2bba5c155369",
+    "__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
+    "business_selection.py": "df2621206bc26357f96e31ca7e43b1df5c319dabdc416f0e42f4868b2614e767",
+    "cli.py": "721cfb48de30d1497df8ce1f8e7e948ea5d006ae4a1d5354d388bcbd3a9f6615",
+    "comparing.py": "9941fc5a4b4bb3e6ce366dbe0c4ef62897c80eece61ec5e7466e0ad8d926b5d0",
+    "datasets.py": "e244b3e2a7ddbef5824424d7082b2847b23ee0b4bf1b10a3eb77afc58e1e6b47",
+    "diagnostics.py": "81038236fef6b0005d50e8cd0f4d413421f0dbab6448c1fbecf7f377a737238d",
+    "importing.py": "b5d196b7d7fc27d974033542dc4a6e736099e2e8c6fc6e7c8f251a4dd3202e57",
+    "local_model.py": "10c625d0dc588117e340f9a882ec243df5b45ff7a70379de1d2874f0d5423ec0",
+    "prompts.py": "a55a4c113e0c774a87a103ec954dd3fdbde9e2b0b748ec367feda822f42c77cc",
+    "providers.py": "88c6d3f66eeb4149f6edad87b0e0211d360d99da40fc8fe6023b3628ee56e593",
+    "reporting.py": "5f0933f57e5d7e3104dd6a5f8b8e85d20fc08ef2b4f2291b0b542cfb8685ec24",
+    "runner.py": "ab9608e0d3e5500b93540c19873afe0024a1a84450a3159e1478c8e29440b914",
+    "scoring.py": "b46af7f857e990811f6a04593ba1763743329ee30dfcb1a64e553bb3e97ba49b",
+    "selection.py": "c6588643a60521c8225221e669099cb22ddb839cfc75a6b315c58280e095b210",
+    "spreadsheet.py": "b7ae462da4089606ae6696e85c6a8997ba3de512dcbcf61a82d2544207c98942",
+    "opencode.py": "a59a9cf54103f6ceceed044f5fc8b6bdce18c442efe547c383ca8209978db319",
+    "experiment.py": "c58dae924484daf9e0d25ff7e8700a080418c8fe64775acbe591d7dd13bcb9a0",
+    "business/__init__.py": "27ef742c654086cb05585d09bbd2ab10095e14f8732fd036999cb21487505093",
+    "business/__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
+    "business/checks.py": "c672a3d987c4a0570848f9ab3f3e4e2bd76292a89227f78212c19c2d698bcf5d",
+    "business/cli.py": "23c87b6c75ee4e5ea351f6a73da66e4a0fe6478cc89685b01bf8c14e41c5b7e6",
+    "business/evaluation.py": "3c80fb83bb8cb511ab82bbb877a39f2028c8e6426ccb9b041ad2ece98e5dd3c6",
+    "business/providers.py": "47fd92ca238843d4244fd1985553e1ad4401834cfc317dda861132d97aadb8a6",
+    "business/reporting.py": "8062fc922d3c2d5c61f25706953e721825c6e0e92203b7e8efaeee6745947003",
+    "business/running.py": "88f2b46d8414bcb439cfaa05af2f264eeab3c819d4bbdc71ca8250cf58627044",
+    "business/schema.py": "b4081824502b588bfefed023667d5613c3872995592d28a38e40c4b7957bb98a"
+  },
+  "records_sha256": "e12a3c8988c129c8a9b0834bb4319260fe855fea1fd4c9ce4b09817bead8b16a",
+  "summary_sha256": "e458d452cd829d7bec7b802a06ccf2a22238dbbffee17142c4ab5bb6ccc3154a"
+}

@@ -1,0 +1,9 @@
+{
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "llama_cpp_python": "0.3.16",
+  "backend_distribution": "official v0.3.16-cu124 CPython3.12 wheel",
+  "wheel_sha256": "431fd9e68ff699bfa9ae6a01b05a0b6ddc0de97aa63c503e84141ae408502a11",
+  "full_gpu_offload": "offloaded 29/29 layers to GPU",
+  "gpu": "Tesla T4, 15360 MiB, 580.82.07\n",
+  "paid_api_calls": 0
+}

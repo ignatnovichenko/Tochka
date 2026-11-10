@@ -1,0 +1,29 @@
+{
+  "provider": {
+    "type": "command",
+    "command": [
+      "python",
+      "scripts/opencode_stdio_adapter.py",
+      "--profile-root",
+      "/workspace/shared/opencode-cli-smoke"
+    ],
+    "cwd": "..",
+    "remote": true,
+    "timeout_seconds": 260
+  },
+  "model": "opencode/deepseek-v4.1-flash-free",
+  "configurations": [
+    {
+      "name": "direct",
+      "parameters": {}
+    },
+    {
+      "name": "review_first",
+      "parameters": {},
+      "instruction": "Before answering, silently check factual consistency and requested units. Return only the requested answer."
+    }
+  ],
+  "repetitions": 1,
+  "max_calls": 4,
+  "label": "Public synthetic CLI test. Not run yet; free cooldown enforced."
+}

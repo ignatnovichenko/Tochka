@@ -1,0 +1,50 @@
+{
+  "created_at_utc": "2026-11-10T16:32:21.192184+00:00",
+  "scope": "Manual review of selected12 FinQA dev questions, extracted context, and canonical programs. Not a legal, financial-expert, or original-PDF review.",
+  "official_gold_unchanged": true,
+  "canonical_results_retained": true,
+  "issues": [
+    {
+      "id": "BLL/2007/page_35.pdf-1",
+      "severity": "ambiguity",
+      "issue": "Question asks calendar October; source periods are Oct 1-28 and Oct 29-Nov 25. Gold uses first row only. Full calendar October cannot be isolated from table.",
+      "gold_changed": false
+    },
+    {
+      "id": "GPN/2017/page_77.pdf-3",
+      "severity": "substantive",
+      "issue": "Question asks net tangible assets; gold subtracts goodwill from purchase price and matches total identifiable net assets, including listed intangible assets.",
+      "gold_changed": false
+    },
+    {
+      "id": "VTR/2007/page_47.pdf-3",
+      "severity": "source_quality",
+      "issue": "Extracted first two rows contain 2014 in both shares/price columns, possibly an em-dash extraction artifact. Original PDF not independently checked. Gold uses December row.",
+      "gold_changed": false
+    },
+    {
+      "id": "HOLX/2010/page_124.pdf-1",
+      "severity": "unit_convention",
+      "issue": "Question says percentage; canonical gold is decimal fraction 0.34024. Text approximate35% is different from exact table ratio. Direct numeric outputs in percent units may not match canonical scalar.",
+      "gold_changed": false
+    },
+    {
+      "id": "CDNS/2012/page_30.pdf-4",
+      "severity": "substantive",
+      "issue": "Gold program computes (59.03-100)/1000=-0.04097, while text states $100 initial investment. Dividing by100 would yield -0.4097; question date mapping2008-2009 is also ambiguous relative to fiscal date columns.",
+      "gold_changed": false
+    },
+    {
+      "id": "AMAT/2013/page_18.pdf-2",
+      "severity": "substantive",
+      "issue": "Question asks2018 sales, but document is2013 and gold1.3/0.18 refers2013 research and development spending. Context contains no2018 net sales.",
+      "gold_changed": false
+    },
+    {
+      "id": "IP/2006/page_32.pdf-1",
+      "severity": "unit_convention",
+      "issue": "Question says percentage; canonical gold is fraction396/2455 rounded0.1613. Numeric percent output16.13 is a different scale, though financially equivalent when labeled percent.",
+      "gold_changed": false
+    }
+  ]
+}

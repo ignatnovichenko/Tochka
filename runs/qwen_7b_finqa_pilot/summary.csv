@@ -1,0 +1,3 @@
+provider,model,config,provenance,attempts,unique_tasks,correct,answer_accuracy,task_mean_accuracy,provider_errors,parse_errors,latency_mean_seconds,latency_median_seconds,latency_p95_seconds,valid_answer_stability,input_tokens_reported,output_tokens_reported,token_usage_coverage,cost_usd,ttft_seconds
+local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,model-inference,12,12,3,0.25,0.25,0,0,65.18861754300003,63.72603655900002,91.54418923215016,,11873,1130,1.0,,
+local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,model-inference,12,12,3,0.25,0.25,0,1,48.76043678266668,50.88949799949978,65.85238605649987,,11729,123,1.0,,

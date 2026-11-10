@@ -1,0 +1,1 @@
+{"type":"openai-compatible","base_url":"http://127.0.0.1:8000/v1","model":"REPLACE_WITH_YOUR_JUDGE_MODEL","api_key_env":"NIR_JUDGE_API_KEY","max_tokens":2048,"timeout_seconds":90,"max_calls":100}

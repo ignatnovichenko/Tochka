@@ -1,0 +1,62 @@
+[
+  {
+    "id": "BLL/2007/page_35.pdf-1",
+    "expected_answer": 37.75428,
+    "expected_program": "multiply(705292, 53.53), divide(#0, const_1000000)"
+  },
+  {
+    "id": "GPN/2017/page_77.pdf-3",
+    "expected_answer": 62154.0,
+    "expected_program": "subtract(265982, 203828)"
+  },
+  {
+    "id": "STT/2011/page_83.pdf-1",
+    "expected_answer": 114.0,
+    "expected_program": "subtract(303, 189)"
+  },
+  {
+    "id": "VTR/2007/page_47.pdf-3",
+    "expected_answer": 643822.41,
+    "expected_program": "multiply(14669, 43.89)"
+  },
+  {
+    "id": "HOLX/2010/page_124.pdf-1",
+    "expected_answer": 0.34024,
+    "expected_program": "divide(2094800, 6156900)"
+  },
+  {
+    "id": "CDNS/2012/page_30.pdf-4",
+    "expected_answer": -0.04097,
+    "expected_program": "subtract(59.03, const_100), divide(#0, const_1000)"
+  },
+  {
+    "id": "ETR/2016/page_418.pdf-4",
+    "expected_answer": 0.01099,
+    "expected_program": "subtract(644.2, 637.2), divide(#0, 637.2)"
+  },
+  {
+    "id": "PNC/2015/page_159.pdf-2",
+    "expected_answer": 86.5,
+    "expected_program": "add(82, 91), divide(#0, const_2)"
+  },
+  {
+    "id": "V/2008/page_17.pdf-1",
+    "expected_answer": 127.4,
+    "expected_program": "divide(637, const_5)"
+  },
+  {
+    "id": "AMAT/2013/page_18.pdf-2",
+    "expected_answer": 7.22222,
+    "expected_program": "divide(18, const_100), divide(1.3, #0)"
+  },
+  {
+    "id": "IP/2006/page_32.pdf-1",
+    "expected_answer": 0.1613,
+    "expected_program": "divide(396, 2455)"
+  },
+  {
+    "id": "BKR/2017/page_103.pdf-4",
+    "expected_answer": 68.306,
+    "expected_program": "multiply(1.7, 40.18)"
+  }
+]

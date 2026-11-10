@@ -1,0 +1,112 @@
+{
+  "date": "2026-11-10",
+  "cli_version": "2.2.6",
+  "source": "Sanitized transcription of actual CLI tool outputs in this chat, not a fresh model run",
+  "probes": [
+    {
+      "session_id": "ses_e391a1bf4ffe27YXMZQdVoTkey",
+      "model": "opencode/big-pickle",
+      "mode": "ordinary original working directory",
+      "status": "success",
+      "cost_usd": 0,
+      "native_tokens": {
+        "input": 3549,
+        "output": 7,
+        "reasoning": 0,
+        "cache_read": 2176
+      }
+    },
+    {
+      "session_id": "ses_e3913345dffewBMq2d49FhO7xc",
+      "model": "opencode/deepseek-v4.1-flash-free",
+      "mode": "standalone with custom opencode.json",
+      "status": "429",
+      "cost_usd": null,
+      "native_tokens": {
+        "input": null,
+        "output": null,
+        "reasoning": null,
+        "cache_read": null
+      }
+    },
+    {
+      "session_id": "ses_e39129e25ffe8QSL47JP3ysTZd",
+      "model": "opencode/minimax-m3.1-flash-free",
+      "mode": "background service with custom opencode.json",
+      "status": "429",
+      "cost_usd": null,
+      "native_tokens": {
+        "input": null,
+        "output": null,
+        "reasoning": null,
+        "cache_read": null
+      }
+    },
+    {
+      "session_id": "ses_e39103099ffe6TZMy7FAPi4e5g",
+      "model": "opencode/big-pickle",
+      "mode": "background service with custom opencode.json",
+      "status": "429",
+      "cost_usd": null,
+      "native_tokens": {
+        "input": null,
+        "output": null,
+        "reasoning": null,
+        "cache_read": null
+      }
+    },
+    {
+      "session_id": "ses_e390e893affeZWHyAMMbKTx24e",
+      "model": "opencode/big-pickle",
+      "mode": "ordinary original working directory",
+      "status": "success",
+      "cost_usd": 0,
+      "native_tokens": {
+        "input": 4061,
+        "output": 7,
+        "reasoning": 0,
+        "cache_read": 1664
+      }
+    },
+    {
+      "session_id": "ses_e390d19c4ffeuIwCIMCryFZSG3",
+      "model": "opencode/minimax-m3.1-flash-free",
+      "mode": "ordinary explicit model",
+      "status": "success",
+      "cost_usd": 0,
+      "native_tokens": {
+        "input": 5600,
+        "output": 3,
+        "reasoning": 0,
+        "cache_read": 189
+      }
+    },
+    {
+      "session_id": "ses_e390c912dffesAWx0caVe22dT7",
+      "model": "opencode/glm-5.3-flash-free",
+      "mode": "build agent with custom opencode.json",
+      "status": "429",
+      "cost_usd": null,
+      "native_tokens": {
+        "input": null,
+        "output": null,
+        "reasoning": null,
+        "cache_read": null
+      }
+    },
+    {
+      "session_id": "ses_e390c5e26ffev4MAmCp88Nke4a",
+      "model": "opencode/glm-5.3-flash-free",
+      "mode": "clean directory, no custom opencode.json",
+      "status": "success",
+      "cost_usd": 0,
+      "native_tokens": {
+        "input": 1109,
+        "output": 3,
+        "reasoning": 62,
+        "cache_read": 4352
+      }
+    }
+  ],
+  "later_working_mode_quota": "After successful business/calibration calls, ordinary CLI returned free-limit; saved cooldown 2026-11-11T03:36:24+03:00. No further model calls after user instruction."
+}

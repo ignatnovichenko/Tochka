@@ -1,0 +1,24 @@
+{
+  "dataset": {
+    "path": "../data/finqa_dev.json",
+    "split": "dev",
+    "limit": 12
+  },
+  "provider": {
+    "type": "oracle-control"
+  },
+  "model": "CONTROL_NOT_A_MODEL",
+  "seed": 42,
+  "repetitions": 1,
+  "configurations": [
+    {
+      "name": "direct"
+    },
+    {
+      "name": "cot"
+    },
+    {
+      "name": "program"
+    }
+  ]
+}

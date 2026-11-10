@@ -1,0 +1,7 @@
+{
+  "state": "startup_error",
+  "model_calls": 0,
+  "error_type": "NameError",
+  "cause": "Recording class shadowed outer judge name before first invocation",
+  "source": "Actual terminal traceback; corrected before next run"
+}

@@ -1,0 +1,78 @@
+{
+  "checks": {
+    "record_hashes_verified": true,
+    "two_request_keys_match": true,
+    "all_text_prompts_byte_identical": true,
+    "generation_parameters_identical": true,
+    "model_revision_and_quantization_match": true,
+    "prefill_counts_match_input_tokens": true,
+    "complete_gpu_offload_logged": [
+      [
+        29,
+        29
+      ]
+    ],
+    "offload_log_sha256": "72b44573d424df961bf7d105db219592b37669528432a487d54c261e6880a58b"
+  },
+  "cpu": {
+    "n_inferences": 2,
+    "native_decode_tokens": 99,
+    "native_decode_ms": 19425.285,
+    "decode_tokens_per_second_native": 5.096450322350483,
+    "native_prefill_tokens": 2128,
+    "native_prefill_ms": 102184.756,
+    "prefill_tokens_per_second_native": 20.825024037832023,
+    "output_tokens": 99,
+    "completion_wall_seconds": 121.74836709800002,
+    "output_tokens_per_second_end_to_end": 0.8131525897206575
+  },
+  "gpu": {
+    "n_inferences": 2,
+    "native_decode_tokens": 100,
+    "native_decode_ms": 3683.3179999999998,
+    "decode_tokens_per_second_native": 27.14943428723776,
+    "native_prefill_tokens": 2128,
+    "native_prefill_ms": 2954.702,
+    "prefill_tokens_per_second_native": 720.2079939025999,
+    "output_tokens": 100,
+    "completion_wall_seconds": 7.092015319999973,
+    "output_tokens_per_second_end_to_end": 14.100364351722858
+  },
+  "ratios": {
+    "gpu_vs_cpu_native_decode": 5.327126248670357,
+    "gpu_vs_cpu_native_prefill": 34.58377731493734,
+    "cpu_vs_gpu_completion_wall_time": 17.166963353091077
+  },
+  "per_request": [
+    {
+      "id": "BLL/2007/page_35.pdf-1",
+      "protocol": "direct",
+      "prompt_sha256": "468703242bcbfe6329c6a0fae0169efd8759ce607c872e9afaba91134fba8492",
+      "prompt_tokens": 1058,
+      "outputs_equal": false,
+      "cpu_output_tokens": 13,
+      "gpu_output_tokens": 13,
+      "cpu_decode_tokens_per_second_native": 5.288286892004639,
+      "gpu_decode_tokens_per_second_native": 23.037268984924765
+    },
+    {
+      "id": "BLL/2007/page_35.pdf-1",
+      "protocol": "cot",
+      "prompt_sha256": "af7825f6e66c567617e3d41f0db9636e8ff9e92d39d5dd1fbfad4ef007f933c2",
+      "prompt_tokens": 1070,
+      "outputs_equal": false,
+      "cpu_output_tokens": 86,
+      "gpu_output_tokens": 87,
+      "cpu_decode_tokens_per_second_native": 5.068656125983687,
+      "gpu_decode_tokens_per_second_native": 27.893421480820066
+    }
+  ],
+  "limits": [
+    "Only two prompts from one task, not a large performance benchmark.",
+    "Different machines and CPU/CUDA builds. Same source version does not make hardware or build flags identical.",
+    "Native decode token rate excludes prefill and some host/sampling overhead. End-to-end rate is a separate metric.",
+    "No separate warm-up. OS cache not cleared. Free Colab availability/performance are not guaranteed.",
+    "Greedy CPU/GPU arithmetic may produce different outputs; matched prompts do not prove identical generation paths.",
+    "Performance does not establish answer quality or office-task usefulness."
+  ]
+}

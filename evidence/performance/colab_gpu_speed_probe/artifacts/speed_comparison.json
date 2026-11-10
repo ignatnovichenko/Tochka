@@ -1,0 +1,19 @@
+{
+  "scope": "Two prompts, one FinQA case; speed only, not quality.",
+  "cpu": {
+    "decode_tokens_per_second_native": 5.096450322350483,
+    "prefill_tokens_per_second_native": 20.825024037832023,
+    "output_tokens_per_second_end_to_end": 0.8131525897206575
+  },
+  "gpu": {
+    "n_inferences": 2,
+    "decode_tokens_per_second_native": 27.14943428723776,
+    "prefill_tokens_per_second_native": 720.2079939025999,
+    "output_tokens_per_second_end_to_end": 14.100364351722858
+  },
+  "ratios_gpu_over_cpu": {
+    "decode_tokens_per_second_native": 5.327126248670357,
+    "prefill_tokens_per_second_native": 34.58377731493734,
+    "output_tokens_per_second_end_to_end": 17.34036702332432
+  }
+}

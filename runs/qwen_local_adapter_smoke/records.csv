@@ -1,0 +1,2 @@
+id,provider,model,config,repetition,provenance,correct,parsed_answer,expected_answer,latency_seconds,error,parse_error
+BLL/2007/page_35.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,1144772.0,37.75428,10.335237,,

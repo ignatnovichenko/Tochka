@@ -1,0 +1,10 @@
+{
+  "type": "generation-provider",
+  "provider": {
+    "type": "opencode",
+    "timeout_seconds": 180
+  },
+  "model": "opencode/glm-5.3-flash-free",
+  "parameters": {},
+  "max_calls": 40
+}

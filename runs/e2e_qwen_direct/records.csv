@@ -1,0 +1,13 @@
+id,provider,model,config,repetition,provenance,correct,parsed_answer,expected_answer,latency_seconds,error,parse_error
+BLL/2007/page_35.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,1144772.0,37.75428,3.085631,,
+GPN/2017/page_77.pdf-3,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,,62154.0,3.532948,,Expected one numeric value or yes/no
+STT/2011/page_83.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,yes,114.0,2.541638,,
+VTR/2007/page_47.pdf-3,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,23495.0,643822.41,2.182509,,
+HOLX/2010/page_124.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,0.35,0.34024,2.50004,,
+CDNS/2012/page_30.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,22.55,-0.04097,2.029939,,
+ETR/2016/page_418.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,-27.8,0.01099,2.041363,,
+PNC/2015/page_159.pdf-2,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,2.2,86.5,2.041659,,
+V/2008/page_17.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,,127.4,3.402268,,Expected one numeric value or yes/no
+AMAT/2013/page_18.pdf-2,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,1.2,7.22222,3.20323,,
+IP/2006/page_32.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,0.09,0.1613,3.766568,,
+BKR/2017/page_103.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,12.32,68.306,2.623984,,

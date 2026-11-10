@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "policy": {
+    "min_accuracy": 0.8,
+    "max_error_rate": 0.1,
+    "quality_basis": "observed",
+    "objective": "quality",
+    "min_tasks": 12
+  },
+  "dataset_sha256": "a847fb7e0d61a3125a1e2909852df6b89f1ee64d2c5ff1bf689e332214deee51",
+  "prompt_version": "finqa-v1",
+  "candidates": [
+    {
+      "run": "e2e_qwen_direct",
+      "provider": "local_transformers",
+      "model": "Qwen/Qwen2.5-0.5B-Instruct",
+      "config": "direct",
+      "attempts": 12,
+      "tasks": 12,
+      "repetitions": 1,
+      "coverage": 1.0,
+      "accuracy": 0.0,
+      "wilson_lower": 2.7755575615628914e-17,
+      "error_rate": 0.16666666666666666,
+      "mean_latency_seconds": 2.7459814166666665,
+      "latency_scope": "nir-eval-0.1.0 Provider.generate wall time; includes input processing, generation and decode; excludes provider initialization and scoring",
+      "latency_comparability_group": "519f97ae79074098df0a17101a9a5ece456359d60a4a64a7ba4d4ba36fc5525f",
+      "mean_cost_usd": null,
+      "cost_measurement": null,
+      "quality_value_used": 0.0,
+      "rejection_reasons": [
+        "quality_below_threshold",
+        "error_rate_above_limit"
+      ]
+    },
+    {
+      "run": "e2e_qwen_cot_recovered",
+      "provider": "local_transformers",
+      "model": "Qwen/Qwen2.5-0.5B-Instruct",
+      "config": "cot",
+      "attempts": 12,
+      "tasks": 12,
+      "repetitions": 1,
+      "coverage": 1.0,
+      "accuracy": 0.0,
+      "wilson_lower": 2.7755575615628914e-17,
+      "error_rate": 0.5,
+      "mean_latency_seconds": 9.164096833333334,
+      "latency_scope": "nir-eval-0.1.0 Provider.generate wall time; includes input processing, generation and decode; excludes provider initialization and scoring",
+      "latency_comparability_group": "519f97ae79074098df0a17101a9a5ece456359d60a4a64a7ba4d4ba36fc5525f",
+      "mean_cost_usd": null,
+      "cost_measurement": null,
+      "quality_value_used": 0.0,
+      "rejection_reasons": [
+        "quality_below_threshold",
+        "error_rate_above_limit"
+      ]
+    }
+  ],
+  "selected": null,
+  "model_inference_performed": false,
+  "llm_judge_used": false,
+  "warnings": [
+    "Selection describes observed saved data, not guaranteed future quality or an SLA.",
+    "Small dev pilot and annotation issues limit generalization. No hidden model judge is used.",
+    "Unknown cost stays unknown; no dollar price is inferred from zero paid API calls.",
+    "Latency limits refer to mean recorded time in its declared scope, not a maximum response deadline.",
+    "Wilson lower bound uses first repetition per task; observed accuracy uses all planned attempts."
+  ],
+  "status": "no_eligible_configuration",
+  "message": "No configuration satisfies all constraints with trustworthy available metrics."
+}

@@ -1,0 +1,10 @@
+{
+  "case_id": "revenue_growth_01",
+  "candidate_repr": "'Рост выручки составляет 12%.'",
+  "evidence_quote_repr": "'Рост выручки составляет 12%. '",
+  "extra_trailing_space": true,
+  "quote_present_exactly": false,
+  "validation_rule": "Evidence quotes must be exact nonempty substrings of the declared source. No trimming or repair is applied.",
+  "quality_score": null,
+  "quality_passed": null
+}

@@ -1,0 +1,6 @@
+{
+  "n_inferences": 2,
+  "decode_tokens_per_second_native": 27.14943428723776,
+  "prefill_tokens_per_second_native": 720.2079939025999,
+  "output_tokens_per_second_end_to_end": 14.100364351722858
+}

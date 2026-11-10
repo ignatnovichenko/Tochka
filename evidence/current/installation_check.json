@@ -1,0 +1,8 @@
+{
+  "installed_version": "0.2.0",
+  "target": "isolated temporary directory",
+  "source_tree_imported": false,
+  "demo_cases": 4,
+  "cli_init_succeeded": true,
+  "model_calls": 0
+}

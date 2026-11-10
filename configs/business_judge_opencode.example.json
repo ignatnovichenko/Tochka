@@ -1,0 +1,18 @@
+{
+  "type": "generation-provider",
+  "model": "opencode/deepseek-v4.1-flash-free",
+  "provider": {
+    "type": "command",
+    "command": [
+      "python",
+      "scripts/opencode_stdio_adapter.py",
+      "--profile-root",
+      "/workspace/shared/opencode-cli-smoke"
+    ],
+    "cwd": "..",
+    "remote": true,
+    "timeout_seconds": 260
+  },
+  "parameters": {},
+  "max_calls": 4
+}

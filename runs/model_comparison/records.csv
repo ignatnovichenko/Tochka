@@ -1,0 +1,49 @@
+id,provider,model,config,repetition,provenance,correct,parsed_answer,expected_answer,latency_seconds,error,parse_error
+BLL/2007/page_35.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,1144772.0,37.75428,4.576473570999951,,
+BLL/2007/page_35.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,1144772.0,37.75428,6.833174151000094,,
+GPN/2017/page_77.pdf-3,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,62154.0,8.628844316999675,,Expected one numeric value or yes/no
+GPN/2017/page_77.pdf-3,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,,62154.0,6.256583027000488,,Expected one numeric value or yes/no
+STT/2011/page_83.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,yes,114.0,4.872288726000079,,
+STT/2011/page_83.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,yes,114.0,13.49422440699982,,
+VTR/2007/page_47.pdf-3,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,643822.41,9.076837440000418,,Expected one numeric value or yes/no
+VTR/2007/page_47.pdf-3,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,23495.0,643822.41,3.239943630000198,,
+HOLX/2010/page_124.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,0.35,0.34024,3.5806852830000935,,
+HOLX/2010/page_124.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,0.35,0.34024,5.149377902000197,,
+CDNS/2012/page_30.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,-0.04097,4.9253275629998825,,Expected one numeric value or yes/no
+CDNS/2012/page_30.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,22.55,-0.04097,2.8411900820001392,,
+ETR/2016/page_418.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,-27.8,0.01099,3.0095039469997573,,
+ETR/2016/page_418.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,0.14300000000000002,0.01099,7.207341352000185,,
+PNC/2015/page_159.pdf-2,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,86.5,21.278002941000523,,Response is not a single JSON object
+PNC/2015/page_159.pdf-2,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,2.2,86.5,7.987861583999802,,
+V/2008/page_17.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,,127.4,15.192973230999996,,Expected one numeric value or yes/no
+V/2008/page_17.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,127.4,36.25328916400031,,Response is not a single JSON object
+AMAT/2013/page_18.pdf-2,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,1606.0,7.22222,6.731981394999821,,
+AMAT/2013/page_18.pdf-2,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,1.2,7.22222,4.2374268880003,,
+IP/2006/page_32.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,0.09,0.1613,5.164728966999974,,
+IP/2006/page_32.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,0.1613,8.556861191999815,,Expected one numeric value or yes/no
+BKR/2017/page_103.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,659.24,68.306,7.372503171000062,,
+BKR/2017/page_103.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,0,model-inference,False,12.32,68.306,4.090304823999759,,
+BLL/2007/page_35.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,False,3758214.0,37.75428,53.62470004199986,,
+BLL/2007/page_35.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,False,37861.4356,37.75428,70.09743751699989,,
+GPN/2017/page_77.pdf-3,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,True,62154.0,62154.0,65.73334264700043,,
+GPN/2017/page_77.pdf-3,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,True,62154.0,62154.0,45.859470943000815,,
+STT/2011/page_83.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,False,189.0,114.0,58.982507059000454,,
+STT/2011/page_83.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,False,303.0,114.0,68.56283324700053,,
+VTR/2007/page_47.pdf-3,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,False,635877.41,643822.41,55.05874654099989,,
+VTR/2007/page_47.pdf-3,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,False,638172.34,643822.41,37.36999558200023,,
+HOLX/2010/page_124.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,False,34.05288,0.34024,50.08411039299972,,
+HOLX/2010/page_124.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,False,34.07143,0.34024,69.97507142499944,,
+CDNS/2012/page_30.pdf-4,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,False,-0.4097,-0.04097,55.75377567400028,,
+CDNS/2012/page_30.pdf-4,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,False,,-0.04097,33.01967856400006,,Response is not a single JSON object
+ETR/2016/page_418.pdf-4,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,False,0.10725,0.01099,36.40561013000024,,
+ETR/2016/page_418.pdf-4,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,False,0.01089,0.01099,50.97895050599982,,
+PNC/2015/page_159.pdf-2,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,True,86.5,86.5,39.4789438279995,,
+PNC/2015/page_159.pdf-2,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,True,86.5,86.5,32.36278284299988,,
+V/2008/page_17.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,False,637.0,127.4,52.52899573399918,,
+V/2008/page_17.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,True,127.4,127.4,61.71873047099962,,
+AMAT/2013/page_18.pdf-2,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,False,9.35714,7.22222,92.59615177399974,,
+AMAT/2013/page_18.pdf-2,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,False,5.5,7.22222,59.15759033299946,,
+IP/2006/page_32.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,False,0.16249,0.1613,74.0349141630004,,
+IP/2006/page_32.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,False,16.17832,0.1613,90.68349260700052,,
+BKR/2017/page_103.pdf-4,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,cot,0,model-inference,False,68293.0,68.306,61.62593427900083,,
+BKR/2017/page_103.pdf-4,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,direct,0,model-inference,True,68.306,68.306,51.69488560599984,,

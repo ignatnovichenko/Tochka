@@ -1,0 +1,17 @@
+{
+  "sample_size": 2,
+  "decode_tokens_per_second_native_aggregate": 5.096450322350483,
+  "prefill_tokens_per_second_native_aggregate": 20.825024037832023,
+  "output_tokens_per_second_end_to_end_aggregate": 0.8131525897206575,
+  "native_decode_tokens_total": 99,
+  "native_decode_ms_total": 19425.285,
+  "native_prefill_tokens_total": 2128,
+  "native_prefill_ms_total": 102184.756,
+  "all_outputs_match_original_run": true,
+  "interpretation": "n_eval/t_eval_ms measures native backend token evaluation during autoregressive decoding. It excludes prompt prefill and may exclude Python/sampling overhead; use native counts, which can differ from returned completion token count. Not the end-to-end output rate.",
+  "limitations": [
+    "Two prompts only, one input task, this CPU and quantized backend.",
+    "Native decode throughput is not end-to-end response speed.",
+    "Benchmark run_02 metrics remain unchanged."
+  ]
+}

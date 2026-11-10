@@ -1,0 +1,13 @@
+/workspace/shared/nir/experiments/.venv/lib/python3.12/site-packages/transformers/generation/configuration_utils.py:628: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.7` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+/workspace/shared/nir/experiments/.venv/lib/python3.12/site-packages/transformers/generation/configuration_utils.py:633: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.8` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(
+/workspace/shared/nir/experiments/.venv/lib/python3.12/site-packages/transformers/generation/configuration_utils.py:650: UserWarning: `do_sample` is set to `False`. However, `top_k` is set to `20` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_k`.
+  warnings.warn(
+1/12 cot BLL/2007/page_35.pdf-1 correct=False
+2/12 cot GPN/2017/page_77.pdf-3 correct=False
+3/12 cot STT/2011/page_83.pdf-1 correct=False
+4/12 cot VTR/2007/page_47.pdf-3 correct=False
+5/12 cot HOLX/2010/page_124.pdf-1 correct=False
+6/12 cot CDNS/2012/page_30.pdf-4 correct=False
+7/12 cot ETR/2016/page_418.pdf-4 correct=False

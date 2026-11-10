@@ -1,0 +1,59 @@
+{
+  "independent_scorer_matches_mvp": true,
+  "records": 48,
+  "same_12_ids": true,
+  "same_messages_all_24_pairs": true,
+  "same_rendered_prompts_all_24_pairs": true,
+  "groups": {
+    "0.5B/direct": {
+      "n": 12,
+      "correct": 0,
+      "parseable": 10,
+      "correct_ids": []
+    },
+    "0.5B/cot": {
+      "n": 12,
+      "correct": 0,
+      "parseable": 6,
+      "correct_ids": []
+    },
+    "7B/direct": {
+      "n": 12,
+      "correct": 3,
+      "parseable": 11,
+      "correct_ids": [
+        "GPN/2017/page_77.pdf-3",
+        "PNC/2015/page_159.pdf-2",
+        "BKR/2017/page_103.pdf-4"
+      ]
+    },
+    "7B/cot": {
+      "n": 12,
+      "correct": 3,
+      "parseable": 12,
+      "correct_ids": [
+        "GPN/2017/page_77.pdf-3",
+        "PNC/2015/page_159.pdf-2",
+        "V/2008/page_17.pdf-1"
+      ]
+    }
+  },
+  "paired_cross_model_checks": [
+    {
+      "protocol": "direct",
+      "0.5B_only_correct": 0,
+      "7B_only_correct": 3,
+      "mcnemar_exact_two_sided_p": 0.25,
+      "claim": "Small descriptive pilot; no established general superiority."
+    },
+    {
+      "protocol": "cot",
+      "0.5B_only_correct": 0,
+      "7B_only_correct": 3,
+      "mcnemar_exact_two_sided_p": 0.25,
+      "claim": "Small descriptive pilot; no established general superiority."
+    }
+  ],
+  "latency_comparison_warning": "0.5B measures model.generate only; 7B measures whole llama.cpp completion. Size, quantization and backend differ. Do not infer a controlled speed ratio.",
+  "model_inference_performed_by_audit": false
+}

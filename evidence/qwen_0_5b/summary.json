@@ -1,0 +1,82 @@
+{
+  "inference_type": "real_local_model_inference",
+  "n_cases": 12,
+  "n_inferences": 24,
+  "numeric_match_rule": "Accept one JSON object, normalize numeric strings and yes/no; round(predicted,5) == canonical FinQA qa.exe_ans. Do not rescale numeric percent answers heuristically. Failed parsing and runtime errors count as incorrect.",
+  "comparison_axis": "Prompt protocol only: direct answer versus concise calculation plus answer (cot). Not two models, not a hidden reasoning switch.",
+  "generation_parameters": {
+    "do_sample": false,
+    "max_new_tokens": 192,
+    "num_beams": 1,
+    "use_cache": true
+  },
+  "protocols": {
+    "direct": {
+      "n": 12,
+      "correct": 0,
+      "accuracy": 0.0,
+      "accuracy_wilson95_interval": [
+        2.7755575615628914e-17,
+        0.24249400665524085
+      ],
+      "parseable_answers": 10,
+      "json_object_valid": 12,
+      "requested_answer_schema_valid": 0,
+      "runtime_errors": 0,
+      "token_limit_hits": 0,
+      "latency_mean_seconds": 5.420830313333378,
+      "latency_median_seconds": 4.406950229500126,
+      "latency_min_seconds": 2.8411900820001392,
+      "latency_max_seconds": 15.192973230999996,
+      "prompt_tokens_total": 11729,
+      "completion_tokens_total": 177
+    },
+    "cot": {
+      "n": 12,
+      "correct": 0,
+      "accuracy": 0.0,
+      "accuracy_wilson95_interval": [
+        2.7755575615628914e-17,
+        0.24249400665524085
+      ],
+      "parseable_answers": 6,
+      "json_object_valid": 10,
+      "requested_answer_schema_valid": 0,
+      "runtime_errors": 0,
+      "token_limit_hits": 1,
+      "latency_mean_seconds": 11.2923137495834,
+      "latency_median_seconds": 7.9646821814999385,
+      "latency_min_seconds": 4.9253275629998825,
+      "latency_max_seconds": 36.25328916400031,
+      "prompt_tokens_total": 11873,
+      "completion_tokens_total": 822
+    }
+  },
+  "controls": {
+    "gold_programs_verified_by_official_evaluator": 12,
+    "gold_programs_total": 12,
+    "oracle_json_scoring_correct": 12,
+    "invalid_json_scoring_correct": 0,
+    "controls_are_llm_results": false
+  },
+  "prompt_integrity": {
+    "all_inputs_match_recipe": true,
+    "public_input_fields_only": true,
+    "id_omitted_from_model_context": true
+  },
+  "limitations": [
+    "Small development pilot, not a leaderboard or test-set estimate.",
+    "One small open-weight model; comparison varies prompt protocol, not model family.",
+    "Published benchmark may have training contamination.",
+    "Greedy single repetition does not estimate sampling variation.",
+    "Hardware execution timings are specific to this shared CPU environment."
+  ],
+  "paired_comparison": {
+    "direct_only_correct": 0,
+    "cot_only_correct": 0,
+    "both_correct": 0,
+    "both_wrong": 12,
+    "mcnemar_exact_two_sided_p": 1.0,
+    "claim": "Descriptive pilot only; small sample cannot establish general superiority."
+  }
+}

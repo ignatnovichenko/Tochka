@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "runner_version": "0.1.0",
+  "created_at": "2026-11-10T16:26:22.611623+00:00",
+  "python_version": "3.12.14",
+  "config_sha256": "5ba8b1df4590306981c98b715848286d3a6168e20c657656398592eb4be2aef8",
+  "dataset_sha256": "a847fb7e0d61a3125a1e2909852df6b89f1ee64d2c5ff1bf689e332214deee51",
+  "code_sha256": "f695fbba3d6b0a617ddf8ebf4511d72f93fc8f431808d64cc3ab8283e4a25f60",
+  "prompt_version": "finqa-v1",
+  "config": {
+    "dataset": {
+      "path": "/workspace/shared/nir/datasets/finqa/official/dataset/dev.json",
+      "split": "dev",
+      "limit": 1
+    },
+    "provider": {
+      "type": "transformers-local",
+      "name": "local_transformers",
+      "model_path": "/workspace/shared/nir/experiments/model",
+      "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "threads": 1,
+      "dtype": "float32",
+      "seed": 42
+    },
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "seed": 42,
+    "repetitions": 1,
+    "quantization": "none; float32 CPU weights",
+    "configurations": [
+      {
+        "name": "direct",
+        "parameters": {
+          "do_sample": false,
+          "max_new_tokens": 192,
+          "repetition_penalty": 1.1
+        }
+      }
+    ],
+    "purpose": "adapter-integration-smoke; not an independent model-quality estimate"
+  },
+  "case_ids": [
+    "BLL/2007/page_35.pdf-1"
+  ],
+  "planned_attempts": 1,
+  "status": "completed",
+  "hardware": {
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "machine": "x86_64",
+    "logical_cpus": 9
+  },
+  "quantization": "none; float32 CPU weights",
+  "provenance": "model-inference",
+  "completed_at": "2026-11-10T16:26:39.756672+00:00",
+  "completed_attempts": 1
+}

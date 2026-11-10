@@ -1,0 +1,3 @@
+﻿model,configuration,attempts,judge_coverage,mean_judge_score,judge_pass_rate_among_evaluated,mean_solver_latency_seconds,mean_total_latency_seconds,mean_cost_usd,rejection_reasons
+opencode/big-pickle,pickle-direct,4,0.0,,,2.446505,,,"['judge_coverage_below_threshold', 'judge_quality_unknown', 'generation_error_rate_above_limit', 'judge_pass_rate_unknown', 'cost_unknown']"
+opencode/minimax-m3.1-flash-free,minimax-checked,4,0.0,,,0.000154,,,"['judge_coverage_below_threshold', 'judge_quality_unknown', 'generation_error_rate_above_limit', 'judge_pass_rate_unknown', 'cost_unknown']"

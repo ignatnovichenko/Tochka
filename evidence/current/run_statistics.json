@@ -1,0 +1,242 @@
+[
+  {
+    "run": "current_calibration",
+    "configuration": "calibration",
+    "planned_records": 0,
+    "saved_records": 0,
+    "successful_solver_calls": 0,
+    "successful_judge_calls": 0,
+    "valid_judgements": 0,
+    "unknown_judgements": 0,
+    "mean_judge_score": null,
+    "known_response_cost_sum_usd": null,
+    "cost_scope": "successful responses only; missing/failed requests not imputed",
+    "solver_native_tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache_read": 0,
+      "cache_write": 0
+    },
+    "judge_native_tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache_read": 0,
+      "cache_write": 0
+    },
+    "solver_call_seconds": null,
+    "judge_call_seconds": null,
+    "path": "runs/current_calibration"
+  },
+  {
+    "run": "current_calibration_02",
+    "configuration": "calibration",
+    "planned_records": 8,
+    "saved_records": 8,
+    "successful_solver_calls": 0,
+    "successful_judge_calls": 8,
+    "valid_judgements": 7,
+    "unknown_judgements": 1,
+    "mean_judge_score": 0.5333333333333333,
+    "known_response_cost_sum_usd": 0,
+    "cost_scope": "successful responses only; missing/failed requests not imputed",
+    "solver_native_tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache_read": 0,
+      "cache_write": 0
+    },
+    "judge_native_tokens": {
+      "input": 33478,
+      "output": 2868,
+      "reasoning": 2337,
+      "cache_read": 17408,
+      "cache_write": 0
+    },
+    "solver_call_seconds": null,
+    "judge_call_seconds": 81.91730400000002,
+    "path": "runs/current_calibration_02"
+  },
+  {
+    "run": "current_calibration_final",
+    "configuration": "calibration",
+    "planned_records": 8,
+    "saved_records": 8,
+    "successful_solver_calls": 0,
+    "successful_judge_calls": 8,
+    "valid_judgements": 8,
+    "unknown_judgements": 0,
+    "mean_judge_score": 0.5901041666666668,
+    "known_response_cost_sum_usd": 0,
+    "cost_scope": "successful responses only; missing/failed requests not imputed",
+    "solver_native_tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache_read": 0,
+      "cache_write": 0
+    },
+    "judge_native_tokens": {
+      "input": 36304,
+      "output": 2358,
+      "reasoning": 1490,
+      "cache_read": 15232,
+      "cache_write": 0
+    },
+    "solver_call_seconds": null,
+    "judge_call_seconds": 63.116769999999995,
+    "path": "runs/current_calibration_final"
+  },
+  {
+    "run": "current_business",
+    "configuration": "solver-pickle-direct",
+    "planned_records": 4,
+    "saved_records": 4,
+    "successful_solver_calls": 4,
+    "successful_judge_calls": 4,
+    "valid_judgements": 4,
+    "unknown_judgements": 0,
+    "mean_judge_score": 0.9875,
+    "known_response_cost_sum_usd": 0,
+    "cost_scope": "successful responses only; missing/failed requests not imputed",
+    "solver_native_tokens": {
+      "input": 12027,
+      "output": 279,
+      "reasoning": 369,
+      "cache_read": 11200,
+      "cache_write": 0
+    },
+    "judge_native_tokens": {
+      "input": 17219,
+      "output": 1189,
+      "reasoning": 483,
+      "cache_read": 8704,
+      "cache_write": 0
+    },
+    "solver_call_seconds": 16.825691,
+    "judge_call_seconds": 28.438091,
+    "path": "runs/current_business/solver-pickle-direct"
+  },
+  {
+    "run": "current_business",
+    "configuration": "solver-minimax-checked",
+    "planned_records": 4,
+    "saved_records": 4,
+    "successful_solver_calls": 4,
+    "successful_judge_calls": 4,
+    "valid_judgements": 2,
+    "unknown_judgements": 2,
+    "mean_judge_score": 1.0,
+    "known_response_cost_sum_usd": 0,
+    "cost_scope": "successful responses only; missing/failed requests not imputed",
+    "solver_native_tokens": {
+      "input": 16687,
+      "output": 656,
+      "reasoning": 737,
+      "cache_read": 7214,
+      "cache_write": 0
+    },
+    "judge_native_tokens": {
+      "input": 21923,
+      "output": 1131,
+      "reasoning": 554,
+      "cache_read": 4352,
+      "cache_write": 0
+    },
+    "solver_call_seconds": 17.190839999999998,
+    "judge_call_seconds": 30.084016,
+    "path": "runs/current_business/solver-minimax-checked"
+  },
+  {
+    "run": "final_calibration",
+    "configuration": "calibration",
+    "planned_records": 8,
+    "saved_records": 8,
+    "successful_solver_calls": 0,
+    "successful_judge_calls": 1,
+    "valid_judgements": 1,
+    "unknown_judgements": 7,
+    "mean_judge_score": 1.0,
+    "known_response_cost_sum_usd": 0,
+    "cost_scope": "successful responses only; missing/failed requests not imputed",
+    "solver_native_tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache_read": 0,
+      "cache_write": 0
+    },
+    "judge_native_tokens": {
+      "input": 6492,
+      "output": 256,
+      "reasoning": 249,
+      "cache_read": 0,
+      "cache_write": 0
+    },
+    "solver_call_seconds": null,
+    "judge_call_seconds": 7.657378,
+    "path": "runs/final_calibration"
+  },
+  {
+    "run": "final_business",
+    "configuration": "solver-pickle-direct",
+    "planned_records": 4,
+    "saved_records": 4,
+    "successful_solver_calls": 2,
+    "successful_judge_calls": 0,
+    "valid_judgements": 0,
+    "unknown_judgements": 4,
+    "mean_judge_score": null,
+    "known_response_cost_sum_usd": 0,
+    "cost_scope": "successful responses only; missing/failed requests not imputed",
+    "solver_native_tokens": {
+      "input": 7658,
+      "output": 166,
+      "reasoning": 108,
+      "cache_read": 4096,
+      "cache_write": 0
+    },
+    "judge_native_tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache_read": 0,
+      "cache_write": 0
+    },
+    "solver_call_seconds": 9.78602,
+    "judge_call_seconds": 0.000595,
+    "path": "runs/final_business/solver-pickle-direct"
+  },
+  {
+    "run": "final_business",
+    "configuration": "solver-minimax-checked",
+    "planned_records": 4,
+    "saved_records": 4,
+    "successful_solver_calls": 0,
+    "successful_judge_calls": 0,
+    "valid_judgements": 0,
+    "unknown_judgements": 4,
+    "mean_judge_score": null,
+    "known_response_cost_sum_usd": null,
+    "cost_scope": "successful responses only; missing/failed requests not imputed",
+    "solver_native_tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache_read": 0,
+      "cache_write": 0
+    },
+    "judge_native_tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache_read": 0,
+      "cache_write": 0
+    },
+    "solver_call_seconds": 0.000616,
+    "judge_call_seconds": 0,
+    "path": "runs/final_business/solver-minimax-checked"
+  }
+]

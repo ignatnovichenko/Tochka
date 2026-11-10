@@ -1,0 +1,11 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><title>НИР · Сравнение моделей</title><style>body{font:16px system-ui;margin:32px;color:#172536}table{border-collapse:collapse;font-size:13px}td,th{padding:10px;border:1px solid #ccd}th{background:#edf3fa}pre{white-space:pre-wrap}</style><h1>Сравнение конфигураций</h1><p>Статус: <b>no_eligible_configuration</b></p><p>Оценки относятся только к этой синтетической выборке. Неизвестное качество и стоимость не равны нулю.</p><table><tr><th>model</th><th>configuration</th><th>attempts</th><th>judge_coverage</th><th>mean_judge_score</th><th>judge_pass_rate_among_evaluated</th><th>mean_solver_latency_seconds</th><th>mean_total_latency_seconds</th><th>mean_cost_usd</th><th>rejection_reasons</th></tr><tr><td>opencode/big-pickle</td><td>pickle-direct</td><td>4</td><td>0.0</td><td>неизвестно</td><td>неизвестно</td><td>2.446505</td><td>неизвестно</td><td>неизвестно</td><td>[&#x27;judge_coverage_below_threshold&#x27;, &#x27;judge_quality_unknown&#x27;, &#x27;generation_error_rate_above_limit&#x27;, &#x27;judge_pass_rate_unknown&#x27;, &#x27;cost_unknown&#x27;]</td></tr><tr><td>opencode/minimax-m3.1-flash-free</td><td>minimax-checked</td><td>4</td><td>0.0</td><td>неизвестно</td><td>неизвестно</td><td>0.000154</td><td>неизвестно</td><td>неизвестно</td><td>[&#x27;judge_coverage_below_threshold&#x27;, &#x27;judge_quality_unknown&#x27;, &#x27;generation_error_rate_above_limit&#x27;, &#x27;judge_pass_rate_unknown&#x27;, &#x27;cost_unknown&#x27;]</td></tr></table><h2>Подробные отчёты и причины оценок</h2><ul><li><a href="solver-pickle-direct/report.html">solver-pickle-direct</a></li><li><a href="solver-minimax-checked/report.html">solver-minimax-checked</a></li></ul><h2>Ограничения отбора</h2><pre>{
+  &quot;min_judge_coverage&quot;: 1,
+  &quot;min_mean_judge_score&quot;: 0.8,
+  &quot;max_generation_error_rate&quot;: 0.0,
+  &quot;max_judge_critical_error_rate&quot;: 0,
+  &quot;min_tasks&quot;: 1,
+  &quot;objective&quot;: &quot;quality&quot;,
+  &quot;min_judge_pass_rate&quot;: 1.0,
+  &quot;max_mean_solver_latency_seconds&quot;: 60.0,
+  &quot;max_mean_cost_usd&quot;: 0.0
+}</pre></html>

@@ -1,0 +1,1257 @@
+{
+  "schema_version": "1.0",
+  "protocol": "nir-spreadsheetbench-values-v1",
+  "created_at_utc": "2026-11-10T16:24:52.191017+00:00",
+  "provenance": "control-not-llm",
+  "provenance_is_caller_asserted": true,
+  "run_metadata": {
+    "control": "gold_copy_cached",
+    "model_invoked": false,
+    "selection": "first N instructions in dataset.json; not random or representative",
+    "prediction_artifacts": "temporary copies, deleted after control run",
+    "recalculation_performed": false
+  },
+  "dataset": {
+    "root": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1",
+    "metadata_sha256": "e5137ecbec4273d91344a0c8feb2aff2d4a93d5881ac40e490250dfd8db227de",
+    "selected_task_ids": [
+      "13-1",
+      "17-35",
+      "19-7",
+      "19-16",
+      "21-16",
+      "22-12",
+      "22-47",
+      "23-24",
+      "23-28",
+      "24-23"
+    ],
+    "format": "912-v0.1"
+  },
+  "predictions_dir": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached",
+  "formula_policy": "cached",
+  "scope": "Only annotated cell values; no verification of visual formatting, charts, macros or other cells.",
+  "limitations": [
+    "Not the official leaderboard protocol: answer_sheet and actual case counts are respected.",
+    "No formulas were executed or recalculated. Reference cached values are trusted as distributed.",
+    "Cached mode can accept stale or forged formula caches; strict is the conservative default.",
+    "Upstream rounding to two decimals, date-to-day and numeric-string coercion are preserved.",
+    "Model-inference provenance is caller-declared, not independently verified.",
+    "Read-only ZIP/XML screening is defense in depth, not an OS sandbox."
+  ],
+  "summary": {
+    "tasks_total": 10,
+    "cases_total": 30,
+    "cases_pass": 24,
+    "cases_fail": 0,
+    "cases_inconclusive": 0,
+    "cases_reference_error": 6,
+    "cases_invalid_prediction": 0,
+    "cases_evaluated": 24,
+    "cases_unscored": 6,
+    "coverage": 0.8,
+    "decision_coverage": 0.8,
+    "cases_with_prediction": 30,
+    "prediction_coverage": 1.0,
+    "cases_value_compared": 24,
+    "comparison_coverage": 0.8,
+    "case_pass_rate": 0.8,
+    "task_soft_pass_rate": 0.8,
+    "task_hard_pass_rate": 0.8,
+    "rate_interpretation": "lower_bound_unscored_as_not_passed",
+    "denominator_policy": "All selected metadata tasks and discovered case indices, including missing predictions and unscored cases."
+  },
+  "tasks": [
+    {
+      "id": "13-1",
+      "instruction_type": "Sheet-Level Manipulation",
+      "cases": [
+        {
+          "case_index": 1,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/13-1/1_13-1_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/13-1/1_13-1_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/13-1/1_13-1_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 120,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "54d473d220649375d1a14c6e252042a2f4b33ea193429ad37e061bb739716b30",
+            "bytes": 8894,
+            "archive_members": 11
+          },
+          "prediction_artifact": {
+            "sha256": "54d473d220649375d1a14c6e252042a2f4b33ea193429ad37e061bb739716b30",
+            "bytes": 8894,
+            "archive_members": 11
+          },
+          "answer_scope": [
+            {
+              "sheet": "LISTS",
+              "min_col": 1,
+              "min_row": 3,
+              "max_col": 4,
+              "max_row": 32
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 2,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/13-1/2_13-1_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/13-1/2_13-1_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/13-1/2_13-1_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 120,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "3c2b4d7b1a7e2b074b558bfcf690f4ca802df0a32e781c252a6945a6a9a8993d",
+            "bytes": 8898,
+            "archive_members": 11
+          },
+          "prediction_artifact": {
+            "sha256": "3c2b4d7b1a7e2b074b558bfcf690f4ca802df0a32e781c252a6945a6a9a8993d",
+            "bytes": 8898,
+            "archive_members": 11
+          },
+          "answer_scope": [
+            {
+              "sheet": "LISTS",
+              "min_col": 1,
+              "min_row": 3,
+              "max_col": 4,
+              "max_row": 32
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 3,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/13-1/3_13-1_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/13-1/3_13-1_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/13-1/3_13-1_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 120,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "5a30cd84f752e86661bb127fe95727861e8b205c2b0c302d1a7e7113cd7e8665",
+            "bytes": 8953,
+            "archive_members": 11
+          },
+          "prediction_artifact": {
+            "sha256": "5a30cd84f752e86661bb127fe95727861e8b205c2b0c302d1a7e7113cd7e8665",
+            "bytes": 8953,
+            "archive_members": 11
+          },
+          "answer_scope": [
+            {
+              "sheet": "LISTS",
+              "min_col": 1,
+              "min_row": 3,
+              "max_col": 4,
+              "max_row": 32
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        }
+      ],
+      "hard_pass": true,
+      "soft_pass_rate": 1.0,
+      "fully_evaluated": true
+    },
+    {
+      "id": "17-35",
+      "instruction_type": "Sheet-Level Manipulation",
+      "cases": [
+        {
+          "case_index": 1,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/17-35/1_17-35_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/17-35/1_17-35_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/17-35/1_17-35_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 1450,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "df2fbbbd53895dbf8759213adb7e82d12c1ab5917cf5b16cb7572c3baa822a70",
+            "bytes": 37113,
+            "archive_members": 17
+          },
+          "prediction_artifact": {
+            "sha256": "df2fbbbd53895dbf8759213adb7e82d12c1ab5917cf5b16cb7572c3baa822a70",
+            "bytes": 37113,
+            "archive_members": 17
+          },
+          "answer_scope": [
+            {
+              "sheet": "FILTER 5b",
+              "min_col": 9,
+              "min_row": 6,
+              "max_col": 13,
+              "max_row": 295
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 2,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/17-35/2_17-35_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/17-35/2_17-35_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/17-35/2_17-35_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 1450,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "d7855e47678bbb9ef9371bfc7335269cca43fb3439920471c3af0d6140dfa2a6",
+            "bytes": 37084,
+            "archive_members": 17
+          },
+          "prediction_artifact": {
+            "sha256": "d7855e47678bbb9ef9371bfc7335269cca43fb3439920471c3af0d6140dfa2a6",
+            "bytes": 37084,
+            "archive_members": 17
+          },
+          "answer_scope": [
+            {
+              "sheet": "FILTER 5b",
+              "min_col": 9,
+              "min_row": 6,
+              "max_col": 13,
+              "max_row": 295
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 3,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/17-35/3_17-35_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/17-35/3_17-35_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/17-35/3_17-35_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 1450,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "b4e3c7bd77c340b26eafc912bf1cde8a407a50bc4bba5b93bc6153968a9963c0",
+            "bytes": 36612,
+            "archive_members": 17
+          },
+          "prediction_artifact": {
+            "sha256": "b4e3c7bd77c340b26eafc912bf1cde8a407a50bc4bba5b93bc6153968a9963c0",
+            "bytes": 36612,
+            "archive_members": 17
+          },
+          "answer_scope": [
+            {
+              "sheet": "FILTER 5b",
+              "min_col": 9,
+              "min_row": 6,
+              "max_col": 13,
+              "max_row": 295
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        }
+      ],
+      "hard_pass": true,
+      "soft_pass_rate": 1.0,
+      "fully_evaluated": true
+    },
+    {
+      "id": "19-7",
+      "instruction_type": "Sheet-Level Manipulation",
+      "cases": [
+        {
+          "case_index": 1,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/19-7/1_19-7_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-7/1_19-7_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-7/1_19-7_answer.xlsx",
+          "prediction_exists": true,
+          "status": "reference_error",
+          "reason": "reference_formula_cache_missing",
+          "warnings": [],
+          "cells_checked": 20836,
+          "reference_formula_cells": 6,
+          "prediction_formula_cells": 6,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "e31a44f2337d98bf410b44b54b7117927a99b0648f3008cb2654cfdd3cfb1144",
+            "bytes": 285264,
+            "archive_members": 11
+          },
+          "prediction_artifact": {
+            "sha256": "e31a44f2337d98bf410b44b54b7117927a99b0648f3008cb2654cfdd3cfb1144",
+            "bytes": 285264,
+            "archive_members": 11
+          },
+          "answer_scope": [
+            {
+              "sheet": "MINUS",
+              "min_col": 2,
+              "min_row": 2,
+              "max_col": 5,
+              "max_row": 11
+            },
+            {
+              "sheet": "PLUS",
+              "min_col": 2,
+              "min_row": 2,
+              "max_col": 5,
+              "max_row": 5200
+            }
+          ],
+          "reference_missing_formula_caches": 6,
+          "prediction_missing_formula_caches": 6
+        },
+        {
+          "case_index": 2,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/19-7/2_19-7_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-7/2_19-7_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-7/2_19-7_answer.xlsx",
+          "prediction_exists": true,
+          "status": "reference_error",
+          "reason": "reference_formula_cache_missing",
+          "warnings": [],
+          "cells_checked": 20836,
+          "reference_formula_cells": 6,
+          "prediction_formula_cells": 6,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "24c511f9e28687dc13e96714736592ebee32f054eb51e92941ac5756650673d6",
+            "bytes": 285296,
+            "archive_members": 11
+          },
+          "prediction_artifact": {
+            "sha256": "24c511f9e28687dc13e96714736592ebee32f054eb51e92941ac5756650673d6",
+            "bytes": 285296,
+            "archive_members": 11
+          },
+          "answer_scope": [
+            {
+              "sheet": "MINUS",
+              "min_col": 2,
+              "min_row": 2,
+              "max_col": 5,
+              "max_row": 11
+            },
+            {
+              "sheet": "PLUS",
+              "min_col": 2,
+              "min_row": 2,
+              "max_col": 5,
+              "max_row": 5200
+            }
+          ],
+          "reference_missing_formula_caches": 6,
+          "prediction_missing_formula_caches": 6
+        },
+        {
+          "case_index": 3,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/19-7/3_19-7_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-7/3_19-7_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-7/3_19-7_answer.xlsx",
+          "prediction_exists": true,
+          "status": "reference_error",
+          "reason": "reference_formula_cache_missing",
+          "warnings": [],
+          "cells_checked": 20836,
+          "reference_formula_cells": 3,
+          "prediction_formula_cells": 3,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "671a38ea3456dd71dde113b11cea1509cdf8196993c25bfe731006ac20799f4e",
+            "bytes": 285260,
+            "archive_members": 11
+          },
+          "prediction_artifact": {
+            "sha256": "671a38ea3456dd71dde113b11cea1509cdf8196993c25bfe731006ac20799f4e",
+            "bytes": 285260,
+            "archive_members": 11
+          },
+          "answer_scope": [
+            {
+              "sheet": "MINUS",
+              "min_col": 2,
+              "min_row": 2,
+              "max_col": 5,
+              "max_row": 11
+            },
+            {
+              "sheet": "PLUS",
+              "min_col": 2,
+              "min_row": 2,
+              "max_col": 5,
+              "max_row": 5200
+            }
+          ],
+          "reference_missing_formula_caches": 3,
+          "prediction_missing_formula_caches": 3
+        }
+      ],
+      "hard_pass": false,
+      "soft_pass_rate": 0.0,
+      "fully_evaluated": false
+    },
+    {
+      "id": "19-16",
+      "instruction_type": "Sheet-Level Manipulation",
+      "cases": [
+        {
+          "case_index": 1,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/19-16/1_19-16_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-16/1_19-16_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-16/1_19-16_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 3081,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "541873ce753486ff042e3a7344e5849871e9cc706a484504aaf18da822464010",
+            "bytes": 372659,
+            "archive_members": 603
+          },
+          "prediction_artifact": {
+            "sha256": "541873ce753486ff042e3a7344e5849871e9cc706a484504aaf18da822464010",
+            "bytes": 372659,
+            "archive_members": 603
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 1,
+              "min_row": 1,
+              "max_col": 13,
+              "max_row": 237
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 2,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/19-16/2_19-16_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-16/2_19-16_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-16/2_19-16_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 3081,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "837699cf05fa94ab6a8fae7cfdb54c76ae4015783aaa03ea5493af6a36bafda0",
+            "bytes": 164099,
+            "archive_members": 249
+          },
+          "prediction_artifact": {
+            "sha256": "837699cf05fa94ab6a8fae7cfdb54c76ae4015783aaa03ea5493af6a36bafda0",
+            "bytes": 164099,
+            "archive_members": 249
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 1,
+              "min_row": 1,
+              "max_col": 13,
+              "max_row": 237
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 3,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/19-16/3_19-16_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-16/3_19-16_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/19-16/3_19-16_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 3081,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "b06191be1a82f2f956732fe1128fac53d54c3fa93803e9ab8a71800a39ee39db",
+            "bytes": 164221,
+            "archive_members": 249
+          },
+          "prediction_artifact": {
+            "sha256": "b06191be1a82f2f956732fe1128fac53d54c3fa93803e9ab8a71800a39ee39db",
+            "bytes": 164221,
+            "archive_members": 249
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 1,
+              "min_row": 1,
+              "max_col": 13,
+              "max_row": 237
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        }
+      ],
+      "hard_pass": true,
+      "soft_pass_rate": 1.0,
+      "fully_evaluated": true
+    },
+    {
+      "id": "21-16",
+      "instruction_type": "Sheet-Level Manipulation",
+      "cases": [
+        {
+          "case_index": 1,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/21-16/1_21-16_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/21-16/1_21-16_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/21-16/1_21-16_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 24,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "57ed38a61bc77f68d5677da99c7bf40ac999b59a0308671579b4406c5f3f2445",
+            "bytes": 6098,
+            "archive_members": 11
+          },
+          "prediction_artifact": {
+            "sha256": "57ed38a61bc77f68d5677da99c7bf40ac999b59a0308671579b4406c5f3f2445",
+            "bytes": 6098,
+            "archive_members": 11
+          },
+          "answer_scope": [
+            {
+              "sheet": "FinalReport",
+              "min_col": 1,
+              "min_row": 2,
+              "max_col": 6,
+              "max_row": 5
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 2,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/21-16/2_21-16_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/21-16/2_21-16_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/21-16/2_21-16_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 24,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "829e300667108bacdc0244f9597527f30e0836801e796ac8d4961076b520c6a3",
+            "bytes": 5804,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "829e300667108bacdc0244f9597527f30e0836801e796ac8d4961076b520c6a3",
+            "bytes": 5804,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "FinalReport",
+              "min_col": 1,
+              "min_row": 2,
+              "max_col": 6,
+              "max_row": 5
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 3,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/21-16/3_21-16_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/21-16/3_21-16_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/21-16/3_21-16_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 24,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "b3aa6cb2c33578a55f630cd10d2ddefdcd447373f40f336478b10035e829c760",
+            "bytes": 5830,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "b3aa6cb2c33578a55f630cd10d2ddefdcd447373f40f336478b10035e829c760",
+            "bytes": 5830,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "FinalReport",
+              "min_col": 1,
+              "min_row": 2,
+              "max_col": 6,
+              "max_row": 5
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        }
+      ],
+      "hard_pass": true,
+      "soft_pass_rate": 1.0,
+      "fully_evaluated": true
+    },
+    {
+      "id": "22-12",
+      "instruction_type": "Sheet-Level Manipulation",
+      "cases": [
+        {
+          "case_index": 1,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/22-12/1_22-12_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-12/1_22-12_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-12/1_22-12_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 18,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "284251874aa01218d8fd21a4a29f9f2969f84518d74edd290d20186bc38992f7",
+            "bytes": 9672,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "284251874aa01218d8fd21a4a29f9f2969f84518d74edd290d20186bc38992f7",
+            "bytes": 9672,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 5,
+              "min_row": 2,
+              "max_col": 5,
+              "max_row": 19
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 2,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/22-12/2_22-12_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-12/2_22-12_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-12/2_22-12_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 18,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "b8ea1194523754f05fcd6f2e597b7ccff1bc8d84d59f97a04299477064b7b6c5",
+            "bytes": 5820,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "b8ea1194523754f05fcd6f2e597b7ccff1bc8d84d59f97a04299477064b7b6c5",
+            "bytes": 5820,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 5,
+              "min_row": 2,
+              "max_col": 5,
+              "max_row": 19
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 3,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/22-12/3_22-12_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-12/3_22-12_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-12/3_22-12_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 18,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "14434c21e4367997eabb13a152eb6e03353749bbf993f6e4d1e2a9541ea49e02",
+            "bytes": 5812,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "14434c21e4367997eabb13a152eb6e03353749bbf993f6e4d1e2a9541ea49e02",
+            "bytes": 5812,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 5,
+              "min_row": 2,
+              "max_col": 5,
+              "max_row": 19
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        }
+      ],
+      "hard_pass": true,
+      "soft_pass_rate": 1.0,
+      "fully_evaluated": true
+    },
+    {
+      "id": "22-47",
+      "instruction_type": "Sheet-Level Manipulation",
+      "cases": [
+        {
+          "case_index": 1,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/22-47/1_22-47_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-47/1_22-47_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-47/1_22-47_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 27,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "e39f72e4e84bbb5ae448dfeb6e1d30899ca6bd46af942f5876fa5e700aad3c61",
+            "bytes": 6467,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "e39f72e4e84bbb5ae448dfeb6e1d30899ca6bd46af942f5876fa5e700aad3c61",
+            "bytes": 6467,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "sheet1",
+              "min_col": 6,
+              "min_row": 2,
+              "max_col": 8,
+              "max_row": 10
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 2,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/22-47/2_22-47_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-47/2_22-47_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-47/2_22-47_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 27,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "7a1725eb60b9d5284b150c57c7653276ca656875e47bcf286232d2c7b60fd0d9",
+            "bytes": 6450,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "7a1725eb60b9d5284b150c57c7653276ca656875e47bcf286232d2c7b60fd0d9",
+            "bytes": 6450,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "sheet1",
+              "min_col": 6,
+              "min_row": 2,
+              "max_col": 8,
+              "max_row": 10
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 3,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/22-47/3_22-47_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-47/3_22-47_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/22-47/3_22-47_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 27,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "07f7b3a7b2bb716713b40a87a44bb07d5c78f52b07110842722f8b83e5a45d74",
+            "bytes": 6449,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "07f7b3a7b2bb716713b40a87a44bb07d5c78f52b07110842722f8b83e5a45d74",
+            "bytes": 6449,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "sheet1",
+              "min_col": 6,
+              "min_row": 2,
+              "max_col": 8,
+              "max_row": 10
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        }
+      ],
+      "hard_pass": true,
+      "soft_pass_rate": 1.0,
+      "fully_evaluated": true
+    },
+    {
+      "id": "23-24",
+      "instruction_type": "Sheet-Level Manipulation",
+      "cases": [
+        {
+          "case_index": 1,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/23-24/1_23-24_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-24/1_23-24_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-24/1_23-24_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 5510,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "f0aed39194734eb7c471aa80fb5a0ec9677ba60a35b7b7fb1c10de38dc21b2b6",
+            "bytes": 84789,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "f0aed39194734eb7c471aa80fb5a0ec9677ba60a35b7b7fb1c10de38dc21b2b6",
+            "bytes": 84789,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 1,
+              "min_row": 1,
+              "max_col": 5,
+              "max_row": 1102
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 2,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/23-24/2_23-24_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-24/2_23-24_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-24/2_23-24_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 5510,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "fea02e481d4d517800c9808b90459ce2ca7c7540d6c9c9c5eb615754f0f460c9",
+            "bytes": 63398,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "fea02e481d4d517800c9808b90459ce2ca7c7540d6c9c9c5eb615754f0f460c9",
+            "bytes": 63398,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 1,
+              "min_row": 1,
+              "max_col": 5,
+              "max_row": 1102
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 3,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/23-24/3_23-24_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-24/3_23-24_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-24/3_23-24_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 5510,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "e36825af6d1cf31c63380ba91b1df9a36158d7b4f0993b8df552e6e75a45469a",
+            "bytes": 63444,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "e36825af6d1cf31c63380ba91b1df9a36158d7b4f0993b8df552e6e75a45469a",
+            "bytes": 63444,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 1,
+              "min_row": 1,
+              "max_col": 5,
+              "max_row": 1102
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        }
+      ],
+      "hard_pass": true,
+      "soft_pass_rate": 1.0,
+      "fully_evaluated": true
+    },
+    {
+      "id": "23-28",
+      "instruction_type": "Sheet-Level Manipulation",
+      "cases": [
+        {
+          "case_index": 1,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/23-28/1_23-28_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-28/1_23-28_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-28/1_23-28_answer.xlsx",
+          "prediction_exists": true,
+          "status": "reference_error",
+          "reason": "reference_formula_cache_missing",
+          "warnings": [],
+          "cells_checked": 24,
+          "reference_formula_cells": 1,
+          "prediction_formula_cells": 1,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "da28af9b5e75f94066e516af03d4850686abff7a59ffbe1f6f0be1b31507163a",
+            "bytes": 10391,
+            "archive_members": 13
+          },
+          "prediction_artifact": {
+            "sha256": "da28af9b5e75f94066e516af03d4850686abff7a59ffbe1f6f0be1b31507163a",
+            "bytes": 10391,
+            "archive_members": 13
+          },
+          "answer_scope": [
+            {
+              "sheet": "SH2",
+              "min_col": 1,
+              "min_row": 5,
+              "max_col": 4,
+              "max_row": 10
+            }
+          ],
+          "reference_missing_formula_caches": 1,
+          "prediction_missing_formula_caches": 1
+        },
+        {
+          "case_index": 2,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/23-28/2_23-28_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-28/2_23-28_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-28/2_23-28_answer.xlsx",
+          "prediction_exists": true,
+          "status": "reference_error",
+          "reason": "reference_formula_cache_missing",
+          "warnings": [],
+          "cells_checked": 24,
+          "reference_formula_cells": 1,
+          "prediction_formula_cells": 1,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "75b55ae0a808a4ca414de2e2561f712098929c6fd03c16c96073a542fb8bd77b",
+            "bytes": 10447,
+            "archive_members": 13
+          },
+          "prediction_artifact": {
+            "sha256": "75b55ae0a808a4ca414de2e2561f712098929c6fd03c16c96073a542fb8bd77b",
+            "bytes": 10447,
+            "archive_members": 13
+          },
+          "answer_scope": [
+            {
+              "sheet": "SH2",
+              "min_col": 1,
+              "min_row": 5,
+              "max_col": 4,
+              "max_row": 10
+            }
+          ],
+          "reference_missing_formula_caches": 1,
+          "prediction_missing_formula_caches": 1
+        },
+        {
+          "case_index": 3,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/23-28/3_23-28_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-28/3_23-28_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/23-28/3_23-28_answer.xlsx",
+          "prediction_exists": true,
+          "status": "reference_error",
+          "reason": "reference_formula_cache_missing",
+          "warnings": [],
+          "cells_checked": 24,
+          "reference_formula_cells": 1,
+          "prediction_formula_cells": 1,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "eb4dfe10b157177ceeaad9d0e09f180e7050a871ee387577bece693fa6287cd7",
+            "bytes": 10437,
+            "archive_members": 13
+          },
+          "prediction_artifact": {
+            "sha256": "eb4dfe10b157177ceeaad9d0e09f180e7050a871ee387577bece693fa6287cd7",
+            "bytes": 10437,
+            "archive_members": 13
+          },
+          "answer_scope": [
+            {
+              "sheet": "SH2",
+              "min_col": 1,
+              "min_row": 5,
+              "max_col": 4,
+              "max_row": 10
+            }
+          ],
+          "reference_missing_formula_caches": 1,
+          "prediction_missing_formula_caches": 1
+        }
+      ],
+      "hard_pass": false,
+      "soft_pass_rate": 0.0,
+      "fully_evaluated": false
+    },
+    {
+      "id": "24-23",
+      "instruction_type": "Sheet-Level Manipulation",
+      "cases": [
+        {
+          "case_index": 1,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/24-23/1_24-23_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/24-23/1_24-23_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/24-23/1_24-23_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 824,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "150050ea865c40456eeae47ccbb8a5cc5d9f064313220b664303c851c7ef7351",
+            "bytes": 141695,
+            "archive_members": 9
+          },
+          "prediction_artifact": {
+            "sha256": "150050ea865c40456eeae47ccbb8a5cc5d9f064313220b664303c851c7ef7351",
+            "bytes": 141695,
+            "archive_members": 9
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 1,
+              "min_row": 2,
+              "max_col": 4,
+              "max_row": 207
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 2,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/24-23/2_24-23_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/24-23/2_24-23_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/24-23/2_24-23_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 824,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "9ab5a44f898ac7cdeda4f4695d64e95441bdd0d9892ff64afe85f8262689d7ef",
+            "bytes": 141567,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "9ab5a44f898ac7cdeda4f4695d64e95441bdd0d9892ff64afe85f8262689d7ef",
+            "bytes": 141567,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 1,
+              "min_row": 2,
+              "max_col": 4,
+              "max_row": 207
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        },
+        {
+          "case_index": 3,
+          "prediction_path": "/tmp/spreadsheetbench_controls_70rv73ua/gold_copy_cached/24-23/3_24-23_output.xlsx",
+          "input_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/24-23/3_24-23_input.xlsx",
+          "reference_path": "/workspace/shared/nir/office_dataset/SpreadsheetBench/data/all_data_912_v0.1/spreadsheet/24-23/3_24-23_answer.xlsx",
+          "prediction_exists": true,
+          "status": "pass",
+          "reason": "all_scored_values_match",
+          "warnings": [],
+          "cells_checked": 824,
+          "reference_formula_cells": 0,
+          "prediction_formula_cells": 0,
+          "mismatch_count": 0,
+          "mismatch_examples": [],
+          "reference_artifact": {
+            "sha256": "be71f60fdf09acc476e444d8d314cd9fc37585eb6790246fbda99b8c8b429c98",
+            "bytes": 141624,
+            "archive_members": 10
+          },
+          "prediction_artifact": {
+            "sha256": "be71f60fdf09acc476e444d8d314cd9fc37585eb6790246fbda99b8c8b429c98",
+            "bytes": 141624,
+            "archive_members": 10
+          },
+          "answer_scope": [
+            {
+              "sheet": "Sheet1",
+              "min_col": 1,
+              "min_row": 2,
+              "max_col": 4,
+              "max_row": 207
+            }
+          ],
+          "reference_missing_formula_caches": 0,
+          "prediction_missing_formula_caches": 0
+        }
+      ],
+      "hard_pass": true,
+      "soft_pass_rate": 1.0,
+      "fully_evaluated": true
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "verified_at_utc": "2026-11-10T17:41:48.245295+00:00",
+  "cpu_model_from_proc_cpuinfo": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "os_cpu_count": 9,
+  "process_affinity_cpu_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "visible_vcpu_count": 9,
+  "experiment_n_threads": 4,
+  "experiment_n_threads_batch": 4,
+  "cgroup_cpu_quota": "Not exposed at standard cgroup paths; no claim about guaranteed dedicated compute quota or physical host core count."
+}

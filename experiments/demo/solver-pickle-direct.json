@@ -1,0 +1,16 @@
+{
+  "provider": {
+    "type": "opencode",
+    "timeout_seconds": 180
+  },
+  "model": "opencode/big-pickle",
+  "configurations": [
+    {
+      "name": "pickle-direct",
+      "parameters": {},
+      "instruction": "Ответьте кратко, без вводных рассуждений."
+    }
+  ],
+  "repetitions": 1,
+  "max_calls": 100
+}

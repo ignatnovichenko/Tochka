@@ -1,0 +1,47 @@
+{
+  "started_at_utc": "2026-11-10T17:32:09.396164+00:00",
+  "inference_type": "real_local_model_inference",
+  "device": "cuda",
+  "n_gpu_layers": -1,
+  "model_id": "Qwen/Qwen2.5-7B-Instruct-GGUF",
+  "model_revision": "bb5d59e06d9551d752d08b292a50eb208b07ab1f",
+  "quantization": "Q4_K_M",
+  "engine": "llama-cpp-python",
+  "engine_version": "0.3.16",
+  "dataset_sha256": "a847fb7e0d61a3125a1e2909852df6b89f1ee64d2c5ff1bf689e332214deee51",
+  "split": "dev",
+  "n_cases": 1,
+  "protocols": [
+    "direct",
+    "cot"
+  ],
+  "repetitions": 1,
+  "parameters": {
+    "max_tokens": 192,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "top_k": 0,
+    "repeat_penalty": 1.1,
+    "seed": 42,
+    "echo": false,
+    "stop": [
+      "<|im_end|>",
+      "<|endoftext|>"
+    ]
+  },
+  "prompt_version": "finqa-v1",
+  "case_ids": [
+    "BLL/2007/page_35.pdf-1"
+  ],
+  "n_ctx": 4096,
+  "n_batch": 512,
+  "n_ubatch": 512,
+  "n_threads": 4,
+  "model_loading_seconds": 15.077432412999997,
+  "latency_measurement": "Full llama.cpp completion call, separate native prefill/decode counters",
+  "warmup": "No separate warm-up. KV and native perf counters reset for each call. OS cache not cleared.",
+  "paid_api_calls": 0,
+  "inputs_truncated": false,
+  "completed_at_utc": "2026-11-10T17:32:16.504321+00:00",
+  "records_sha256": "ddd242634da6b44b1fc667f11c02a01f55b463299ca0dde05df48daf352c0661"
+}

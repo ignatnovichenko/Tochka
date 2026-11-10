@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0",
+  "policy": {
+    "min_accuracy": 0.2,
+    "max_error_rate": 0.1,
+    "quality_basis": "observed",
+    "objective": "quality",
+    "min_tasks": 12,
+    "max_mean_cost_usd": 0
+  },
+  "dataset_sha256": "a847fb7e0d61a3125a1e2909852df6b89f1ee64d2c5ff1bf689e332214deee51",
+  "prompt_version": "finqa-v1",
+  "candidates": [
+    {
+      "run": "qwen_0_5b_finqa_pilot",
+      "provider": "local_transformers",
+      "model": "Qwen/Qwen2.5-0.5B-Instruct",
+      "config": "cot",
+      "attempts": 12,
+      "tasks": 12,
+      "repetitions": 1,
+      "coverage": 1.0,
+      "accuracy": 0.0,
+      "wilson_lower": 2.7755575615628914e-17,
+      "error_rate": 0.5,
+      "mean_latency_seconds": 11.2923137495834,
+      "latency_scope": null,
+      "latency_comparability_group": null,
+      "mean_cost_usd": null,
+      "cost_measurement": null,
+      "quality_value_used": 0.0,
+      "rejection_reasons": [
+        "quality_below_threshold",
+        "error_rate_above_limit",
+        "cost_unknown"
+      ]
+    },
+    {
+      "run": "qwen_0_5b_finqa_pilot",
+      "provider": "local_transformers",
+      "model": "Qwen/Qwen2.5-0.5B-Instruct",
+      "config": "direct",
+      "attempts": 12,
+      "tasks": 12,
+      "repetitions": 1,
+      "coverage": 1.0,
+      "accuracy": 0.0,
+      "wilson_lower": 2.7755575615628914e-17,
+      "error_rate": 0.16666666666666666,
+      "mean_latency_seconds": 5.420830313333378,
+      "latency_scope": null,
+      "latency_comparability_group": null,
+      "mean_cost_usd": null,
+      "cost_measurement": null,
+      "quality_value_used": 0.0,
+      "rejection_reasons": [
+        "quality_below_threshold",
+        "error_rate_above_limit",
+        "cost_unknown"
+      ]
+    },
+    {
+      "run": "qwen_7b_finqa_pilot",
+      "provider": "local_llama_cpp",
+      "model": "Qwen/Qwen2.5-7B-Instruct-GGUF",
+      "config": "cot",
+      "attempts": 12,
+      "tasks": 12,
+      "repetitions": 1,
+      "coverage": 1.0,
+      "accuracy": 0.25,
+      "wilson_lower": 0.08894166839405471,
+      "error_rate": 0.0,
+      "mean_latency_seconds": 65.18861754300003,
+      "latency_scope": "time.perf_counter around entire llama.cpp completion call: includes prompt tokenization, prefill, token generation and conversion to string; excludes model loading and scoring. Not directly comparable to run_01 generate-only timer.",
+      "latency_comparability_group": "d103b0881bc1269f58bbcd0f47ec62cb230f00a7416f7fc8705973b07e76571d",
+      "mean_cost_usd": null,
+      "cost_measurement": null,
+      "quality_value_used": 0.25,
+      "rejection_reasons": [
+        "cost_unknown"
+      ]
+    },
+    {
+      "run": "qwen_7b_finqa_pilot",
+      "provider": "local_llama_cpp",
+      "model": "Qwen/Qwen2.5-7B-Instruct-GGUF",
+      "config": "direct",
+      "attempts": 12,
+      "tasks": 12,
+      "repetitions": 1,
+      "coverage": 1.0,
+      "accuracy": 0.25,
+      "wilson_lower": 0.08894166839405471,
+      "error_rate": 0.08333333333333333,
+      "mean_latency_seconds": 48.76043678266668,
+      "latency_scope": "time.perf_counter around entire llama.cpp completion call: includes prompt tokenization, prefill, token generation and conversion to string; excludes model loading and scoring. Not directly comparable to run_01 generate-only timer.",
+      "latency_comparability_group": "d103b0881bc1269f58bbcd0f47ec62cb230f00a7416f7fc8705973b07e76571d",
+      "mean_cost_usd": null,
+      "cost_measurement": null,
+      "quality_value_used": 0.25,
+      "rejection_reasons": [
+        "cost_unknown"
+      ]
+    },
+    {
+      "run": "qwen_7b_finqa_program_pilot",
+      "provider": "local_llama_cpp",
+      "model": "Qwen/Qwen2.5-7B-Instruct-GGUF",
+      "config": "program",
+      "attempts": 12,
+      "tasks": 12,
+      "repetitions": 1,
+      "coverage": 1.0,
+      "accuracy": 0.08333333333333333,
+      "wilson_lower": 0.014865094404917095,
+      "error_rate": 0.8333333333333334,
+      "mean_latency_seconds": 59.11978207008315,
+      "latency_scope": "time.perf_counter around entire llama.cpp completion call: includes prompt tokenization, prefill, token generation and conversion to string; excludes model loading and scoring. Not directly comparable to run_01 generate-only timer.",
+      "latency_comparability_group": "d103b0881bc1269f58bbcd0f47ec62cb230f00a7416f7fc8705973b07e76571d",
+      "mean_cost_usd": null,
+      "cost_measurement": null,
+      "quality_value_used": 0.08333333333333333,
+      "rejection_reasons": [
+        "quality_below_threshold",
+        "error_rate_above_limit",
+        "cost_unknown"
+      ]
+    }
+  ],
+  "selected": null,
+  "model_inference_performed": false,
+  "llm_judge_used": false,
+  "warnings": [
+    "Selection describes observed saved data, not guaranteed future quality or an SLA.",
+    "Small dev pilot and annotation issues limit generalization. No hidden model judge is used.",
+    "Unknown cost stays unknown; no dollar price is inferred from zero paid API calls.",
+    "Latency limits refer to mean recorded time in its declared scope, not a maximum response deadline.",
+    "Wilson lower bound uses first repetition per task; observed accuracy uses all planned attempts."
+  ],
+  "status": "no_eligible_configuration",
+  "message": "No configuration satisfies all constraints with trustworthy available metrics."
+}

@@ -1,0 +1,18 @@
+{
+  "type": "generation-provider",
+  "model": "Qwen/Qwen2.5-7B-Instruct-GGUF",
+  "provider": {
+    "type": "command",
+    "command": [
+      "/workspace/shared/nir/experiments/.venv/bin/python",
+      "/workspace/shared/nir/mvp/scripts/llama_cpp_stdio_adapter.py",
+      "--model-path",
+      "/workspace/shared/nir/experiments/qwen7b/qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf"
+    ],
+    "cwd": "..",
+    "remote": false,
+    "timeout_seconds": 300
+  },
+  "max_tokens": 512,
+  "max_calls": 2
+}

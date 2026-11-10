@@ -1,0 +1,16 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>НИР · Оценка бизнес-текстов</title><style>body{font:16px system-ui;max-width:1100px;margin:40px auto;padding:0 20px;color:#183047;background:#f7fafc}table{border-collapse:collapse;width:100%;background:white}td,th{border:1px solid #d5e0e8;padding:10px;text-align:left}th{background:#e6eef4}.note{padding:18px;background:#fff3cf}code{overflow-wrap:anywhere}</style>
+<div style="border:3px solid #b45309;background:#fff7ed;padding:18px;font-weight:bold;">НЕЗАВЕРШЁННЫЙ ПРОГОН: получены 2 из 2 ответов исполнителя и только 1 из 2 решений судьи. Ниже показана только сохранённая оценка письма. Для задачи revenue_growth_01 оценки нет; её качество неизвестно. Это отчёт по частичным данным, не завершённый business run и не проверка надёжности судьи.</div><h1>Оценка бизнес-текстов</h1><p class="note">Судья не является эталоном истины. Пропуски и ошибки оценки не равны нулевому качеству. Рубрика требует независимой калибровки человеком.</p>
+<h2>Сводка</h2><table><tr><th>Модель / конфигурация</th><th>Попытки</th><th>Оценено судьёй</th><th>Passed / failed</th><th>Средний score</th></tr>
+<tr><td>Qwen/Qwen2.5-0.5B-Instruct<br>baseline</td><td>1</td><td>1</td><td>0 / 1</td><td>0.625</td></tr>
+</table><h2>Покрытие и ограничения</h2><ul>
+<li>Rubric score requires a connected judge and is not an objective ground truth.</li>
+<li>Unavailable, invalid and missing judgements have null scores, not zero quality.</li>
+<li>Programmatic checks are diagnostics only. Only a valid judge judgement determines quality pass/fail.</li>
+<li>All-attempts pass lower bound is a coverage bound, not imputed quality.</li>
+<li>Multiple repetitions share cases; these descriptive rates have no independence claim.</li>
+<li>Prompt isolation and schema validation mitigate but do not eliminate prompt injection.</li>
+<li>A model-inference label describes transport execution, not independent verification of the model or its quality.</li>
+</ul><h2>Отдельные попытки</h2><table><tr><th>Задача / конфигурация</th><th>Статус</th><th>Диагностика (не оценка)</th><th>Судья</th><th>Причина</th></tr>
+<tr><td>supplier_delay_01 / baseline / 0</td><td>failed</td><td>passed</td><td>evaluated</td><td></td></tr>
+</table><p>Подробные критерии, цитаты, критические ошибки и хеши: records.jsonl. Секреты подключения и необработанные ошибки провайдера не сохраняются.</p></html>

@@ -1,0 +1,3 @@
+﻿model,configuration,attempts,judge_coverage,mean_judge_score,judge_pass_rate_among_evaluated,mean_solver_latency_seconds,mean_total_latency_seconds,mean_cost_usd,rejection_reasons
+opencode/big-pickle,pickle-direct,4,1.0,0.9875,1.0,4.20642275,11.3159455,0.0,[]
+opencode/minimax-m3.1-flash-free,minimax-checked,4,0.5,1.0,1.0,4.29771,11.818714,0.0,['judge_coverage_below_threshold']

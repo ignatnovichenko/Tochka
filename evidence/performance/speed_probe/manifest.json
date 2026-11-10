@@ -1,0 +1,42 @@
+{
+  "started_at_utc": "2026-11-10T17:03:33.832360+00:00",
+  "kind": "separate_native_throughput_probe",
+  "source_run": "run_02",
+  "source_records_sha256": "49ad8b9d3d55a4760b6a6a536720e61eb89c5dd32b7c62e071070ebb9da15b2b",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct-GGUF",
+  "model_revision": "bb5d59e06d9551d752d08b292a50eb208b07ab1f",
+  "quantization": "Q4_K_M",
+  "engine": "llama-cpp-python",
+  "engine_version": "0.3.16",
+  "n_ctx": 4096,
+  "n_batch": 512,
+  "n_ubatch": 512,
+  "n_threads": 4,
+  "n_threads_batch": 4,
+  "n_gpu_layers": 0,
+  "no_perf": false,
+  "use_mmap": true,
+  "parameters": {
+    "max_tokens": 192,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "top_k": 0,
+    "repeat_penalty": 1.1,
+    "seed": 42,
+    "echo": false,
+    "stop": [
+      "<|im_end|>",
+      "<|endoftext|>"
+    ]
+  },
+  "case_selection": "First task of the fixed run_02, direct and cot, without accuracy-based selection",
+  "native_timing_source": "llama_cpp.llama_perf_context(llm._ctx.ctx), explicitly reset before each call",
+  "warmup": "No separate warm-up. KV state and performance counters reset before each measured call. OS file cache not cleared.",
+  "interpretation": "n_eval/t_eval_ms measures native backend token evaluation during autoregressive decoding. It excludes prompt prefill and may exclude Python/sampling overhead; use native counts, which can differ from returned completion token count. Not the end-to-end output rate.",
+  "sample_size": 2,
+  "paid_api_calls": 0,
+  "model_loading_seconds": 2.932140208000419,
+  "completed_at_utc": "2026-11-10T17:05:38.515993+00:00",
+  "peak_process_rss_kib": 6983020,
+  "records_sha256": "3d877d25f314a20da89f827b99b3631b7add2d440939182836757e9fbf280fc8"
+}

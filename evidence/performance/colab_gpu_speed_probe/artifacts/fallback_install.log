@@ -1,0 +1,36 @@
+Collecting llama-cpp-python==0.3.16
+  Downloading llama_cpp_python-0.3.16-cp312-cp312-linux_x86_64.whl (551.3 MB)
+     ━━━━━━━ 551.3/… 45.7      0:00:12
+             MB      MB/s             
+Collecting nvidia-cuda-runtime-cu12==12.4.127
+  Downloading nvidia_cuda_runtime_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting nvidia-cublas-cu12==12.4.5.8
+  Downloading nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting typing-extensions>=4.5.0 (from llama-cpp-python==0.3.16)
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting numpy>=1.20.0 (from llama-cpp-python==0.3.16)
+  Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Collecting diskcache>=5.6.1 (from llama-cpp-python==0.3.16)
+  Downloading diskcache-5.6.3-py3-none-any.whl.metadata (20 kB)
+Collecting jinja2>=2.11.3 (from llama-cpp-python==0.3.16)
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting MarkupSafe>=2.0 (from jinja2>=2.11.3->llama-cpp-python==0.3.16)
+  Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Downloading nvidia_cuda_runtime_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl (883 kB)
+   ━━━━━━━━ 883.7/8… 8.7 MB/s  0:00:00
+            kB                        
+Downloading nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_x86_64.whl (363.4 MB)
+   ━━━━━━━━ 363.4/3… 29.5      0:00:10
+            MB       MB/s             
+Downloading diskcache-5.6.3-py3-none-any.whl (45 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+   ━━━━━━━━ 16.7/16… 26.3      0:00:00
+            MB       MB/s             
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Installing collected packages: typing-extensions, nvidia-cuda-runtime-cu12, nvidia-cublas-cu12, numpy, MarkupSafe, diskcache, jinja2, llama-cpp-python
+
+Successfully installed MarkupSafe-3.0.4 diskcache-5.6.3 jinja2-3.1.6 llama-cpp-python-0.3.16 numpy-2.5.4 nvidia-cublas-cu12-12.4.5.8 nvidia-cuda-runtime-cu12-12.4.127 typing-extensions-4.16.0
+WARNING: Target directory /content/llama312/bin already exists. Specify --upgrade to force replacement.
+INSTALL_EXIT=0

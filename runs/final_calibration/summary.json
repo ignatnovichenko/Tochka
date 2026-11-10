@@ -1,0 +1,12 @@
+{
+  "total": 8,
+  "evaluated": 1,
+  "unknown": 7,
+  "coverage": 0.125,
+  "pass_agreement": 1.0,
+  "critical_agreement": 1.0,
+  "judge_model": "opencode/glm-5.3-flash-free",
+  "judge_config_sha256": "1651db4b37523584ba800a49a76e332a6b4db655dd39bec6b8ec6e9c0606a9f1",
+  "labels_sha256": "c502fcefa4c50b4e766f2afb5beadc66ba9b672b43baa5a2960c9b311b10410b",
+  "limitation": "Small synthetic author-labelled control set; not independent human certification."
+}

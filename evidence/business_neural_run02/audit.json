@@ -1,0 +1,56 @@
+{
+  "audit_at_utc": "2026-11-10T18:45:28.081765+00:00",
+  "audit_passed": true,
+  "actual_solver_calls": 2,
+  "actual_judge_calls": 2,
+  "no_import_replay_or_control": true,
+  "solver_reference_rubric_leakage_check": "exact messages reconstruction passed",
+  "quality_decision": "neural judge only; audit revalidates schema/evidence/aggregation, not answer correctness",
+  "source_and_record_hashes_verified": true,
+  "per_case": [
+    {
+      "id": "supplier_delay_01",
+      "solver_tokens": {
+        "completion_tokens": 85,
+        "prompt_tokens": 153
+      },
+      "solver_seconds": 10.622623,
+      "judge_tokens": {
+        "completion_tokens": 408,
+        "prompt_tokens": 954,
+        "total_tokens": 1362
+      },
+      "judge_seconds": 141.464391,
+      "judge_finish_reason": "stop",
+      "judge_status": "evaluated",
+      "judge_reason_code": null,
+      "score": 0.625,
+      "passed": false
+    },
+    {
+      "id": "revenue_growth_01",
+      "solver_tokens": {
+        "completion_tokens": 11,
+        "prompt_tokens": 128
+      },
+      "solver_seconds": 5.384822,
+      "judge_tokens": {
+        "completion_tokens": 342,
+        "prompt_tokens": 893,
+        "total_tokens": 1235
+      },
+      "judge_seconds": 121.672603,
+      "judge_finish_reason": "stop",
+      "judge_status": "error",
+      "judge_reason_code": "judge_invalid_structured_output",
+      "score": null,
+      "passed": null
+    }
+  ],
+  "limitations": [
+    "Two synthetic cases are a technical integration smoke, not validation of judge reliability.",
+    "No blind human reference study, adversarial study, repeated judging or statistical quality conclusion.",
+    "Command latency includes model loading for each subprocess; not comparable to persistent-model throughput.",
+    "Source and evidence are snapshotted. Original results are retained unchanged."
+  ]
+}

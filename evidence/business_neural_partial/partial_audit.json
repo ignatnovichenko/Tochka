@@ -1,0 +1,42 @@
+{
+  "observed_at_utc": "2026-11-10T18:37:44.222642+00:00",
+  "audit_scope": "incomplete native business run, available records only",
+  "evidence_integrity_passed": true,
+  "full_pipeline_completed": false,
+  "original_manifest_state": "running",
+  "planned_solver_calls": 2,
+  "confirmed_completed_solver_calls": 2,
+  "planned_judge_calls": 2,
+  "confirmed_completed_judge_calls": 1,
+  "missing_judgement_ids": [
+    "revenue_growth_01"
+  ],
+  "missing_judgement_quality": null,
+  "process_outcome": "Unknown after executor reconnect; write_stdin returned Unknown process id 48622. Current ps does not show original process; process namespaces may differ. No retry performed.",
+  "last_saved_judgement_at_utc": "2026-11-10T18:09:52Z",
+  "available_result": {
+    "id": "supplier_delay_01",
+    "status": "failed",
+    "score": 0.625,
+    "passed": false,
+    "judge_seconds": 105.12899,
+    "judge_usage": {
+      "completion_tokens": 408,
+      "prompt_tokens": 954,
+      "total_tokens": 1362
+    }
+  },
+  "source_hashes_verified": true,
+  "solver_prompt_reference_rubric_exclusion_verified": true,
+  "raw_judge_schema_evidence_and_aggregation_verified": true,
+  "reliability_validated": false,
+  "snapshot_hashes": {
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "records.jsonl": "3e8bae89f201abed8a51e5a72d0f28d35054ac6160d7cc9bfcd2531c3c288ac8",
+    "stdout.log": "29c9b56635624c95617d30acb65efadf1a130a2d68f3f9bcd975b8cfed8108cb",
+    "responses.jsonl": "8922822fb5e02399505f22a16a5bc57f77818f2471dd09c1eb0831d5ebfe4b58",
+    "manifest.json": "41b8464d9862093bf642bd8de3f399d3477c8c25f655f201e49f5cf0db1115ae",
+    "judge_raw.jsonl": "ade37a8dd85fad7fa4e8d13136249cd86901f3ac34a1e09ae0e8dae51263f506",
+    "solver_records.jsonl": "ff79c129248a526b45c178d31a165b952fcc184d0c62a17c3822494100e049f4"
+  }
+}

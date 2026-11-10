@@ -1,0 +1,18 @@
+{
+  "all": {
+    "completion_tokens": 1253,
+    "completion_call_seconds_sum": 1367.3886519080006,
+    "output_tokens_per_second_end_to_end": 0.9163451797348273
+  },
+  "direct": {
+    "completion_tokens": 123,
+    "completion_call_seconds_sum": 585.1252413920001,
+    "output_tokens_per_second_end_to_end": 0.21021140654842663
+  },
+  "cot": {
+    "completion_tokens": 1130,
+    "completion_call_seconds_sum": 782.2634105160005,
+    "output_tokens_per_second_end_to_end": 1.4445262104929895
+  },
+  "caveat": "Includes input tokenization, prefill and decoding; not native decode throughput. Model loading excluded. Native separate speed-probe is a different measurement."
+}

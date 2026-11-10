@@ -1,0 +1,5 @@
+[
+  {"id":"synthetic/arithmetic/1","pre_text":["This is an invented software test, not a benchmark observation."],"table":[["Year","Value"],["2024","80"],["2025","100"]],"post_text":[],"qa":{"question":"How much did the value increase from 2024 to 2025?","exe_ans":20.0,"program":"subtract(100, 80)"}},
+  {"id":"synthetic/proportion/2","pre_text":["This is an invented software test, not a benchmark observation."],"table":[["Item","Value"],["Leased","25"],["Total","100"]],"post_text":[],"qa":{"question":"What proportion of the total is leased?","exe_ans":0.25,"program":"divide(25, 100)"}},
+  {"id":"synthetic/comparison/3","pre_text":["This is an invented software test, not a benchmark observation."],"table":[["Item","Value"],["A","10"],["B","5"]],"post_text":[],"qa":{"question":"Is A greater than B?","exe_ans":"yes","program":"greater(10, 5)"}}
+]

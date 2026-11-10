@@ -1,0 +1,48 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>НИР · Оценка бизнес-текстов</title><style>body{font:16px system-ui;max-width:1100px;margin:40px auto;padding:0 20px;color:#183047;background:#f7fafc}table{border-collapse:collapse;width:100%;background:white}td,th{border:1px solid #d5e0e8;padding:10px;text-align:left}th{background:#e6eef4}.note{padding:18px;background:#fff3cf}code{overflow-wrap:anywhere}</style>
+<h1>Оценка бизнес-текстов</h1><p class="note">Судья не является эталоном истины. Пропуски и ошибки оценки не равны нулевому качеству. Рубрика требует независимой калибровки человеком.</p>
+<h2>Сводка</h2><table><tr><th>Модель / конфигурация</th><th>Попытки</th><th>Оценено судьёй</th><th>Passed / failed</th><th>Средний score</th></tr>
+<tr><td>opencode/minimax-m3.1-flash-free<br>minimax-checked</td><td>4</td><td>2</td><td>2 / 0</td><td>1.000</td></tr>
+</table><h2>Покрытие и ограничения</h2><ul>
+<li>Rubric score requires a connected judge and is not an objective ground truth.</li>
+<li>Unavailable, invalid and missing judgements have null scores, not zero quality.</li>
+<li>Programmatic checks are diagnostics only. Only a valid judge judgement determines quality pass/fail.</li>
+<li>All-attempts pass lower bound is a coverage bound, not imputed quality.</li>
+<li>Multiple repetitions share cases; these descriptive rates have no independence claim.</li>
+<li>Prompt isolation and schema validation mitigate but do not eliminate prompt injection.</li>
+<li>A model-inference label describes transport execution, not independent verification of the model or its quality.</li>
+</ul><h2>Отдельные попытки</h2><table><tr><th>Задача / конфигурация</th><th>Статус</th><th>Диагностика (не оценка)</th><th>Судья</th><th>Причина</th></tr>
+<tr><td>supplier_delay_01 / minimax-checked / 0</td><td>passed</td><td>passed</td><td>evaluated</td><td></td></tr>
+<tr><td>meeting_summary_01 / minimax-checked / 0</td><td>passed</td><td>passed</td><td>evaluated</td><td></td></tr>
+<tr><td>revenue_growth_01 / minimax-checked / 0</td><td>evaluation_error</td><td>not_configured</td><td>error</td><td>judge_invalid_structured_output</td></tr>
+<tr><td>refund_01 / minimax-checked / 0</td><td>evaluation_error</td><td>not_configured</td><td>error</td><td>judge_invalid_structured_output</td></tr>
+</table><h2>Обоснования судьи</h2>
+<details><summary>supplier_delay_01 / minimax-checked</summary>
+<p>Оценка: 1.0</p>
+<p><b>facts: 4/4</b> — В письме точно указаны заказ A-104, 40 кресел, согласованная дата 15 ноября и факт невыплаты на 16 ноября; причины не выдуманы.</p>
+<blockquote>candidate: задержке по заказу A-104 на 40 офисных кресел</blockquote>
+<blockquote>candidate: Согласованная дата поставки — 15 ноября</blockquote>
+<blockquote>context: Причина неизвестна</blockquote>
+<p><b>action: 4/4</b> — Явная и конкретная просьба сообщить новую дату поставки.</p>
+<blockquote>candidate: сообщить новую дату поставки по данному заказу</blockquote>
+<p><b>tone: 4/4</b> — Деловой, вежливый и компактный текст с темой, приветствием и подписью, готовый к отправке.</p>
+<blockquote>candidate: Заранее благодарим за ответ.</blockquote>
+<p><b>Критическая ошибка invented_commitment: False</b> — Письмо не содержит обещаний штрафов, юридических последствий или подтверждённых причин задержки.</p>
+</details>
+<details><summary>meeting_summary_01 / minimax-checked</summary>
+<p>Оценка: 1.0</p>
+<p><b>accuracy: 4/4</b> — Резюме полностью соответствует заметкам: ограниченный пилот в отделе закупок, Анна, 10 задач, срок 20 ноября; также корректно отмечено, что дата полного внедрения не обсуждалась.</p>
+<blockquote>candidate: Пилот проекта проводится только в отделе закупок</blockquote>
+<blockquote>candidate: готовит список из 10 тестовых задач; срок — 20 ноября</blockquote>
+<blockquote>context: Анна подготовит список из 10 тестовых задач к 20 ноября</blockquote>
+<p><b>actionability: 4/4</b> — Решение, ответственный и следующий шаг выделены отдельными заголовками и легко находятся.</p>
+<blockquote>candidate: **Решение:**</blockquote>
+<p><b>Критическая ошибка invented_rollout: False</b> — Кандидат не заявляет утверждённый полный запуск или фиктивные сроки внедрения; вместо этого явно указано, что дата не обсуждалась.</p>
+</details>
+<details><summary>revenue_growth_01 / minimax-checked</summary>
+<p>Оценка: неизвестно</p>
+</details>
+<details><summary>refund_01 / minimax-checked</summary>
+<p>Оценка: неизвестно</p>
+</details>
+<p>Полные ответы: responses.jsonl; критерии и хеши: records.jsonl; время, токены и метаданные генератора: solver_records.jsonl.</p></html>

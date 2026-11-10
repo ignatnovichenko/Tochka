@@ -1,0 +1,5 @@
+solver 1/2 status=ok
+solver 2/2 status=ok
+judge 1/2 status=evaluated
+judge 2/2 status=error
+{"all_attempts_pass_lower_bound":0.0,"attempts":2,"candidate_generation_errors":0,"candidate_missing":0,"decided":1,"diagnostic_check_failures":0,"evaluation_errors":1,"failed":1,"judge_coverage":0.5,"judge_evaluated":1,"judge_provenance_counts":{"model-inference":2},"judge_status_counts":{"error":1,"evaluated":1},"mean_judge_score":0.625,"not_evaluated":0,"pass_rate_among_decided":0.0,"passed":0}

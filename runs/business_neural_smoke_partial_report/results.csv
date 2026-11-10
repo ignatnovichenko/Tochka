@@ -1,0 +1,2 @@
+﻿id,model,configuration,repetition,response_status,status,passed,score,deterministic_status,judge_status,judge_model,judge_provenance,judge_reason
+supplier_delay_01,Qwen/Qwen2.5-0.5B-Instruct,baseline,0,ok,failed,False,0.625,passed,evaluated,Qwen/Qwen2.5-7B-Instruct-GGUF,model-inference,

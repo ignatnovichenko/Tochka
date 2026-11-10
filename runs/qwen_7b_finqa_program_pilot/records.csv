@@ -1,0 +1,13 @@
+id,provider,model,config,repetition,provenance,correct,parsed_answer,expected_answer,latency_seconds,error,parse_error
+BLL/2007/page_35.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,,37.75428,74.35561381200023,,Malformed program separator
+GPN/2017/page_77.pdf-3,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,,62154.0,55.295614935999765,,Malformed program
+STT/2011/page_83.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,,114.0,67.44271260099958,,Malformed program separator
+VTR/2007/page_47.pdf-3,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,True,643822.41,643822.41,42.807466181000564,,
+HOLX/2010/page_124.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,,0.34024,56.67181804199936,,Malformed program separator
+CDNS/2012/page_30.pdf-4,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,,-0.04097,45.18580237099923,,Malformed program separator
+ETR/2016/page_418.pdf-4,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,,0.01099,53.66929951699967,,Malformed program
+PNC/2015/page_159.pdf-2,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,,86.5,44.05593367199981,,Response is not a single JSON object
+V/2008/page_17.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,,127.4,58.23665583299953,,Malformed program
+AMAT/2013/page_18.pdf-2,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,342.46575,7.22222,66.48903750499994,,
+IP/2006/page_32.pdf-1,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,,0.1613,87.22469917099988,,Malformed program separator
+BKR/2017/page_103.pdf-4,local_llama_cpp,Qwen/Qwen2.5-7B-Instruct-GGUF,program,0,model-inference,False,,68.306,58.0027312000002,,Malformed program

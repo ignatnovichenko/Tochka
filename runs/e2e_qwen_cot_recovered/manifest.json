@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "runner_version": "0.1.0",
+  "created_at": "2026-11-10T17:55:03.894038+00:00",
+  "python_version": "3.12.14",
+  "config_sha256": "bcb5ebce1638599db611a065b989b8dc02e3473a773f2a979e5b17e4840ae04a",
+  "dataset_sha256": "a847fb7e0d61a3125a1e2909852df6b89f1ee64d2c5ff1bf689e332214deee51",
+  "code_sha256": "d0b4fb834a03e716c4750cd94ad73d791997a070513553a61c8dfc7b272524d6",
+  "prompt_version": "finqa-v1",
+  "config": {
+    "dataset": {
+      "path": "/workspace/shared/nir/mvp/data/finqa_dev.json",
+      "split": "dev",
+      "limit": 12
+    },
+    "provider": {
+      "type": "transformers-local",
+      "name": "local_transformers",
+      "model_path": "/workspace/shared/nir/experiments/model",
+      "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "threads": 4,
+      "dtype": "float32",
+      "seed": 42
+    },
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "seed": 42,
+    "repetitions": 1,
+    "quantization": "none; float32 CPU weights",
+    "configurations": [
+      {
+        "name": "cot",
+        "parameters": {
+          "do_sample": false,
+          "max_new_tokens": 192,
+          "repetition_penalty": 1.1
+        }
+      }
+    ],
+    "shuffle_jobs": false,
+    "purpose": "real-native-runner-end-to-end integration and config comparison, not import or replay"
+  },
+  "case_ids": [
+    "BLL/2007/page_35.pdf-1",
+    "GPN/2017/page_77.pdf-3",
+    "STT/2011/page_83.pdf-1",
+    "VTR/2007/page_47.pdf-3",
+    "HOLX/2010/page_124.pdf-1",
+    "CDNS/2012/page_30.pdf-4",
+    "ETR/2016/page_418.pdf-4",
+    "PNC/2015/page_159.pdf-2",
+    "V/2008/page_17.pdf-1",
+    "AMAT/2013/page_18.pdf-2",
+    "IP/2006/page_32.pdf-1",
+    "BKR/2017/page_103.pdf-4"
+  ],
+  "planned_attempts": 12,
+  "status": "completed",
+  "hardware": {
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "machine": "x86_64",
+    "logical_cpus": 9
+  },
+  "quantization": "none; float32 CPU weights",
+  "provenance": "model-inference",
+  "completed_at": "2026-11-10T17:56:57.733363+00:00",
+  "completed_attempts": 12
+}

@@ -1,0 +1,13 @@
+id,provider,model,config,repetition,provenance,correct,parsed_answer,expected_answer,latency_seconds,error,parse_error
+BLL/2007/page_35.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,1144772.0,37.75428,6.895104,,
+GPN/2017/page_77.pdf-3,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,62154.0,9.069625,,Expected one numeric value or yes/no
+STT/2011/page_83.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,yes,114.0,7.939806,,
+VTR/2007/page_47.pdf-3,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,643822.41,9.812227,,Expected one numeric value or yes/no
+HOLX/2010/page_124.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,0.35,0.34024,5.447056,,
+CDNS/2012/page_30.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,-0.04097,5.179927,,Expected one numeric value or yes/no
+ETR/2016/page_418.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,0.14300000000000002,0.01099,7.55864,,
+PNC/2015/page_159.pdf-2,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,86.5,15.971057,,Response is not a single JSON object
+V/2008/page_17.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,127.4,20.700846,,Response is not a single JSON object
+AMAT/2013/page_18.pdf-2,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,1606.0,7.22222,6.436304,,
+IP/2006/page_32.pdf-1,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,,0.1613,8.112609,,Expected one numeric value or yes/no
+BKR/2017/page_103.pdf-4,local_transformers,Qwen/Qwen2.5-0.5B-Instruct,cot,0,model-inference,False,659.24,68.306,6.845961,,

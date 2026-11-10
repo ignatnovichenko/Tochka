@@ -1,0 +1,25 @@
+{
+  "package_stage": "final available work; no further model calls planned",
+  "target": "neural_judge_only_business",
+  "unit_tests_passed": 166,
+  "business_run": "runs/business_neural_smoke_run02",
+  "business_process_exit": 0,
+  "solver_calls": 2,
+  "judge_calls": 2,
+  "valid_judge_decisions": 1,
+  "unknown_judgements": 1,
+  "business_selection": "no_eligible_configuration",
+  "opencode_successful_answers": 0,
+  "opencode_external_attempts": 2,
+  "opencode_status": "provider.free-limit 429",
+  "opencode_retry_not_before_utc": "2026-11-11T00:00:00.545Z",
+  "judge_reliability_validated": false,
+  "interim_zip_unchanged": true,
+  "limitations": [
+    "One solver model per business run; configurations compared within a run.",
+    "No validated strong judge. Numeric case received invalid exact-quote judgement.",
+    "OpenCode success parser tested against source-shaped fixtures only, not successful live inference.",
+    "No automatic retries, private-data upload or paid fallback.",
+    "Model weights, runtimes and auth profile are not packaged."
+  ]
+}

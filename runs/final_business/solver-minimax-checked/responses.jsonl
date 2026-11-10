@@ -1,0 +1,4 @@
+{"configuration":"minimax-checked","id":"supplier_delay_01","model":"opencode/minimax-m3.1-flash-free","provenance":"model-inference","repetition":0,"response":"","status":"error"}
+{"configuration":"minimax-checked","id":"meeting_summary_01","model":"opencode/minimax-m3.1-flash-free","provenance":"model-inference","repetition":0,"response":"","status":"error"}
+{"configuration":"minimax-checked","id":"revenue_growth_01","model":"opencode/minimax-m3.1-flash-free","provenance":"model-inference","repetition":0,"response":"","status":"error"}
+{"configuration":"minimax-checked","id":"refund_01","model":"opencode/minimax-m3.1-flash-free","provenance":"model-inference","repetition":0,"response":"","status":"error"}

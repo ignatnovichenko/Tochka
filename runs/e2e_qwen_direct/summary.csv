@@ -1,0 +1,2 @@
+provider,model,config,provenance,attempts,unique_tasks,correct,answer_accuracy,task_mean_accuracy,provider_errors,parse_errors,latency_mean_seconds,latency_median_seconds,latency_p95_seconds,valid_answer_stability,input_tokens_reported,output_tokens_reported,token_usage_coverage,cost_usd,ttft_seconds
+local_transformers,Qwen/Qwen2.5-0.5B-Instruct,direct,model-inference,12,12,0,0.0,0.0,0,2,2.7459814166666665,2.582811,3.638077,,11729,177,1.0,,

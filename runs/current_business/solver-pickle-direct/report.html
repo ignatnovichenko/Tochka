@@ -1,0 +1,68 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>НИР · Оценка бизнес-текстов</title><style>body{font:16px system-ui;max-width:1100px;margin:40px auto;padding:0 20px;color:#183047;background:#f7fafc}table{border-collapse:collapse;width:100%;background:white}td,th{border:1px solid #d5e0e8;padding:10px;text-align:left}th{background:#e6eef4}.note{padding:18px;background:#fff3cf}code{overflow-wrap:anywhere}</style>
+<h1>Оценка бизнес-текстов</h1><p class="note">Судья не является эталоном истины. Пропуски и ошибки оценки не равны нулевому качеству. Рубрика требует независимой калибровки человеком.</p>
+<h2>Сводка</h2><table><tr><th>Модель / конфигурация</th><th>Попытки</th><th>Оценено судьёй</th><th>Passed / failed</th><th>Средний score</th></tr>
+<tr><td>opencode/big-pickle<br>pickle-direct</td><td>4</td><td>4</td><td>4 / 0</td><td>0.988</td></tr>
+</table><h2>Покрытие и ограничения</h2><ul>
+<li>Rubric score requires a connected judge and is not an objective ground truth.</li>
+<li>Unavailable, invalid and missing judgements have null scores, not zero quality.</li>
+<li>Programmatic checks are diagnostics only. Only a valid judge judgement determines quality pass/fail.</li>
+<li>All-attempts pass lower bound is a coverage bound, not imputed quality.</li>
+<li>Multiple repetitions share cases; these descriptive rates have no independence claim.</li>
+<li>Prompt isolation and schema validation mitigate but do not eliminate prompt injection.</li>
+<li>A model-inference label describes transport execution, not independent verification of the model or its quality.</li>
+</ul><h2>Отдельные попытки</h2><table><tr><th>Задача / конфигурация</th><th>Статус</th><th>Диагностика (не оценка)</th><th>Судья</th><th>Причина</th></tr>
+<tr><td>supplier_delay_01 / pickle-direct / 0</td><td>passed</td><td>passed</td><td>evaluated</td><td></td></tr>
+<tr><td>meeting_summary_01 / pickle-direct / 0</td><td>passed</td><td>passed</td><td>evaluated</td><td></td></tr>
+<tr><td>revenue_growth_01 / pickle-direct / 0</td><td>passed</td><td>not_configured</td><td>evaluated</td><td></td></tr>
+<tr><td>refund_01 / pickle-direct / 0</td><td>passed</td><td>not_configured</td><td>evaluated</td><td></td></tr>
+</table><h2>Обоснования судьи</h2>
+<details><summary>supplier_delay_01 / pickle-direct</summary>
+<p>Оценка: 1.0</p>
+<p><b>facts: 4/4</b> — Указаны номер заказа, количество, согласованная дата 15 ноября и статус на 16 ноября; причина не выдумывается — пары к контексту точные.</p>
+<blockquote>candidate: По заказу A-104 (40 офисных кресел) согласованная дата доставки — 15 ноября</blockquote>
+<blockquote>candidate: Сегодня 16 ноября, доставка не состоялась</blockquote>
+<blockquote>context: Причина неизвестна</blockquote>
+<p><b>action: 4/4</b> — Есть чёткая прямая просьба назвать новую дату доставки и запрос статуса.</p>
+<blockquote>candidate: Пожалуйста, сообщите новую дату доставки и статус заказа.</blockquote>
+<p><b>tone: 4/4</b> — Деловой, вежливый и компактный текст с темой, обращением и подписью, готовый к отправке; объём в пределах 120 слов.</p>
+<blockquote>candidate: Здравствуйте!
+
+По заказу A-104</blockquote>
+<blockquote>candidate: С уважением,</blockquote>
+<p><b>Критическая ошибка invented_commitment: False</b> — Письмо не содержит обещаний, штраов, юридических последствий или подтверждённых причин задержки; только запрос информации.</p>
+</details>
+<details><summary>meeting_summary_01 / pickle-direct</summary>
+<p>Оценка: 1.0</p>
+<p><b>accuracy: 4/4</b> — Кандидат корректно передаёт все ключевые факты: пилот только в закупках, Анна, 10 тестовых задач, срок 20 ноября. Указано отсутствие даты полного внедрения, что совпадает с заметками и не является выдумкой. Ограничения (Анна, 20 ноября, объём 10–100 слов) соблюдены.</p>
+<blockquote>candidate: провести пилот только в отделе закупок</blockquote>
+<blockquote>candidate: подготовить список из 10 тестовых задач к 20 ноября</blockquote>
+<blockquote>context: Анна подготовит список из 10 тестовых задач к 20 ноября</blockquote>
+<p><b>actionability: 4/4</b> — Резюме структурировано по трём требуемым пунктам — решение, ответственный, следующий шаг — и каждый легко найти.</p>
+<blockquote>candidate: **Ответственный:** Анна</blockquote>
+<blockquote>candidate: **Следующий шаг:**</blockquote>
+<p><b>Критическая ошибка invented_rollout: False</b> — Полный запуск или несуществующие сроки не заявлены; кандидат явно указывает, что дата внедрения не обсуждалась, что соответствует заметкам.</p>
+</details>
+<details><summary>revenue_growth_01 / pickle-direct</summary>
+<p>Оценка: 1.0</p>
+<p><b>number_and_units: 4/4</b> — Candidate states 15% as the relative growth, matching the rubric value exactly within tolerance; percentage units are explicitly given and absolute growth is not confused with percent.</p>
+<blockquote>candidate: = **15%**</blockquote>
+<blockquote>context: Базовый период: 80 млн руб. Текущий период: 92 млн руб.</blockquote>
+<p><b>calculation: 4/4</b> — Short, correct calculation using the given figures with the base period 80 as denominator: (92−80)/80×100% = 12/80×100% = 15%.</p>
+<blockquote>candidate: (92 − 80) / 80 × 100% = 12 / 80 × 100%</blockquote>
+<blockquote>reference: (92 − 80) / 80 × 100% = 15%</blockquote>
+<p><b>Критическая ошибка wrong_scale: False</b> — No scale error: answer is 15%, not 0.15% or 1500%, denominator is the base period 80, and absolute vs relative growth is properly distinguished.</p>
+</details>
+<details><summary>refund_01 / pickle-direct</summary>
+<p>Оценка: 0.95</p>
+<p><b>eligibility: 4/4</b> — Кандидат правильно разрешает возврат: 5 дней &lt; 14, товар не использован, чек есть.</p>
+<blockquote>candidate: прошло 5 дней (меньше 14), товар не использован, чек есть</blockquote>
+<blockquote>context: вернуть в течение 14 календарных дней после получения при наличии чека</blockquote>
+<p><b>amount: 4/4</b> — Указана ровно сумма 2400 руб.; прямо сказано, что доставка 300 руб. не возвращается.</p>
+<blockquote>candidate: Сумма возврата — 2400 руб.</blockquote>
+<blockquote>candidate: Стоимость доставки 300 руб. не возвращается</blockquote>
+<p><b>action: 3/4</b> — Дано дальнейшее действие — обратиться в магазин для оформления; чек и товар явно не запрошены, но выдуманных сроков или каналов нет.</p>
+<blockquote>candidate: обратитесь в магазин для оформления возврата</blockquote>
+<p><b>Критическая ошибка policy_violation: False</b> — Отказа в возврате нет, доставка не обещана к возврату, сумма 2400 руб. верна.</p>
+</details>
+<p>Полные ответы: responses.jsonl; критерии и хеши: records.jsonl; время, токены и метаданные генератора: solver_records.jsonl.</p></html>

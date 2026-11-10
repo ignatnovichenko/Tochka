@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "status": "completed",
+  "provenance": "model-inference",
+  "comparison_created_at": "2026-11-10T17:04:59.841570+00:00",
+  "model_inference_performed_by_comparison": false,
+  "dataset_sha256": "a847fb7e0d61a3125a1e2909852df6b89f1ee64d2c5ff1bf689e332214deee51",
+  "case_ids": [
+    "AMAT/2013/page_18.pdf-2",
+    "BKR/2017/page_103.pdf-4",
+    "BLL/2007/page_35.pdf-1",
+    "CDNS/2012/page_30.pdf-4",
+    "ETR/2016/page_418.pdf-4",
+    "GPN/2017/page_77.pdf-3",
+    "HOLX/2010/page_124.pdf-1",
+    "IP/2006/page_32.pdf-1",
+    "PNC/2015/page_159.pdf-2",
+    "STT/2011/page_83.pdf-1",
+    "V/2008/page_17.pdf-1",
+    "VTR/2007/page_47.pdf-3"
+  ],
+  "prompt_version": "finqa-v1",
+  "planned_attempts": 60,
+  "completed_attempts": 60,
+  "sources": [
+    {
+      "name": "qwen_0_5b_finqa_pilot",
+      "manifest_sha256": "4b8598fed0484a59e58a471e31d6447b226c3ce21f425365b5c35d28fd8d2132",
+      "records_sha256": "c4dabee11336fa6cf27bd797a4b6e97419795c6b98e6181f5c39b7a4e8ae7c1f"
+    },
+    {
+      "name": "qwen_7b_finqa_pilot",
+      "manifest_sha256": "eb73914c581f0513a877a75654a487cc110c24f7c5429f8ff3c6ed7b27d2008a",
+      "records_sha256": "14d2029a0969e7149fc51c3182523b57a15aab6f6f0dbe222593f3058d10915f"
+    },
+    {
+      "name": "qwen_7b_finqa_program_pilot",
+      "manifest_sha256": "beacd5fdb0494c804d620596854637016c2e7781cc546e602ce780a67b612179",
+      "records_sha256": "6ee5c38189486f1e3ae21c4937a2b978db70c28ff4d9e778bc2ca050e1f9890c"
+    }
+  ],
+  "limitation": "Comparisons of different runtimes, model sizes or quantizations are comparisons of whole configurations, not isolated causal effects."
+}

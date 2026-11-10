@@ -1,0 +1,89 @@
+{
+  "scope": "Two valid DSL outputs executed by unchanged official evaluator; invalid outputs remain failures in denominator12.",
+  "n": 12,
+  "valid_dsl": 2,
+  "official_execution_correct": 1,
+  "official_program_correct": 1,
+  "valid_results_match_bounded_interpreter": true,
+  "official_evaluator_sha256": "845cd131cab843eceff256cf6d392978cc470a7da4a80107beb56027fdca5c13",
+  "numpy_version": "2.3.5",
+  "sympy_version": "1.14.0",
+  "unused_tqdm_import_shim": true,
+  "model_inference_performed_by_audit": false,
+  "cases": [
+    {
+      "id": "BLL/2007/page_35.pdf-1",
+      "valid_dsl": false,
+      "official_execution_correct": false,
+      "official_program_correct": false
+    },
+    {
+      "id": "GPN/2017/page_77.pdf-3",
+      "valid_dsl": false,
+      "official_execution_correct": false,
+      "official_program_correct": false
+    },
+    {
+      "id": "STT/2011/page_83.pdf-1",
+      "valid_dsl": false,
+      "official_execution_correct": false,
+      "official_program_correct": false
+    },
+    {
+      "id": "VTR/2007/page_47.pdf-3",
+      "valid_dsl": true,
+      "official_execution_correct": true,
+      "official_program_correct": true,
+      "official_result": 643822.41
+    },
+    {
+      "id": "HOLX/2010/page_124.pdf-1",
+      "valid_dsl": false,
+      "official_execution_correct": false,
+      "official_program_correct": false
+    },
+    {
+      "id": "CDNS/2012/page_30.pdf-4",
+      "valid_dsl": false,
+      "official_execution_correct": false,
+      "official_program_correct": false
+    },
+    {
+      "id": "ETR/2016/page_418.pdf-4",
+      "valid_dsl": false,
+      "official_execution_correct": false,
+      "official_program_correct": false
+    },
+    {
+      "id": "PNC/2015/page_159.pdf-2",
+      "valid_dsl": false,
+      "official_execution_correct": false,
+      "official_program_correct": false
+    },
+    {
+      "id": "V/2008/page_17.pdf-1",
+      "valid_dsl": false,
+      "official_execution_correct": false,
+      "official_program_correct": false
+    },
+    {
+      "id": "AMAT/2013/page_18.pdf-2",
+      "valid_dsl": true,
+      "official_execution_correct": false,
+      "official_program_correct": false,
+      "official_result": 342.46575
+    },
+    {
+      "id": "IP/2006/page_32.pdf-1",
+      "valid_dsl": false,
+      "official_execution_correct": false,
+      "official_program_correct": false
+    },
+    {
+      "id": "BKR/2017/page_103.pdf-4",
+      "valid_dsl": false,
+      "official_execution_correct": false,
+      "official_program_correct": false
+    }
+  ]
+}

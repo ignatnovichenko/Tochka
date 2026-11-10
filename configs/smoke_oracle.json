@@ -1,0 +1,6 @@
+{
+  "dataset": {"path": "../data/synthetic_smoke.json", "split": "synthetic-smoke"},
+  "provider": {"type": "oracle-control", "name": "oracle-control"},
+  "model": "CONTROL_NOT_A_MODEL", "seed": 42, "repetitions": 2,
+  "configurations": [{"name": "direct"}, {"name": "cot"}, {"name": "program"}]
+}

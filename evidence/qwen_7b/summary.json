@@ -1,0 +1,91 @@
+{
+  "inference_type": "real_local_model_inference",
+  "n_cases": 12,
+  "n_inferences": 24,
+  "numeric_match_rule": "Accept one JSON object, normalize numeric strings and yes/no; round(predicted,5) == canonical FinQA qa.exe_ans. Do not rescale numeric percent answers heuristically. Failed parsing and runtime errors count as incorrect.",
+  "comparison_axis": "Prompt protocol only: direct answer versus concise calculation plus answer (cot). Not two models, not a hidden reasoning switch.",
+  "generation_parameters": {
+    "max_tokens": 192,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "top_k": 0,
+    "repeat_penalty": 1.1,
+    "seed": 42,
+    "echo": false,
+    "stop": [
+      "<|im_end|>",
+      "<|endoftext|>"
+    ]
+  },
+  "protocols": {
+    "direct": {
+      "n": 12,
+      "correct": 3,
+      "accuracy": 0.25,
+      "accuracy_wilson95_interval": [
+        0.08894166839405471,
+        0.5323053349335657
+      ],
+      "parseable_answers": 11,
+      "json_object_valid": 11,
+      "requested_answer_schema_valid": 11,
+      "runtime_errors": 0,
+      "token_limit_hits": 0,
+      "latency_mean_seconds": 48.76043678266668,
+      "latency_median_seconds": 50.88949799949978,
+      "latency_min_seconds": 32.36278284299988,
+      "latency_max_seconds": 74.0349141630004,
+      "prompt_tokens_total": 11729,
+      "completion_tokens_total": 123
+    },
+    "cot": {
+      "n": 12,
+      "correct": 3,
+      "accuracy": 0.25,
+      "accuracy_wilson95_interval": [
+        0.08894166839405471,
+        0.5323053349335657
+      ],
+      "parseable_answers": 12,
+      "json_object_valid": 12,
+      "requested_answer_schema_valid": 12,
+      "runtime_errors": 0,
+      "token_limit_hits": 0,
+      "latency_mean_seconds": 65.18861754300003,
+      "latency_median_seconds": 63.72603655900002,
+      "latency_min_seconds": 39.4789438279995,
+      "latency_max_seconds": 92.59615177399974,
+      "prompt_tokens_total": 11873,
+      "completion_tokens_total": 1130
+    }
+  },
+  "controls": {
+    "gold_programs_verified_by_official_evaluator": 12,
+    "gold_programs_total": 12,
+    "oracle_json_scoring_correct": 12,
+    "invalid_json_scoring_correct": 0,
+    "oracle_program_scoring_correct": 12,
+    "controls_are_llm_results": false
+  },
+  "prompt_integrity": {
+    "all_inputs_match_recipe": true,
+    "public_input_fields_only": true,
+    "id_omitted_from_model_context": true
+  },
+  "limitations": [
+    "Small development pilot, not a leaderboard or test-set estimate.",
+    "Cross-model difference changes parameter count, quantization and engine, not a single causal factor.",
+    "Published benchmark may have training contamination.",
+    "Greedy single repetition does not estimate sampling variation.",
+    "Hardware execution timings are specific to this shared CPU environment.",
+    "One original annotation uses tangible assets while the gold corresponds to identifiable net assets; original gold remains unchanged."
+  ],
+  "paired_comparison": {
+    "direct_only_correct": 1,
+    "cot_only_correct": 1,
+    "both_correct": 2,
+    "both_wrong": 8,
+    "mcnemar_exact_two_sided_p": 1.0,
+    "claim": "Descriptive pilot only; small sample cannot establish general superiority."
+  }
+}

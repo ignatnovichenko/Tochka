@@ -1,0 +1,30 @@
+{
+  "dataset": {
+    "path": "../data/finqa_dev.json",
+    "split": "dev",
+    "limit": 12
+  },
+  "provider": {
+    "type": "command",
+    "name": "your-local-model",
+    "command": [
+      "python",
+      "your_trusted_adapter.py"
+    ],
+    "cwd": "..",
+    "remote": false,
+    "timeout_seconds": 180
+  },
+  "model": "REPLACE_WITH_LOCAL_MODEL_ID",
+  "seed": 42,
+  "repetitions": 1,
+  "configurations": [
+    {
+      "name": "direct",
+      "parameters": {
+        "temperature": 0,
+        "max_tokens": 256
+      }
+    }
+  ]
+}

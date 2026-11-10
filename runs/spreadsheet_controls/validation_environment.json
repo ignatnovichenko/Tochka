@@ -1,0 +1,21 @@
+{
+  "verified_at_utc": "2026-11-10T16:25:29.894731+00:00",
+  "python_version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "openpyxl_version": "3.1.5",
+  "model_invoked": false,
+  "recalculation_performed": false,
+  "upstream_files_still_match_pinned_git_blob": {
+    "README.md": true,
+    "evaluation/evaluation.py": true,
+    "evaluation/open_spreadsheet.py": true,
+    "evaluation/parity_test.py": true,
+    "requirements.txt": true
+  },
+  "adapter_sha256": "c315e41940c9430cae2048603e379006046007dcd53f0f22dd3f32bb75989927",
+  "unit_tests_passed": 33,
+  "limitations": [
+    "Unit tests plus first-10-task controls, not full corpus evaluation.",
+    "No LLM inference or spreadsheet-engine execution."
+  ]
+}

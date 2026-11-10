@@ -1,0 +1,60 @@
+{
+  "audited_at_utc": "2026-11-10T17:57:45.271687+00:00",
+  "audit_runs_inference": false,
+  "runs": [
+    {
+      "name": "e2e_qwen_direct",
+      "new_model_inference": true,
+      "imported": false,
+      "n": 12,
+      "correct": 0,
+      "parseable": 10,
+      "runtime_errors": 0,
+      "mean_latency_seconds": 2.7459814166666665,
+      "input_tokens": 11729,
+      "output_tokens": 177,
+      "records_sha256": "2fc1fd8ab589842bb2becf29d2a38e6efaa921829556fdfebd4c5879d365925c",
+      "manifest_sha256": "ffa33a3cefed4c5e542b318da2bb7662dc92375a9c62c1f1b75caba111e15f9f",
+      "code_sha256": "d0b4fb834a03e716c4750cd94ad73d791997a070513553a61c8dfc7b272524d6",
+      "actual_backend": "torch2.6.0+cpu/transformers4.48.3",
+      "scores_independently_recomputed": true,
+      "created_at": "2026-11-10T17:51:01.502147+00:00",
+      "completed_at": "2026-11-10T17:51:40.723626+00:00"
+    },
+    {
+      "name": "e2e_qwen_cot_recovered",
+      "new_model_inference": true,
+      "imported": false,
+      "n": 12,
+      "correct": 0,
+      "parseable": 6,
+      "runtime_errors": 0,
+      "mean_latency_seconds": 9.164096833333334,
+      "input_tokens": 11873,
+      "output_tokens": 822,
+      "records_sha256": "85863bbe324ce84d6aaaa533c78e043b695827bbbe6af1edf3d3dc94fe0b86e9",
+      "manifest_sha256": "878215d856646a55a43621eaf79c8e32d777fb8aabf36866ee70b5099eec5191",
+      "code_sha256": "d0b4fb834a03e716c4750cd94ad73d791997a070513553a61c8dfc7b272524d6",
+      "actual_backend": "torch2.6.0+cpu/transformers4.48.3",
+      "scores_independently_recomputed": true,
+      "created_at": "2026-11-10T17:55:03.894038+00:00",
+      "completed_at": "2026-11-10T17:56:57.733363+00:00"
+    }
+  ],
+  "comparison": {
+    "rows": 24,
+    "sources": 2,
+    "unchanged_original_attempts": true,
+    "additional_inference": false,
+    "report_html": "/workspace/shared/nir/mvp/runs/e2e_qwen_verified_comparison/report.html"
+  },
+  "excluded_unfinished_run": {
+    "path": "/workspace/shared/nir/mvp/runs/e2e_qwen_cot",
+    "records_saved": 7,
+    "records_sha256": "0674587a290fff8e2d0db5829462b073791ae6b209ec73aaada26640e8db77f2",
+    "manifest_status": "active",
+    "reason": "Execution transport reset; session ID became unknown. Existing lock and records retained. A fresh full native cot run was executed in a new directory. This incomplete run is not imported, merged, or counted in the comparison.",
+    "process_state_after_transport_reset": "uncertain"
+  },
+  "interpretation": "Two newly executed native MVP runs using one real model and two prompt protocols, followed by native scoring/reporting and native compare. Not two models; prior imported experiments remain separate."
+}

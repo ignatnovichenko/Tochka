@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "date": "2026-11-10",
+  "source_archive_sha256": "f81badfdc95135638676234ed035f13c4da6f889bf88e8b249ab7b75214eadae",
+  "cli_workflow": "implemented and tested",
+  "live_business": {
+    "directory": "runs/current_business",
+    "solver_responses": 8,
+    "judge_responses": 8,
+    "valid_judgements": 6,
+    "unknown_judgements": 2,
+    "selected_configuration": "pickle-direct"
+  },
+  "calibration": {
+    "directory": "runs/current_calibration_final",
+    "examples": 8,
+    "valid_judgements": 8,
+    "pass_agreement": 1.0,
+    "critical_agreement": 1.0,
+    "label_source": "author-defined synthetic; not independent human validation"
+  },
+  "latest_quota_attempt": {
+    "directory": "runs/final_business",
+    "solver_responses": 2,
+    "valid_judgements": 0,
+    "status": "no_eligible_configuration"
+  },
+  "structured_repair": "unit-tested; successful live repair not yet verified",
+  "local_models": "local HTTP transport tested; no local neural inference performed on this PC",
+  "paid_models_used": false,
+  "further_model_calls": "stopped at user request",
+  "report_redesign": "proposal only; current basic HTML/CSV/JSON implemented",
+  "presentation_modified": false
+}

@@ -1,0 +1,21 @@
+{
+  "state": "completed",
+  "started_at_utc": "2026-11-10T19:39:16.464111+00:00",
+  "planned_runs": [
+    "solver-pickle-direct",
+    "solver-minimax-checked"
+  ],
+  "runs": [
+    "solver-pickle-direct",
+    "solver-minimax-checked"
+  ],
+  "input_hashes": {
+    "experiment.json": "f7c73fa836ffb457f9feb73e2e9bc04e963dec5637956908a2e54f84c90a1cc0",
+    "cases.jsonl": "1cf593e366f576f167c3de0305b6f0fb231ce36c8f8a87d04a3b3bb31b47e1a2",
+    "rubrics.jsonl": "c4661d48c460803fedffb3d0bb1fb867db712495a4e038ac96e58a9309daabe8",
+    "judge.json": "7c82a796362353be70bac62301a0c13da2c38f54420bc7559b499a19601b5605",
+    "solver-pickle-direct.json": "3b3fb7917486b246c4137a944006ea144725d1f5168747a8cb6746b87e3d9f2f",
+    "solver-minimax-checked.json": "3c7c0718865f9056b46202a29388e1ad8a568881e1602a81d937f17b12f53e98"
+  },
+  "completed_at_utc": "2026-11-10T19:39:26.327353+00:00"
+}

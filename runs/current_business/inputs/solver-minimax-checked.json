@@ -1,0 +1,16 @@
+{
+  "provider": {
+    "type": "opencode",
+    "timeout_seconds": 180
+  },
+  "model": "opencode/minimax-m3.1-flash-free",
+  "configurations": [
+    {
+      "name": "minimax-checked",
+      "parameters": {},
+      "instruction": "Проверьте факты и вычисления перед ответом. Дайте готовый деловой ответ без описания внутреннего анализа."
+    }
+  ],
+  "repetitions": 1,
+  "max_calls": 100
+}

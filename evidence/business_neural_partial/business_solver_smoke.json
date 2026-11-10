@@ -1,0 +1,28 @@
+{
+  "provider": {
+    "type": "command",
+    "command": [
+      "/workspace/shared/nir/experiments/.venv/bin/python",
+      "/workspace/shared/nir/mvp/scripts/transformers_stdio_adapter.py",
+      "--model-path",
+      "/workspace/shared/nir/experiments/model"
+    ],
+    "cwd": "..",
+    "remote": false,
+    "timeout_seconds": 300
+  },
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "configurations": [
+    {
+      "name": "baseline",
+      "parameters": {
+        "max_new_tokens": 192,
+        "do_sample": false,
+        "repetition_penalty": 1.1
+      }
+    }
+  ],
+  "max_calls": 2,
+  "repetitions": 1,
+  "label": "technical_smoke_not_judge_validation"
+}

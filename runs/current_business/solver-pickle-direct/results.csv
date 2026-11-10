@@ -1,0 +1,5 @@
+﻿id,model,configuration,repetition,response_status,status,passed,score,deterministic_status,judge_status,judge_model,judge_provenance,judge_reason
+supplier_delay_01,opencode/big-pickle,pickle-direct,0,ok,passed,True,1.0,passed,evaluated,opencode/glm-5.3-flash-free,model-inference,
+meeting_summary_01,opencode/big-pickle,pickle-direct,0,ok,passed,True,1.0,passed,evaluated,opencode/glm-5.3-flash-free,model-inference,
+revenue_growth_01,opencode/big-pickle,pickle-direct,0,ok,passed,True,1.0,not_configured,evaluated,opencode/glm-5.3-flash-free,model-inference,
+refund_01,opencode/big-pickle,pickle-direct,0,ok,passed,True,0.95,not_configured,evaluated,opencode/glm-5.3-flash-free,model-inference,

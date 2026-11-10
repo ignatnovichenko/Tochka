@@ -1,0 +1,9 @@
+{
+  "purpose": "separate new technical smoke after source update; not a resume or replacement of original partial",
+  "case_count": 2,
+  "solver_calls": 2,
+  "judge_calls": 2,
+  "automatic_retries": 0,
+  "automatic_repairs": 0,
+  "judge_reliability_validated": false
+}

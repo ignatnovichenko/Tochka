@@ -1,0 +1,10 @@
+{
+  "dataset": "FinQA",
+  "split": "dev",
+  "rows": 883,
+  "sha256": "a847fb7e0d61a3125a1e2909852df6b89f1ee64d2c5ff1bf689e332214deee51",
+  "source_commit": "0f16e2867befa6840783e58be38c9efb9229d742",
+  "source_url": "https://raw.githubusercontent.com/czyssrs/FinQA/0f16e2867befa6840783e58be38c9efb9229d742/dataset/dev.json",
+  "source_license": "MIT repository license included; underlying report rights separately apply",
+  "purpose": "Public benchmark; reference fields must never be supplied to model"
+}

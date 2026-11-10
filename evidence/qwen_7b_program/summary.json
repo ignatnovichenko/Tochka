@@ -1,0 +1,67 @@
+{
+  "inference_type": "real_local_model_inference",
+  "n_cases": 12,
+  "n_inferences": 12,
+  "numeric_match_rule": "Accept one JSON object, normalize numeric strings and yes/no; round(predicted,5) == canonical FinQA qa.exe_ans. Do not rescale numeric percent answers heuristically. Failed parsing and runtime errors count as incorrect.",
+  "comparison_axis": "Model-generated FinQA DSL program executed by a bounded local calculator.",
+  "generation_parameters": {
+    "max_tokens": 192,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "top_k": 0,
+    "repeat_penalty": 1.1,
+    "seed": 42,
+    "echo": false,
+    "stop": [
+      "<|im_end|>",
+      "<|endoftext|>"
+    ]
+  },
+  "protocols": {
+    "program": {
+      "n": 12,
+      "correct": 1,
+      "accuracy": 0.08333333333333333,
+      "accuracy_wilson95_interval": [
+        0.014865094404917095,
+        0.35387991114111694
+      ],
+      "parseable_answers": 2,
+      "json_object_valid": 11,
+      "requested_answer_schema_valid": 11,
+      "runtime_errors": 0,
+      "token_limit_hits": 0,
+      "latency_mean_seconds": 59.11978207008315,
+      "latency_median_seconds": 57.33727462099978,
+      "latency_min_seconds": 42.807466181000564,
+      "latency_max_seconds": 87.22469917099988,
+      "prompt_tokens_total": 13013,
+      "completion_tokens_total": 472,
+      "official_execution_correct": 1,
+      "official_program_correct": 1,
+      "official_program_accuracy": 0.08333333333333333,
+      "official_matches_safe_interpreter_on_valid_programs": true
+    }
+  },
+  "controls": {
+    "gold_programs_verified_by_official_evaluator": 12,
+    "gold_programs_total": 12,
+    "oracle_json_scoring_correct": 12,
+    "invalid_json_scoring_correct": 0,
+    "oracle_program_scoring_correct": 12,
+    "controls_are_llm_results": false
+  },
+  "prompt_integrity": {
+    "all_inputs_match_recipe": true,
+    "public_input_fields_only": true,
+    "id_omitted_from_model_context": true
+  },
+  "limitations": [
+    "Small development pilot, not a leaderboard or test-set estimate.",
+    "Cross-model difference changes parameter count, quantization and engine, not a single causal factor.",
+    "Published benchmark may have training contamination.",
+    "Greedy single repetition does not estimate sampling variation.",
+    "Hardware execution timings are specific to this shared CPU environment.",
+    "One original annotation uses tangible assets while the gold corresponds to identifiable net assets; original gold remains unchanged."
+  ]
+}

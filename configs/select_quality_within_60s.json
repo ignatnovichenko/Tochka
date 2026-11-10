@@ -1,0 +1,1 @@
+{"min_accuracy":0.20,"max_error_rate":0.10,"max_mean_latency_seconds":60,"quality_basis":"observed","objective":"quality","min_tasks":12}

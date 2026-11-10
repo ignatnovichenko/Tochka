@@ -1,0 +1,25 @@
+{
+  "python": "3.12.14",
+  "interpreter": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+  "core_ready": true,
+  "bundled_finqa_sha_verified": true,
+  "optional_dependencies": {
+    "openpyxl": true,
+    "torch": false,
+    "transformers": false,
+    "numpy": true,
+    "sympy": true
+  },
+  "local_transformers_dependencies_available": false,
+  "spreadsheet_dependency_available": true,
+  "model_weights_in_release": false,
+  "model_inference_performed": false,
+  "network_calls": 0,
+  "llm_judge_validation_performed": false,
+  "notes": [
+    "Missing optional dependencies do not block the standard-library FinQA core.",
+    "Presence of a library is not proof a model/server/key is configured.",
+    "Use the interpreter of your prepared virtual environment for local inference.",
+    "Saved reports can be audited without model weights or API access."
+  ]
+}
