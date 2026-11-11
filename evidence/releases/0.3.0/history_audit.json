@@ -1,0 +1,47 @@
+{
+  "verified": true,
+  "model_calls": 0,
+  "runs": [
+    {
+      "experiment": "current_business",
+      "successful_solver_responses": 8,
+      "successful_judge_responses": 8,
+      "unknown_judgements": 2,
+      "selection_status": "selected",
+      "impossible_policy_status": "no_eligible_configuration",
+      "unique_successful_sessions": 16
+    },
+    {
+      "experiment": "final_business",
+      "successful_solver_responses": 2,
+      "successful_judge_responses": 0,
+      "unknown_judgements": 8,
+      "selection_status": "no_eligible_configuration",
+      "impossible_policy_status": "no_eligible_configuration",
+      "unique_successful_sessions": 2
+    }
+  ],
+  "calibrations": [
+    {
+      "calibration": "current_calibration_02",
+      "evaluated": 7,
+      "total": 8,
+      "pass_agreement": 1.0,
+      "critical_agreement": 1.0
+    },
+    {
+      "calibration": "current_calibration_final",
+      "evaluated": 8,
+      "total": 8,
+      "pass_agreement": 1.0,
+      "critical_agreement": 1.0
+    },
+    {
+      "calibration": "final_calibration",
+      "evaluated": 1,
+      "total": 8,
+      "pass_agreement": 1.0,
+      "critical_agreement": 1.0
+    }
+  ]
+}

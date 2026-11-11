@@ -68,7 +68,7 @@ class HTTPEdgeTests(unittest.TestCase):
     def test_server_errors_are_unknown(self):
         self.status=500;self.payload=b'Bearer SECRET from server'
         record=evaluate(CASE,RUBRIC,CANDIDATE,make_judge(self.config))
-        self.assertEqual(record['judge']['status'],'error');self.assertIsNone(record['score']);self.assertNotIn('SECRET',canonical(record))
+        self.assertEqual(record['judge']['status'],'unavailable');self.assertIsNone(record['score']);self.assertNotIn('SECRET',canonical(record))
     def test_float_nan_score_rejected(self):
         data=judgement();data['criteria'][0]['score']=float('nan')
         self.payload=json.dumps({'choices':[{'message':{'content':json.dumps(data)},'finish_reason':'stop'}]}).encode()

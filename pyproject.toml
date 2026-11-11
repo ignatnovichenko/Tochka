@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nir-eval"
-version = "0.2.0"
+version = "0.3.0"
 description = "Reproducible public business-task LLM evaluation MVP"
 requires-python = ">=3.10"
 dependencies = []
@@ -15,6 +15,7 @@ local-model = ["torch==2.6.0", "transformers==4.48.3"]
 
 [project.scripts]
 nir-eval = "nir_eval.cli:main"
+tochka = "nir_eval.app:main"
 
 [tool.setuptools.packages.find]
 include = ["nir_eval*"]

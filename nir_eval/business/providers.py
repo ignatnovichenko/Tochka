@@ -52,6 +52,10 @@ class GenerationJudgeProvider:
             result = self.provider.generate(messages, self.model, self.parameters,
                                             {'id': case_id, 'config': 'business-judge', 'repetition': 0})
         except ProviderUnavailable as exc:
+            if str(exc).startswith('api_') and re.fullmatch(r'api_[a-z0-9_]+', str(exc)):
+                error = JudgeUnavailable('judge_' + str(exc))
+                if hasattr(exc, 'retry_after_seconds'): error.retry_after_seconds = exc.retry_after_seconds
+                raise error from None
             if str(exc) in {'opencode_free_limit', 'opencode_cooldown_active', 'opencode_timeout'}:
                 raise JudgeUnavailable('judge_' + str(exc)) from None
             raise JudgeUnavailable('judge_connection_unavailable') from None
@@ -65,63 +69,30 @@ class GenerationJudgeProvider:
 
 
 class OpenAICompatibleJudge:
-    """One Chat Completions request per judgement; no retries, tools or redirects."""
+    """Direct judge settings use the same API-only transport and privacy contract."""
     kind = 'model-inference'
 
     def __init__(self, config, allow_remote=False):
+        from ..providers import OpenAICompatibleProvider
         self.model = config['model']
-        base = config['base_url'].rstrip('/')
-        parsed = urllib.parse.urlsplit(base)
-        if parsed.scheme not in {'http', 'https'} or not parsed.hostname:
-            raise ValidationError('Judge base_url must be http(s)')
-        if parsed.username or parsed.password or parsed.query or parsed.fragment:
-            raise ValidationError('Judge URL cannot contain credentials, query or fragment')
-        local = parsed.hostname in {'127.0.0.1', 'localhost', '::1'}
-        if not local and (parsed.scheme != 'https' or not allow_remote):
-            raise ValidationError('Remote judge requires HTTPS and explicit --allow-remote-judge')
-        self.url = base + '/chat/completions'
-        self.key_env = config.get('api_key_env', 'NIR_JUDGE_API_KEY')
-        self.key = os.environ.get(self.key_env, '')
-        self.timeout = config.get('timeout_seconds', 90)
         self.max_tokens = config.get('max_tokens', 2048)
-        class NoRedirect(urllib.request.HTTPRedirectHandler):
-            def redirect_request(self, req, fp, code, msg, headers, newurl):
-                return None
-        # Never transmit private localhost payloads through environment HTTP proxies.
-        self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+        provider_config = {'type':'openai-compatible', 'base_url':config['base_url'],
+                           'api_key_env':config.get('api_key_env','NIR_JUDGE_API_KEY'),
+                           'timeout_seconds':config.get('timeout_seconds',90)}
+        self.provider = OpenAICompatibleProvider(provider_config, allow_remote)
 
     def judge(self, messages, case_id):
-        body = canonical({'model': self.model, 'messages': messages, 'stream': False,
-                          'temperature': 0, 'max_tokens': self.max_tokens}).encode('utf-8')
-        headers = {'Content-Type': 'application/json'}
-        if self.key:
-            headers['Authorization'] = 'Bearer ' + self.key
-        request = urllib.request.Request(self.url, body, headers, method='POST')
         try:
-            with self.opener.open(request, timeout=self.timeout) as response:
-                raw = response.read(1_000_001)
-        except urllib.error.HTTPError as exc:
-            if exc.code in {401, 403, 404, 408, 429, 502, 503, 504}:
-                raise JudgeUnavailable(f'judge_http_{exc.code}') from None
-            raise JudgeProviderError(f'judge_http_{exc.code}') from None
-        except (urllib.error.URLError, TimeoutError, OSError):
-            raise JudgeUnavailable('judge_connection_unavailable') from None
-        if len(raw) > 1_000_000:
-            raise JudgeProviderError('judge_response_too_large')
-        try:
-            data = strict_json(raw)
-            choice = data['choices'][0]
-            text = choice['message']['content']
-            if not isinstance(text, str):
-                raise ValueError()
-            # Even a provider echo must not write its configured credential into logs.
-            if self.key:
-                text = text.replace(self.key, '[REDACTED_CREDENTIAL]')
-            return JudgeReply(text, data.get('usage') or {},
-                              {'response_model': data.get('model'),
-                               'finish_reason': choice.get('finish_reason')})
-        except (ValueError, KeyError, IndexError, TypeError):
-            raise JudgeProviderError('judge_malformed_transport_response') from None
+            reply=self.provider.generate(messages,self.model,{'temperature':0,'max_tokens':self.max_tokens},{'id':case_id})
+            return JudgeReply(reply.text,reply.usage,reply.metadata)
+        except ProviderUnavailable as exc:
+            code=str(exc)
+            reason='judge_http_'+code.removeprefix('api_http_') if code.startswith('api_http_') else 'judge_connection_unavailable'
+            error=JudgeUnavailable(reason)
+            if hasattr(exc,'retry_after_seconds'):error.retry_after_seconds=exc.retry_after_seconds
+            raise error from None
+        except Exception:
+            raise JudgeProviderError('judge_provider_error') from None
 
 
 def validate_config(config):
@@ -160,7 +131,7 @@ def validate_config(config):
             raise ValidationError('generation-provider requires provider object')
         # Only a bounded explicit schema can enter persisted configuration.
         allowed = {'type', 'model_path', 'device', 'dtype', 'max_new_tokens', 'timeout_seconds',
-                   'base_url', 'api_key_env', 'command', 'cwd', 'remote', 'revision', 'threads', 'seed'}
+                   'base_url', 'api_key_env', 'command', 'cwd', 'remote', 'revision', 'threads', 'seed', 'input_price_per_million', 'output_price_per_million'}
         if provider.keys() - allowed or provider.get('type') not in {'openai-compatible', 'transformers-local', 'command', 'opencode'}:
             raise ValidationError('Unsupported nested generation provider configuration')
         if any(k in provider for k in {'base_url', 'api_key_env'}):

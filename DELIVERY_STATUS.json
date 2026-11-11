@@ -1,8 +1,8 @@
 {
-  "version": "0.2.0",
-  "date": "2026-11-10",
+  "version": "0.3.0",
+  "date": "2026-11-11",
   "source_archive_sha256": "f81badfdc95135638676234ed035f13c4da6f889bf88e8b249ab7b75214eadae",
-  "cli_workflow": "implemented and tested",
+  "cli_workflow": "interactive slash menu and command CLI implemented; installed terminal smoke verified",
   "live_business": {
     "directory": "runs/current_business",
     "solver_responses": 8,
@@ -30,5 +30,12 @@
   "paid_models_used": false,
   "further_model_calls": "stopped at user request",
   "report_redesign": "proposal only; current basic HTML/CSV/JSON implemented",
-  "presentation_modified": false
+  "presentation_modified": false,
+  "tests_passed": 317,
+  "finqa_reference_checks": 883,
+  "new_live_model_calls": 0,
+  "doctor_model_validation": "mocked responses only; real Go inference not tested",
+  "doctor_repairs": "reviewed source patches with syntax check and backups; no behavioral guarantee",
+  "api_keys": "local owner-only plaintext store; never committed",
+  "current_transport": "OpenAI-compatible API only; historical OpenCode CLI runs preserved"
 }

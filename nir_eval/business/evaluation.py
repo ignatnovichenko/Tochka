@@ -192,11 +192,13 @@ def evaluate(case, rubric, response, judge=None, *, response_status='ok'):
         except JudgeUnavailable as exc:
             # Only our controlled finite codes may appear, not arbitrary exception text.
             safe = str(exc)
-            if safe not in {'judge_connection_unavailable', 'judge_call_budget_exhausted', 'judge_opencode_free_limit', 'judge_opencode_cooldown_active', 'judge_opencode_timeout'} and not safe.startswith('judge_http_'):
+            if safe not in {'judge_connection_unavailable', 'judge_call_budget_exhausted', 'judge_opencode_free_limit', 'judge_opencode_cooldown_active', 'judge_opencode_timeout'} and not safe.startswith(('judge_http_', 'judge_api_')):
                 safe = 'judge_unavailable'
             if not safe.replace('judge_http_', '').isdigit() and safe.startswith('judge_http_'):
                 safe = 'judge_unavailable'
             result['judge'].update(status='unavailable', reason_code=safe)
+            if hasattr(exc, 'retry_after_seconds'):
+                result['judge']['retry_after_seconds'] = exc.retry_after_seconds
         except ValidationError:
             result['judge'].update(status='error', reason_code='judge_invalid_structured_output')
         except Exception:

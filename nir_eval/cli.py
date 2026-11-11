@@ -15,6 +15,12 @@ from .scoring import execute_program, answers_equal
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == 'keys':
+        from .keys_cli import main as keys_main
+        return keys_main(argv[1:])
+    if argv and argv[0] == "wizard":
+        from .wizard import main as wizard_main
+        return wizard_main(argv[1:])
     if argv and argv[0] == "experiment":
         from .experiment import main as experiment_main
         return experiment_main(argv[1:])
@@ -26,6 +32,8 @@ def main(argv=None):
         return spreadsheet_main(argv[1:])
     parser = argparse.ArgumentParser(description="NIR public business-task evaluation MVP")
     sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("wizard", help="Пошаговый мастер Tochka")
+    sub.add_parser("keys", help="Управление сохранёнными API-ключами")
     sub.add_parser("experiment", help="Create, configure, run and compare business experiments; use experiment --help")
     sub.add_parser("business", help="Custom business cases with neural-judge-only quality evaluation")
     sub.add_parser("spreadsheet", help="SpreadsheetBench inventory/evaluate; use spreadsheet --help")

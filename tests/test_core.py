@@ -256,7 +256,7 @@ class HTTPAdapterTests(unittest.TestCase):
         provider.opener = Opener()
         with self.assertRaises(ProviderError) as result:
             provider.generate([], 'm', {}, {})
-        self.assertEqual(str(result.exception), 'Provider returned HTTP 401')
+        self.assertEqual(str(result.exception), 'api_http_401')
 
 
 class ComparisonTests(unittest.TestCase):

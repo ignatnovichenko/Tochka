@@ -17,7 +17,8 @@ class WorkflowTests(unittest.TestCase):
     def tearDown(self): self.tmp.cleanup()
     def cli(self, *args):
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
-            return main(list(args))
+            try: return main(list(args))
+            except SystemExit as exc: return exc.code
     def test_demo_valid(self):
         from nir_eval.business.schema import import_inputs
         cases, rubrics, _ = import_inputs(self.root/'cases.jsonl', self.root/'rubrics.jsonl')
@@ -31,12 +32,12 @@ class WorkflowTests(unittest.TestCase):
     def test_duplicate_and_unknown_rubric(self):
         self.assertEqual(self.cli('task-add',str(self.root),'--id','new','--task','x','--rubric','absent'),2)
         self.assertEqual(self.cli('rubric-add',str(self.root),'--id','refund_v1','--criterion','x=y'),2)
-    def solver(self, model='opencode/big-pickle', name='baseline'):
-        return self.cli('solver-add',str(self.root),'--provider','opencode','--model',model,'--name',name)
-    def judge(self, model='opencode/glm-5.3-flash-free'):
-        return self.cli('judge-set',str(self.root),'--provider','opencode','--model',model)
-    def test_paid_model_blocked(self):
-        self.assertEqual(self.solver('opencode/gpt-paid'),2)
+    def solver(self, model='fixture-solver', name='baseline'):
+        return self.cli('solver-add',str(self.root),'--provider','api','--base-url','https://api.example/v1','--model',model,'--name',name)
+    def judge(self, model='fixture-judge'):
+        return self.cli('judge-set',str(self.root),'--provider','api','--base-url','https://api.example/v1','--model',model)
+    def test_paid_model_can_be_configured_without_call(self):
+        self.assertEqual(self.solver('paid-model-id'),0)
     def test_unsupported_parameter_blocked(self):
         self.assertEqual(self.cli('solver-add',str(self.root),'--provider','opencode','--model','opencode/big-pickle','--name','x','--temperature','0'),2)
     def test_duplicate_configuration_blocked(self):
@@ -45,7 +46,7 @@ class WorkflowTests(unittest.TestCase):
         self.solver()
         with self.assertRaises(ValueError): run_experiment(self.root, self.root/'run',True)
     def test_same_judge_solver_preflight(self):
-        self.solver();self.judge('opencode/big-pickle')
+        self.solver();self.judge('fixture-solver')
         with self.assertRaises(ValueError): run_experiment(self.root, self.root/'run',True)
         self.assertFalse((self.root/'run').exists())
     def test_remote_consent_preflight(self):

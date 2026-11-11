@@ -15,7 +15,9 @@ from .business.running import run_business, load_judge_config, sha
 from .business.providers import make_judge
 from .business.evaluation import evaluate
 from .business_selection import select_business_run, validate_business_policy
-from .opencode import FREE_MODELS
+from .api_support import validate_api_config
+from .business_report import write_business_report, terminal_summary
+from .credentials import interactive_credentials
 
 
 def read(path):
@@ -42,24 +44,60 @@ def existing_rows(path):
 
 
 def configure_provider(args):
-    if args.provider == 'opencode':
-        if args.model not in FREE_MODELS:
-            raise ValidationError('Model is not in the explicit free OpenCode allowlist')
-        if args.temperature is not None or args.max_tokens is not None:
-            raise ValidationError('OpenCode CLI does not expose temperature/max_tokens; use prompt instructions')
-        return {'type': 'opencode', 'timeout_seconds': args.timeout}, {}
-    if not args.base_url:
-        raise ValidationError('Local provider requires --base-url')
-    from urllib.parse import urlsplit
-    u = urlsplit(args.base_url)
-    if u.hostname not in {'localhost', '127.0.0.1', '::1'}:
-        raise ValidationError('This workflow permits local HTTP only; use advanced business CLI for remote HTTP')
-    p = {'type': 'openai-compatible', 'base_url': args.base_url, 'timeout_seconds': args.timeout}
-    params = {'temperature': args.temperature if args.temperature is not None else 0,
-              'max_tokens': args.max_tokens if args.max_tokens is not None else 2048}
-    if not math.isfinite(params['temperature']) or not 0 <= params['temperature'] <= 2 or params['max_tokens'] < 1:
+    if args.provider not in {'api', 'local'}:
+        raise ValidationError('Подключение моделей доступно только через API. Используйте --provider api.')
+    provider = {'type': 'openai-compatible', 'base_url': args.base_url or '',
+                'api_key_env': args.api_key_env, 'timeout_seconds': args.timeout}
+    for key in ('input_price_per_million', 'output_price_per_million'):
+        value = getattr(args, key, None)
+        if value is not None: provider[key] = value
+    local = validate_api_config(provider, allow_remote=True)
+    if args.provider == 'local' and not local:
+        raise ValidationError('Provider local requires a localhost endpoint; use --provider api for HTTPS')
+    parameters = {'temperature': args.temperature if args.temperature is not None else 0,
+                  'max_tokens': args.max_tokens if args.max_tokens is not None else 2048}
+    if not math.isfinite(parameters['temperature']) or not 0 <= parameters['temperature'] <= 2 or not 1 <= parameters['max_tokens'] <= 131072:
         raise ValidationError('Invalid generation parameters')
-    return p, params
+    return provider, parameters
+
+
+def experiment_plan(root, allow_remote=False, check_credentials=False):
+    from .business.running import load_solver_config
+    root = Path(root).resolve()
+    cfg = config(root)
+    validate_business_policy(cfg.get('policy'))
+    cases, _, _ = import_inputs(root / 'cases.jsonl', root / 'rubrics.jsonl')
+    if not cfg.get('solvers') or not cfg.get('judge'):
+        raise ValidationError('Configure solvers and a separate judge first')
+    names = [cfg['judge'], *cfg['solvers']]
+    if any(not isinstance(n,str) or Path(n).name != n for n in names) or len(set(names)) != len(names):
+        raise ValidationError('Configuration files must have unique plain filenames')
+    judge = load_judge_config(root / cfg['judge'])
+    if judge.get('type') != 'generation-provider' or judge.get('provider',{}).get('type') != 'openai-compatible':
+        raise ValidationError('Требуется API-судья; старые CLI-конфигурации доступны только для чтения результатов.')
+    validate_api_config(judge['provider'], allow_remote=allow_remote, require_key=check_credentials)
+    solver_calls = 0
+    configs = []
+    identities = set()
+    for filename in cfg['solvers']:
+        sc = load_solver_config(root / filename)
+        if sc['provider'].get('type') != 'openai-compatible':
+            raise ValidationError('Новые прогоны используют только API. Перенастройте solver-add --provider api.')
+        validate_api_config(sc['provider'], allow_remote=allow_remote, require_key=check_credentials)
+        if sc['model'] == judge['model']:
+            raise ValidationError('Judge must be a different model from every solver')
+        for item in sc['configurations']:
+            identity = (sc['model'], item['name'])
+            if identity in identities: raise ValidationError('Duplicate model/configuration identity')
+            identities.add(identity)
+        n = len(cases) * len(sc['configurations']) * sc.get('repetitions',1)
+        if n > sc.get('max_calls',100) or n > judge.get('max_calls',100):
+            raise ValidationError('Planned calls exceed configured budget')
+        solver_calls += n
+        configs.append({'model':sc['model'],'calls':n,'config_file':filename})
+    return {'cases':len(cases),'configurations':configs,'solver_calls':solver_calls,
+            'judge_calls':solver_calls,'maximum_judge_calls':sum(min(c['calls']*(1+judge.get('structured_retries',0)),judge.get('max_calls',100)) for c in configs),
+            'estimated_total_cost_usd':None,'note':'Total cost unknown before actual usage; subscription fees are not allocated.'}
 
 
 def compare_runs(paths, policy):
@@ -94,45 +132,14 @@ def compare_runs(paths, policy):
             'warnings': selections[0]['warnings']}
 
 
-def report(output, result):
-    write(output / 'comparison.json', result)
-    columns = ['model', 'configuration', 'attempts', 'judge_coverage', 'mean_judge_score',
-               'judge_pass_rate_among_evaluated', 'mean_solver_latency_seconds', 'mean_total_latency_seconds',
-               'mean_cost_usd', 'rejection_reasons']
-    with (output / 'comparison.csv').open('w', encoding='utf-8-sig', newline='') as f:
-        w = csv.DictWriter(f, columns, extrasaction='ignore'); w.writeheader()
-        from .business.reporting import _csv_safe
-        w.writerows({k: _csv_safe(v) for k,v in c.items()} for c in result['candidates'])
-    def show(v):
-        return 'неизвестно' if v is None else html.escape(str(v))
-    rows = ''.join('<tr>' + ''.join('<td>' + show(c[k]) + '</td>' for k in columns) + '</tr>' for c in result['candidates'])
-    links = ''.join(f'<li><a href="{html.escape(s["run"], quote=True)}/report.html">{html.escape(s["run"])}</a></li>' for s in result['sources'])
-    body = '<!doctype html><html lang="ru"><meta charset="utf-8"><title>НИР · Сравнение моделей</title><style>body{font:16px system-ui;margin:32px;color:#172536}table{border-collapse:collapse;font-size:13px}td,th{padding:10px;border:1px solid #ccd}th{background:#edf3fa}pre{white-space:pre-wrap}</style>'
-    body += '<h1>Сравнение конфигураций</h1><p>Статус: <b>' + show(result['status']) + '</b></p>'
-    body += '<p>Оценки относятся только к этой синтетической выборке. Неизвестное качество и стоимость не равны нулю.</p>'
-    body += '<table><tr>' + ''.join('<th>' + k + '</th>' for k in columns) + '</tr>' + rows + '</table>'
-    body += '<h2>Подробные отчёты и причины оценок</h2><ul>' + links + '</ul><h2>Ограничения отбора</h2><pre>' + html.escape(json.dumps(result['policy'], ensure_ascii=False, indent=2)) + '</pre></html>'
-    (output / 'report.html').write_text(body, encoding='utf-8')
+def report(output, result, source_root=None):
+    return write_business_report(Path(output), result, source_root=source_root)
 
 
 def run_experiment(root, output, allow_remote=False):
+    root, output = Path(root).resolve(), Path(output)
+    experiment_plan(root, allow_remote=allow_remote, check_credentials=True)
     cfg = config(root)
-    import_inputs(root / 'cases.jsonl', root / 'rubrics.jsonl')
-    if not cfg['solvers'] or cfg.get('judge') is None:
-        raise ValidationError('Configure at least one solver and a judge first')
-    judge = read(root / cfg['judge'])
-    if any(read(root / p)['model'] == judge['model'] for p in cfg['solvers']):
-        raise ValidationError('Judge must be a different model from every solver')
-    # Validate all configs and full request budgets before making any network calls.
-    from .business.running import load_solver_config
-    cases = load_jsonl(root / 'cases.jsonl')
-    for p in cfg['solvers']:
-        sc = load_solver_config(root / p)
-        n = len(cases) * len(sc['configurations']) * sc.get('repetitions', 1)
-        if n > sc.get('max_calls', 100) or n > judge.get('max_calls', 100):
-            raise ValidationError('Planned calls exceed configured budget')
-        if not allow_remote and (sc['provider']['type'] == 'opencode' or judge.get('provider', {}).get('type') == 'opencode'):
-            raise ValidationError('OpenCode needs --allow-remote for task transmission')
     output.mkdir(parents=True, exist_ok=False)
     inputs = output / 'inputs'; inputs.mkdir()
     for name in ['experiment.json', 'cases.jsonl', 'rubrics.jsonl', cfg['judge'], *cfg['solvers']]:
@@ -144,8 +151,8 @@ def run_experiment(root, output, allow_remote=False):
     try:
         for solver in cfg['solvers']:
             target = output / Path(solver).stem
-            run_business(root / 'cases.jsonl', root / 'rubrics.jsonl', root / solver, target,
-                         judge_path=root / cfg['judge'], allow_remote_solver=allow_remote,
+            run_business(inputs / 'cases.jsonl', inputs / 'rubrics.jsonl', inputs / solver, target,
+                         judge_path=inputs / cfg['judge'], allow_remote_solver=allow_remote,
                          allow_remote_judge=allow_remote, save_raw_judge=True)
             manifest['runs'].append(target.name)
             write(output / 'experiment-manifest.json', manifest)
@@ -175,6 +182,9 @@ def calibrate(root, labels_path, output, allow_remote=False):
     jc = load_judge_config(root / cfg['judge'])
     if len(labels) > jc.get('max_calls', 100):
         raise ValidationError('Calibration exceeds judge budget')
+    if jc.get('type') != 'generation-provider' or jc.get('provider',{}).get('type') != 'openai-compatible':
+        raise ValidationError('Configure an API judge before calibration')
+    validate_api_config(jc['provider'], allow_remote=allow_remote, require_key=True)
     actual_judge = make_judge(jc, allow_remote)
     output.mkdir(parents=True, exist_ok=False)
     shutil.copy2(labels_path, output / 'labels.jsonl')
@@ -184,44 +194,59 @@ def calibrate(root, labels_path, output, allow_remote=False):
           'started_at_utc': datetime.now(timezone.utc).isoformat(),
           'inputs': {p.name: sha(p) for p in output.iterdir() if p.is_file()},
           'code_sha256': {str(p.relative_to(Path(__file__).parent)): sha(p) for p in Path(__file__).parent.rglob('*.py')}})
-    rows = []
-    with (output / 'raw.jsonl').open('w', encoding='utf-8') as raw, (output / 'records.jsonl').open('w', encoding='utf-8') as records:
-        class Recording:
-            kind = actual_judge.kind
-            model = actual_judge.model
-            structured_retries = getattr(actual_judge, 'structured_retries', 0)
-            def judge(self, messages, case_id):
-                reply = actual_judge.judge(messages, case_id)
-                raw.write(canonical({'case_id': case_id, 'raw_output': reply.text, 'metadata': reply.metadata}) + '\n'); raw.flush()
-                return reply
-        for label in labels:
-            case = cases[label['case_id']]
-            row = evaluate(case, rubrics[case['rubric_id']], label['candidate'], Recording())
-            evaluated = row['judge']['status'] == 'evaluated'
-            critical = any(c['detected'] for c in row['judge'].get('critical_errors', [])) if evaluated else None
-            row.update(label_id=label['id'], expected_pass=label['expected_pass'], expected_critical=label['expected_critical'],
-                       pass_agreement=(row['passed'] == label['expected_pass']) if evaluated else None,
-                       critical_agreement=(critical == label['expected_critical']) if evaluated else None)
-            rows.append(row); records.write(canonical(row) + '\n'); records.flush()
-            print(f'calibration {len(rows)}/{len(labels)}: {row["judge"]["status"]}', flush=True)
-    known = [r for r in rows if r['pass_agreement'] is not None]
-    summary = {'total': len(rows), 'evaluated': len(known), 'unknown': len(rows) - len(known),
-               'coverage': len(known) / len(rows),
-               'pass_agreement': sum(r['pass_agreement'] for r in known) / len(known) if known else None,
-               'critical_agreement': sum(r['critical_agreement'] for r in known) / len(known) if known else None,
-               'judge_model': actual_judge.model, 'judge_config_sha256': digest(jc), 'labels_sha256': sha(labels_path),
-               'limitation': 'Small synthetic author-labelled control set; not independent human certification.'}
-    write(output / 'summary.json', summary)
-    manifest = read(output / 'manifest.json'); manifest.update(state='completed', records_sha256=sha(output / 'records.jsonl'), summary_sha256=sha(output / 'summary.json'))
-    write(output / 'manifest.json', manifest)
-    return summary
+    try:
+        rows = []
+        with (output / 'raw.jsonl').open('w', encoding='utf-8') as raw, (output / 'records.jsonl').open('w', encoding='utf-8') as records:
+            class Recording:
+                kind = actual_judge.kind
+                model = actual_judge.model
+                structured_retries = getattr(actual_judge, 'structured_retries', 0)
+                def judge(self, messages, case_id):
+                    reply = actual_judge.judge(messages, case_id)
+                    raw.write(canonical({'case_id': case_id, 'raw_output': reply.text, 'metadata': reply.metadata}) + '\n'); raw.flush()
+                    return reply
+            for label in labels:
+                case = cases[label['case_id']]
+                row = evaluate(case, rubrics[case['rubric_id']], label['candidate'], Recording())
+                evaluated = row['judge']['status'] == 'evaluated'
+                critical = any(c['detected'] for c in row['judge'].get('critical_errors', [])) if evaluated else None
+                row.update(label_id=label['id'], expected_pass=label['expected_pass'], expected_critical=label['expected_critical'],
+                           pass_agreement=(row['passed'] == label['expected_pass']) if evaluated else None,
+                           critical_agreement=(critical == label['expected_critical']) if evaluated else None)
+                rows.append(row); records.write(canonical(row) + '\n'); records.flush()
+                print(f'calibration {len(rows)}/{len(labels)}: {row["judge"]["status"]}', flush=True)
+        known = [r for r in rows if r['pass_agreement'] is not None]
+        summary = {'total': len(rows), 'evaluated': len(known), 'unknown': len(rows) - len(known),
+                   'coverage': len(known) / len(rows),
+                   'pass_agreement': sum(r['pass_agreement'] for r in known) / len(known) if known else None,
+                   'critical_agreement': sum(r['critical_agreement'] for r in known) / len(known) if known else None,
+                   'judge_model': actual_judge.model, 'judge_config_sha256': digest(jc), 'labels_sha256': sha(labels_path),
+                   'limitation': 'Small synthetic author-labelled control set; not independent human certification.'}
+        write(output / 'summary.json', summary)
+        manifest = read(output / 'manifest.json'); manifest.update(state='completed', records_sha256=sha(output / 'records.jsonl'), summary_sha256=sha(output / 'summary.json'))
+        write(output / 'manifest.json', manifest)
+        return summary
+    except BaseException as exc:
+        manifest = read(output / 'manifest.json')
+        manifest.update(state='interrupted', failure_type=type(exc).__name__, updated_at_utc=datetime.now(timezone.utc).isoformat())
+        write(output / 'manifest.json', manifest)
+        raise
 
 
 def parser():
-    p = argparse.ArgumentParser(prog='nir-eval experiment', description='Полный цикл бизнес-эксперимента без редактирования кода')
+    p = argparse.ArgumentParser(prog='tochka', description='Полный цикл бизнес-эксперимента без редактирования кода')
     sub = p.add_subparsers(dest='command', required=True)
+    sub.add_parser('wizard', help='Пошаговый мастер настройки и запуска')
+    sub.add_parser('keys', help='Управление сохранёнными API-ключами; keys --help')
     init = sub.add_parser('init', help='Создать эксперимент'); init.add_argument('directory'); init.add_argument('--demo', action='store_true')
-    models = sub.add_parser('models', help='Список разрешённых бесплатных моделей'); models.add_argument('--installed', action='store_true')
+    models = sub.add_parser('models', help='Показать настроенные API-модели без сетевых запросов'); models.add_argument('--directory')
+    plan = sub.add_parser('plan', help='План вызовов без inference'); plan.add_argument('directory')
+    plan.add_argument('--allow-remote', action='store_true')
+    resume = sub.add_parser('resume', help='Продолжить прогон в новой папке, сохранив старый'); resume.add_argument('run'); resume.add_argument('--output', required=True); resume.add_argument('--allow-remote', action='store_true'); resume.add_argument('--plan-only', action='store_true')
+    reselect = sub.add_parser('reselect', help='Пересчитать выбор и отчёт без новых модельных запросов'); reselect.add_argument('run'); reselect.add_argument('--output', required=True)
+    for flag in ['min-quality','min-coverage','min-pass-rate','max-latency','max-cost','max-critical-rate']:
+        reselect.add_argument('--'+flag,type=float)
+    reselect.add_argument('--policy')
     for name in ['import', 'task-add', 'rubric-add', 'solver-add', 'judge-set', 'policy-set', 'show', 'run', 'calibrate']:
         q = sub.add_parser(name); q.add_argument('directory')
         if name == 'import':
@@ -233,8 +258,8 @@ def parser():
             q.add_argument('--id', required=True); q.add_argument('--criterion', action='append', required=True, help='id=description; repeatable')
             q.add_argument('--critical', action='append', default=[], help='id=description; repeatable'); q.add_argument('--pass-threshold', type=float, default=.75)
         if name in ['solver-add', 'judge-set']:
-            q.add_argument('--provider', choices=['opencode', 'local'], required=True); q.add_argument('--model', required=True)
-            q.add_argument('--base-url'); q.add_argument('--temperature', type=float); q.add_argument('--max-tokens', type=int)
+            q.add_argument('--provider', choices=['api', 'local'], default='api'); q.add_argument('--model', required=True)
+            q.add_argument('--base-url'); q.add_argument('--api-key-env', default='NIR_API_KEY'); q.add_argument('--input-price-per-million', type=float); q.add_argument('--output-price-per-million', type=float); q.add_argument('--temperature', type=float); q.add_argument('--max-tokens', type=int)
             q.add_argument('--timeout', type=float, default=180); q.add_argument('--max-calls', type=int, default=100)
             if name == 'judge-set':
                 q.add_argument('--structured-retries', type=int, choices=[0,1,2], default=0, help='Explicit retries for invalid judge JSON/evidence only; count against max-calls')
@@ -247,19 +272,65 @@ def parser():
         if name in ['run', 'calibrate']:
             q.add_argument('--output', required=True); q.add_argument('--allow-remote', action='store_true')
         if name == 'calibrate': q.add_argument('--labels', required=True)
-    q = sub.add_parser('results'); q.add_argument('run')
+    q = sub.add_parser('results'); q.add_argument('run'); q.add_argument('--json', action='store_true')
     q = sub.add_parser('select'); q.add_argument('run'); q.add_argument('--policy', required=True); q.add_argument('--output', required=True)
     return p
 
 
+@interactive_credentials
 def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == 'keys':
+        from .keys_cli import main as keys_main
+        return keys_main(argv[1:])
+    if argv and argv[0] == 'wizard':
+        from .wizard import main as wizard_main
+        return wizard_main(argv[1:])
     args = parser().parse_args(argv)
     try:
         if args.command == 'models':
-            available = set(subprocess.check_output(['opencode', 'models'], text=True).splitlines()) if args.installed else FREE_MODELS
-            print('\n'.join(sorted(FREE_MODELS & available))); return 0
+            if args.directory:
+                root = Path(args.directory)
+                cfg = config(root)
+                for filename in [*cfg.get('solvers',[]), *([cfg['judge']] if cfg.get('judge') else [])]:
+                    print(read(root / filename)['model'])
+            else:
+                print('Укажите --directory EXPERIMENT для списка настроенных API-моделей. ID моделей берите у вашего API-провайдера.')
+            return 0
+        if args.command == 'plan':
+            print(json.dumps(experiment_plan(args.directory,allow_remote=True,check_credentials=False),ensure_ascii=False,indent=2)); return 0
+        if args.command == 'resume':
+            from .resume import resume_experiment, resume_plan
+            if args.plan_only:
+                print(json.dumps(resume_plan(Path(args.run)),ensure_ascii=False,indent=2)); return 0
+            result = resume_experiment(Path(args.run),Path(args.output),args.allow_remote)
+            print(terminal_summary(result)); print('Отчёт: ' + str(Path(args.output)/'report.html')); return 0
+        if args.command == 'reselect':
+            source = Path(args.run).resolve()
+            manifest = read(source/'experiment-manifest.json')
+            if manifest.get('state') != 'completed': raise ValidationError('Use a completed run for selection; resume an interrupted run first')
+            for name, expected in manifest.get('input_hashes',{}).items():
+                if Path(name).name != name or sha(source/'inputs'/name) != expected:
+                    raise ValidationError('Source input fingerprint mismatch')
+            names=manifest['runs']
+            if len(names)!=len(set(names)) or set(names)!=set(manifest['planned_runs']) or any(Path(x).name!=x for x in names):
+                raise ValidationError('Experiment run plan is incomplete')
+            policy = read(args.policy) if args.policy else read(source/'comparison.json')['policy'].copy()
+            for arg,key in [('min_quality','min_mean_judge_score'),('min_coverage','min_judge_coverage'),('min_pass_rate','min_judge_pass_rate'),('max_latency','max_mean_solver_latency_seconds'),('max_cost','max_mean_cost_usd'),('max_critical_rate','max_judge_critical_error_rate')]:
+                value = getattr(args,arg)
+                if value is not None: policy[key]=value
+            policy = validate_business_policy(policy)
+            result=compare_runs([source/x for x in names],policy)
+            output=Path(args.output).resolve()
+            if output == source or output.is_relative_to(source):
+                raise ValidationError('Новый отчёт должен находиться вне папки исходного прогона')
+            output.mkdir(parents=True,exist_ok=False)
+            report(output,result,source_root=source)
+            write(output/'reselection.json',{'source_manifest_sha256':sha(source/'experiment-manifest.json'),'model_calls_performed':False,'policy':policy})
+            print(terminal_summary(result)); print('Отчёт: '+str(output/'report.html')); return 0
         if args.command == 'results':
-            print(json.dumps(read(Path(args.run) / 'comparison.json'), ensure_ascii=False, indent=2)); return 0
+            result = read(Path(args.run) / 'comparison.json')
+            print(json.dumps(result,ensure_ascii=False,indent=2) if args.json else terminal_summary(result)); return 0
         if args.command == 'select':
             run = Path(args.run); manifest = read(run / 'experiment-manifest.json')
             if manifest['state'] != 'completed': raise ValidationError('Experiment is not complete')
@@ -328,7 +399,7 @@ def main(argv=None):
             cfg['policy'] = validate_business_policy(value)
             write(root / 'policy.json', cfg['policy'])
         elif args.command == 'run':
-            result = run_experiment(root, Path(args.output), args.allow_remote); print(result['status']); return 0
+            result = run_experiment(root, Path(args.output), args.allow_remote); print(terminal_summary(result)); print('Отчёт: '+str(Path(args.output)/'report.html')); return 0
         elif args.command == 'calibrate':
             result = calibrate(root, args.labels, Path(args.output), args.allow_remote); print(json.dumps(result, ensure_ascii=False)); return 0
         write(root / 'experiment.json', cfg)
