@@ -828,7 +828,7 @@
     "tests/test_business_selection.py": "1761cbeafa0df7e2ca50d82bef23ae080798b724cfeadd7001ece5add1597130",
     "tests/test_calibration_batch.py": "4872c1af3a10e3ae78e22d4a372db93646eee3ffad078ab39cb794ed0aa399d6",
     "tests/test_core.py": "7f91ce4475e31ff70c7ce4feaf829e342fb2e7aebca8cbf229f51205233b7d04",
-    "tests/test_credentials.py": "4fa421010d3e400b00288c69bdb2d57a519dc2f72d5257b2d1c8e5c5adc39b11",
+    "tests/test_credentials.py": "b19d35d0cff564c5a3eb7de933f413c72774aec10208dbcbaf8efe23cb94c688",
     "tests/test_doctor.py": "512d883d26ff503a4029ba7a787f7e10e492a096feb6eb35313dce323f11ec03",
     "tests/test_doctor_diagnostics.py": "09b841c4a69c840c814a00a3c7ecd2174a7a5c14c10a968eda650e14f074920d",
     "tests/test_doctor_settings.py": "83baeea26e67e5451d095dba8723ee9230eef7afb99ce8988308d3bd817094c5",
