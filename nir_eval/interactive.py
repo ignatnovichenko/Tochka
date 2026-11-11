@@ -4,6 +4,7 @@ from pathlib import Path
 import shlex
 
 DESCRIPTIONS = {
+    'setup': 'Установить Promptfoo или проверить готовность (--check)',
     'wizard': 'Пошагово создать и запустить эксперимент',
     'keys': 'Настроить API-ключи безопасным вводом',
     'init': 'Создать эксперимент (можно --demo)',
@@ -36,6 +37,9 @@ def command_parsers():
 
 
 def dispatch(args, input_fn, print_fn):
+    if args[0] == 'setup':
+        from .setup_cli import main
+        return main(args[1:], input_fn=input_fn, print_fn=print_fn)
     if args[0] == 'wizard':
         from .wizard import main
         return main(args[1:], input_fn=input_fn, print_fn=print_fn)

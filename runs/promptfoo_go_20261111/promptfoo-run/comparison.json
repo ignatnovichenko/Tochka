@@ -1,0 +1,100 @@
+{
+  "schema_version": "business-experiment-v1",
+  "policy": {
+    "min_judge_coverage": 1.0,
+    "min_mean_judge_score": 0.8,
+    "max_generation_error_rate": 0.0,
+    "max_judge_critical_error_rate": 0,
+    "min_tasks": 1,
+    "objective": "quality"
+  },
+  "status": "no_eligible_configuration",
+  "eligible_count": 0,
+  "selected": null,
+  "tied": [],
+  "candidates": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "configuration": "deepseek",
+      "attempts": 3,
+      "unique_tasks": 3,
+      "repetitions": 1,
+      "attempt_coverage": 1.0,
+      "judge_evaluated": 0,
+      "judge_coverage": 0.0,
+      "judge_unknown": 3,
+      "judge_status_counts": {
+        "evaluated": 0,
+        "unavailable": 0,
+        "error": 0,
+        "not_evaluated": 3
+      },
+      "mean_judge_score": null,
+      "judge_pass_rate_among_evaluated": null,
+      "judge_critical_error_rate_among_evaluated": null,
+      "generation_error_rate": 1.0,
+      "mean_solver_latency_seconds": 1.2140199999999999,
+      "solver_latency_scope": "Whole Provider.generate call; excludes outer provider construction and judge. For command providers includes child model loading.",
+      "mean_total_latency_seconds": null,
+      "total_latency_scope": null,
+      "mean_cost_usd": null,
+      "rejection_reasons": [
+        "judge_coverage_below_threshold",
+        "judge_quality_unknown",
+        "generation_error_rate_above_limit"
+      ],
+      "run": "solver-deepseek"
+    },
+    {
+      "model": "muse-spark-1.3-contributor",
+      "configuration": "muse",
+      "attempts": 3,
+      "unique_tasks": 3,
+      "repetitions": 1,
+      "attempt_coverage": 1.0,
+      "judge_evaluated": 0,
+      "judge_coverage": 0.0,
+      "judge_unknown": 3,
+      "judge_status_counts": {
+        "evaluated": 0,
+        "unavailable": 0,
+        "error": 0,
+        "not_evaluated": 3
+      },
+      "mean_judge_score": null,
+      "judge_pass_rate_among_evaluated": null,
+      "judge_critical_error_rate_among_evaluated": null,
+      "generation_error_rate": 1.0,
+      "mean_solver_latency_seconds": 1.233817,
+      "solver_latency_scope": "Whole Provider.generate call; excludes outer provider construction and judge. For command providers includes child model loading.",
+      "mean_total_latency_seconds": null,
+      "total_latency_scope": null,
+      "mean_cost_usd": null,
+      "rejection_reasons": [
+        "judge_coverage_below_threshold",
+        "judge_quality_unknown",
+        "generation_error_rate_above_limit"
+      ],
+      "run": "solver-muse"
+    }
+  ],
+  "sources": [
+    {
+      "run": "solver-deepseek",
+      "manifest_sha256": "3dd7b3ccca9e8dd7e096ab8aed0f913fd83608387ddd5f91bf6b9a2382841aef"
+    },
+    {
+      "run": "solver-muse",
+      "manifest_sha256": "06a89c5c566a70e1a5951a9e8dec280b0158e39e0dea5cacc57317bf92805003"
+    }
+  ],
+  "warnings": [
+    "This is a descriptive selection on saved cases, not a guarantee of future quality or an SLA.",
+    "Judge unknown/error/unavailable scores remain null. Coverage uses all planned attempts.",
+    "Deterministic checks are diagnostics only and never used for quality selection.",
+    "The judge is not independently certified. Scores and critical errors reflect its judgement.",
+    "Hash verification detects changed evidence relative to the manifest, not source authenticity.",
+    "Cost stays unknown without complete provider-reported solver-plus-judge costs.",
+    "Total latency means the sum of recorded solver and judge calls, not end-to-end wall time including setup and reporting."
+  ]
+}

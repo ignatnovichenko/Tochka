@@ -120,7 +120,7 @@ def _model_questions(q, name, endpoint, key_env, judge=False, forbidden=()):
     endpoint = q.ask('Адрес API', endpoint, valid_endpoint)
     key_env = q.ask('Имя переменной с ключом (сам ключ не вводите)', key_env, _env_name)
     temperature = q.number('Температура', 0, low=0, high=2)
-    max_tokens = q.number('Максимум выходных токенов', 2048 if judge else 512, low=64, high=32768, integer=True)
+    max_tokens = q.number('Максимум выходных токенов', 8192 if judge else 512, low=64, high=32768, integer=True)
     instruction = '' if judge else q.ask('Дополнительная инструкция (Enter — без неё)', optional=True) or ''
     while True:
         input_price = q.number('Цена входа, USD за 1 млн токенов (Enter — неизвестна)', optional=True)

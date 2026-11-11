@@ -1,0 +1,3 @@
+﻿model,configuration,attempts,judge_evaluated,judge_unknown,judge_coverage,mean_judge_score,judge_pass_rate_among_evaluated,mean_solver_latency_seconds,mean_total_latency_seconds,mean_solver_cost_usd,mean_judge_cost_usd,mean_cost_usd,cost_basis,rejection_reasons
+deepseek-v4.1-flash,deepseek,3,0,3,0.0,,,0.876041,,,,,,"[""judge_coverage_below_threshold"", ""judge_quality_unknown"", ""generation_error_rate_above_limit""]"
+muse-spark-1.3-contributor,muse,3,0,3,0.0,,,1.0177289999999999,,,,,,"[""judge_coverage_below_threshold"", ""judge_quality_unknown"", ""generation_error_rate_above_limit""]"

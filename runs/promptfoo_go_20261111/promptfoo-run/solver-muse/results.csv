@@ -1,0 +1,4 @@
+﻿id,model,configuration,repetition,response_status,status,passed,score,deterministic_status,judge_status,judge_model,judge_provenance,judge_reason
+supplier_delay_01,muse-spark-1.3-contributor,muse,0,error,not_evaluated,,,not_evaluated,not_evaluated,glm-5.3,model-inference,candidate_generation_error
+revenue_growth_01,muse-spark-1.3-contributor,muse,0,error,not_evaluated,,,not_evaluated,not_evaluated,glm-5.3,model-inference,candidate_generation_error
+refund_01,muse-spark-1.3-contributor,muse,0,error,not_evaluated,,,not_evaluated,not_evaluated,glm-5.3,model-inference,candidate_generation_error

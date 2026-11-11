@@ -18,6 +18,7 @@ from .business_selection import select_business_run, validate_business_policy
 from .api_support import validate_api_config
 from .business_report import write_business_report, terminal_summary
 from .credentials import interactive_credentials
+from .provenance import source_hashes
 
 
 def read(path):
@@ -48,6 +49,7 @@ def configure_provider(args):
         raise ValidationError('Подключение моделей доступно только через API. Используйте --provider api.')
     provider = {'type': 'openai-compatible', 'base_url': args.base_url or '',
                 'api_key_env': args.api_key_env, 'timeout_seconds': args.timeout}
+    provider['engine'] = 'promptfoo'
     for key in ('input_price_per_million', 'output_price_per_million'):
         value = getattr(args, key, None)
         if value is not None: provider[key] = value
@@ -55,7 +57,7 @@ def configure_provider(args):
     if args.provider == 'local' and not local:
         raise ValidationError('Provider local requires a localhost endpoint; use --provider api for HTTPS')
     parameters = {'temperature': args.temperature if args.temperature is not None else 0,
-                  'max_tokens': args.max_tokens if args.max_tokens is not None else 2048}
+                  'max_tokens': args.max_tokens if args.max_tokens is not None else (8192 if args.command == 'judge-set' else 2048)}
     if not math.isfinite(parameters['temperature']) or not 0 <= parameters['temperature'] <= 2 or not 1 <= parameters['max_tokens'] <= 131072:
         raise ValidationError('Invalid generation parameters')
     return provider, parameters
@@ -95,6 +97,9 @@ def experiment_plan(root, allow_remote=False, check_credentials=False):
             raise ValidationError('Planned calls exceed configured budget')
         solver_calls += n
         configs.append({'model':sc['model'],'calls':n,'config_file':filename})
+    if check_credentials:
+        from .promptfoo_backend import require_runtime
+        require_runtime()
     return {'cases':len(cases),'configurations':configs,'solver_calls':solver_calls,
             'judge_calls':solver_calls,'maximum_judge_calls':sum(min(c['calls']*(1+judge.get('structured_retries',0)),judge.get('max_calls',100)) for c in configs),
             'estimated_total_cost_usd':None,'note':'Total cost unknown before actual usage; subscription fees are not allocated.'}
@@ -193,7 +198,7 @@ def calibrate(root, labels_path, output, allow_remote=False):
     write(output / 'manifest.json', {'state': 'running', 'judge_config_sha256': digest(jc),
           'started_at_utc': datetime.now(timezone.utc).isoformat(),
           'inputs': {p.name: sha(p) for p in output.iterdir() if p.is_file()},
-          'code_sha256': {str(p.relative_to(Path(__file__).parent)): sha(p) for p in Path(__file__).parent.rglob('*.py')}})
+          'code_sha256': source_hashes()})
     try:
         rows = []
         with (output / 'raw.jsonl').open('w', encoding='utf-8') as raw, (output / 'records.jsonl').open('w', encoding='utf-8') as records:
@@ -237,6 +242,7 @@ def parser():
     p = argparse.ArgumentParser(prog='tochka', description='Полный цикл бизнес-эксперимента без редактирования кода')
     sub = p.add_subparsers(dest='command', required=True)
     sub.add_parser('wizard', help='Пошаговый мастер настройки и запуска')
+    sub.add_parser('setup', help='Установить Promptfoo; setup --check проверяет готовность')
     sub.add_parser('keys', help='Управление сохранёнными API-ключами; keys --help')
     init = sub.add_parser('init', help='Создать эксперимент'); init.add_argument('directory'); init.add_argument('--demo', action='store_true')
     models = sub.add_parser('models', help='Показать настроенные API-модели без сетевых запросов'); models.add_argument('--directory')
@@ -280,6 +286,9 @@ def parser():
 @interactive_credentials
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == 'setup':
+        from .setup_cli import main as setup_main
+        return setup_main(argv[1:])
     if argv and argv[0] == 'keys':
         from .keys_cli import main as keys_main
         return keys_main(argv[1:])

@@ -179,6 +179,13 @@ class WizardTests(unittest.TestCase):
 
 
 class WizardValidationTests(unittest.TestCase):
+    def test_judge_token_default_and_explicit_override(self):
+        for token_input, expected in [('',8192),('3072',3072)]:
+            replies=iter(['judge','','','',token_input,'',''])
+            q=Questions(lambda _:next(replies),lambda _:None)
+            settings=_model_questions(q,'judge','http://localhost/v1','KEY',judge=True)
+            self.assertEqual(settings.max_tokens,expected)
+
     def test_tariffs_must_be_complete_pair(self):
         replies = iter(['solver', '', '', '', '', '', '1', '', '', ''])
         messages = []

@@ -1,0 +1,9 @@
+{
+  "name": "tochka-promptfoo-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "promptfoo": "0.125.1"
+  }
+}

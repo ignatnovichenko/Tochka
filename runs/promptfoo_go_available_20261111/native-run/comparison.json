@@ -1,0 +1,87 @@
+{
+  "schema_version": "business-experiment-v1",
+  "policy": {
+    "min_judge_coverage": 1.0,
+    "min_mean_judge_score": 0.8,
+    "max_generation_error_rate": 0.0,
+    "max_judge_critical_error_rate": 0,
+    "min_tasks": 1,
+    "objective": "quality"
+  },
+  "status": "selected",
+  "eligible_count": 1,
+  "selected": {
+    "model": "minimax-m3.1-flash",
+    "configuration": "minimax",
+    "attempts": 2,
+    "unique_tasks": 2,
+    "repetitions": 1,
+    "attempt_coverage": 1.0,
+    "judge_evaluated": 2,
+    "judge_coverage": 1.0,
+    "judge_unknown": 0,
+    "judge_status_counts": {
+      "evaluated": 2,
+      "unavailable": 0,
+      "error": 0,
+      "not_evaluated": 0
+    },
+    "mean_judge_score": 1.0,
+    "judge_pass_rate_among_evaluated": 1.0,
+    "judge_critical_error_rate_among_evaluated": 0.0,
+    "generation_error_rate": 0.0,
+    "mean_solver_latency_seconds": 2.931371,
+    "solver_latency_scope": "Whole Provider.generate call; excludes outer provider construction and judge. For command providers includes child model loading.",
+    "mean_total_latency_seconds": 31.794221999999998,
+    "total_latency_scope": "solver_plus_judge_call_seconds",
+    "mean_cost_usd": 0.0,
+    "rejection_reasons": [],
+    "run": "solver-minimax"
+  },
+  "tied": [],
+  "candidates": [
+    {
+      "model": "minimax-m3.1-flash",
+      "configuration": "minimax",
+      "attempts": 2,
+      "unique_tasks": 2,
+      "repetitions": 1,
+      "attempt_coverage": 1.0,
+      "judge_evaluated": 2,
+      "judge_coverage": 1.0,
+      "judge_unknown": 0,
+      "judge_status_counts": {
+        "evaluated": 2,
+        "unavailable": 0,
+        "error": 0,
+        "not_evaluated": 0
+      },
+      "mean_judge_score": 1.0,
+      "judge_pass_rate_among_evaluated": 1.0,
+      "judge_critical_error_rate_among_evaluated": 0.0,
+      "generation_error_rate": 0.0,
+      "mean_solver_latency_seconds": 2.931371,
+      "solver_latency_scope": "Whole Provider.generate call; excludes outer provider construction and judge. For command providers includes child model loading.",
+      "mean_total_latency_seconds": 31.794221999999998,
+      "total_latency_scope": "solver_plus_judge_call_seconds",
+      "mean_cost_usd": 0.0,
+      "rejection_reasons": [],
+      "run": "solver-minimax"
+    }
+  ],
+  "sources": [
+    {
+      "run": "solver-minimax",
+      "manifest_sha256": "094642cc1fe107d1a2c9e227dc59e7f1a2c892cca50494e90f863eba6d83defe"
+    }
+  ],
+  "warnings": [
+    "This is a descriptive selection on saved cases, not a guarantee of future quality or an SLA.",
+    "Judge unknown/error/unavailable scores remain null. Coverage uses all planned attempts.",
+    "Deterministic checks are diagnostics only and never used for quality selection.",
+    "The judge is not independently certified. Scores and critical errors reflect its judgement.",
+    "Hash verification detects changed evidence relative to the manifest, not source authenticity.",
+    "Cost stays unknown without complete provider-reported solver-plus-judge costs.",
+    "Total latency means the sum of recorded solver and judge calls, not end-to-end wall time including setup and reporting."
+  ]
+}

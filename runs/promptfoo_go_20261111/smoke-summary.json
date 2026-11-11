@@ -1,0 +1,13 @@
+{
+  "attempts": 18,
+  "stop": false,
+  "max_provider_attempts": 30,
+  "models": [
+    "deepseek-v4.1-flash",
+    "muse-spark-1.3-contributor"
+  ],
+  "judge": "glm-5.3",
+  "cases_per_engine": 3,
+  "calibration_labels": "synthetic author labels; not independent certification",
+  "purpose": "integration smoke; insufficient sample to rank models or engines"
+}

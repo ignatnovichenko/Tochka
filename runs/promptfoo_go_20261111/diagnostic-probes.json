@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-11",
+  "requests": 2,
+  "probe_results": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "http_status": 400,
+      "reason": "region_restricted",
+      "account_setting_changed": false
+    },
+    {
+      "model": "muse-spark-1.3-contributor",
+      "http_status": 400,
+      "reason": "training_restricted",
+      "account_setting_changed": false
+    }
+  ],
+  "note": "Two direct diagnostic requests after the initial run. Error bodies and account identifiers are not retained. User later chose to keep Muse disabled."
+}

@@ -1,0 +1,21 @@
+{
+  "state": "completed",
+  "started_at_utc": "2026-11-11T11:44:16.287799+00:00",
+  "planned_runs": [
+    "solver-deepseek",
+    "solver-muse"
+  ],
+  "runs": [
+    "solver-deepseek",
+    "solver-muse"
+  ],
+  "input_hashes": {
+    "experiment.json": "159d20ad8d3b8721cc74e61768ca4eb9959c212f33a02a504b126f155413d7cb",
+    "cases.jsonl": "d427da9ebbe2c1c95305479b2dc98380036b65d19db3e3e8613f2bbc28a63fef",
+    "rubrics.jsonl": "c4661d48c460803fedffb3d0bb1fb867db712495a4e038ac96e58a9309daabe8",
+    "judge.json": "974013f92bc65531256df92cbfcba8eec3c8a80c6e5e539567401cdb0e06adcf",
+    "solver-deepseek.json": "dda240e8a3313e7c04cbdeecfe3394ab01ac6285278d384a09c0fef465b7880e",
+    "solver-muse.json": "6b5926dd2067cb8d9f3c7d2a2308423ec2d174f4c9de43273b06ba5253e8a20f"
+  },
+  "completed_at_utc": "2026-11-11T11:44:24.335975+00:00"
+}

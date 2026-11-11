@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-11",
+  "comparisons_recomputed_equal": [
+    "runs/promptfoo_go_20261111/native-run",
+    "runs/promptfoo_go_20261111/promptfoo-run",
+    "runs/promptfoo_go_available_20261111/native-run",
+    "runs/promptfoo_go_available_20261111/promptfoo-run",
+    "runs/promptfoo_go_final_20261111/promptfoo-run"
+  ],
+  "tests_passed": 359,
+  "finqa_reference_checks": 883,
+  "credential_exact_value_scan": "passed",
+  "node_modules_excluded_from_wheel": true,
+  "installer_linux_isolated": "passed",
+  "model_calls_in_this_audit": 0
+}

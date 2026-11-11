@@ -7,9 +7,11 @@ from .business.schema import ValidationError
 
 def validate_api_config(config, *, allow_remote=False, require_key=False):
     allowed = {'type', 'base_url', 'api_key_env', 'timeout_seconds',
-               'input_price_per_million', 'output_price_per_million'}
+               'input_price_per_million', 'output_price_per_million', 'engine'}
     if not isinstance(config, dict) or config.keys() - allowed:
         raise ValidationError('API config accepts URL, key environment name, timeout and optional tariffs only')
+    if config.get('engine', 'promptfoo') != 'promptfoo':
+        raise ValidationError('Unknown execution engine')
     base = config.get('base_url', '')
     if not isinstance(base, str):
         raise ValidationError('Invalid API URL')
@@ -70,3 +72,41 @@ def response_metadata(data, config):
     if isinstance(native, dict):
         meta['native_tokens'] = {k:v for k,v in native.items() if k in {'input','output','reasoning','cache_read','cache_write_5m','cache_write_1h'} and type(v) is int and v >= 0}
     return meta
+
+
+def api_error_code(status, raw):
+    """Classify known provider restrictions without returning private diagnostics."""
+    if status == 400:
+        if isinstance(raw, bytes):
+            raw = raw[:16384].decode('utf-8', errors='replace')
+        message = raw[:16384].lower() if isinstance(raw, str) else ''
+        if 'hosted outside europe and the united states' in message:
+            return 'api_http_400_region_restricted'
+        if 'trains on request data' in message:
+            return 'api_http_400_training_restricted'
+    return f'api_http_{status}'
+
+
+def normalize_completion(data, config, api_key):
+    """Retain original provider evidence; unknown costs stay unknown."""
+    from .providers import Generation, ProviderError
+    try:
+        content = data["choices"][0]["message"]["content"]
+        if not isinstance(content, str):
+            raise ValueError("Missing text response")
+        from .api_support import response_metadata
+        if api_key:
+            content = content.replace(api_key, '[REDACTED_CREDENTIAL]')
+        usage = data.get('usage') if isinstance(data.get('usage'),dict) else {}
+        usage = {k:v for k,v in usage.items() if k in {'prompt_tokens','completion_tokens','total_tokens'} and type(v) is int and v>=0}
+        meta = response_metadata(data, config)
+        if api_key:
+            def redact(value):
+                if isinstance(value,str): return value.replace(api_key,'[REDACTED_CREDENTIAL]')
+                if isinstance(value,dict): return {k:redact(v) for k,v in value.items()}
+                if isinstance(value,list): return [redact(v) for v in value]
+                return value
+            meta = redact(meta)
+        return Generation(content, usage, meta)
+    except (ValueError, KeyError, IndexError, TypeError, AttributeError):
+        raise ProviderError("Malformed chat completion response") from None

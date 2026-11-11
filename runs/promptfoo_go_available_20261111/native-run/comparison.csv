@@ -1,0 +1,2 @@
+﻿model,configuration,attempts,judge_evaluated,judge_unknown,judge_coverage,mean_judge_score,judge_pass_rate_among_evaluated,mean_solver_latency_seconds,mean_total_latency_seconds,mean_solver_cost_usd,mean_judge_cost_usd,mean_cost_usd,cost_basis,rejection_reasons
+minimax-m3.1-flash,minimax,2,2,0,1.0,1.0,1.0,2.931371,31.794221999999998,0.0,0.0,0.0,,[]

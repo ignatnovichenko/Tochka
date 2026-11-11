@@ -7,7 +7,7 @@ shell_quote() {
 }
 
 install_tochka() {
-    tochka_version='0.3.1'
+    tochka_version='0.4.0'
     modify_path=1
     while [ "$#" -gt 0 ]; do
         case "$1" in
@@ -16,14 +16,15 @@ install_tochka() {
                 [ "$#" -ge 2 ] || { echo 'Missing version' >&2; return 2; }
                 tochka_version=${2#v}; shift 2 ;;
             --help|-h)
-                echo 'Usage: sh install.sh [--version 0.3.1] [--no-modify-path]'
-                echo 'Installs Tochka into an isolated user environment using uv; no API calls.'
+                echo 'Usage: sh install.sh [--version 0.4.0] [--no-modify-path]'
+                echo 'Installs Tochka and its required Promptfoo runtime; requires Node.js >=22.22.0 and npm.'
+                echo 'Uses an isolated user environment with uv; no root or model API calls.'
                 return 0 ;;
             *) echo "Unknown option: $1" >&2; return 2 ;;
         esac
     done
     if ! printf '%s\n' "$tochka_version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-        echo 'Version must have the form 0.3.1.' >&2; return 2
+        echo 'Version must have the form 0.4.0.' >&2; return 2
     fi
     case "$(uname -s)" in
         Linux|Darwin) ;;
@@ -33,6 +34,15 @@ install_tochka() {
         x86_64|aarch64|arm64) ;;
         *) echo 'Supported architectures: x86_64 and ARM64.' >&2; return 1 ;;
     esac
+
+    if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
+        echo 'Install Node.js >=22.22.0 and npm, then run this installer again. Node.js is not downloaded automatically.' >&2
+        return 1
+    fi
+    if ! node -e 'const [major, minor] = process.versions.node.split(".").map(Number); process.exit(major > 22 || (major === 22 && minor >= 22) ? 0 : 1)' >/dev/null 2>&1; then
+        echo 'Node.js >=22.22.0 is required. Update Node.js and run this installer again.' >&2
+        return 1
+    fi
 
     if command -v uv >/dev/null 2>&1; then
         uv_command=$(command -v uv)
@@ -54,13 +64,19 @@ install_tochka() {
     "$uv_command" tool install --python 3.11 --force "$source_url"
     bin_dir=$("$uv_command" tool dir --bin)
     "$bin_dir/tochka" --help >/dev/null
+    echo 'Installing and verifying the required Promptfoo runtime (no model API calls)...'
+    if ! "$bin_dir/tochka" setup; then
+        echo 'Tochka CLI was installed, but Promptfoo setup failed. Fix the reported problem, then run:' >&2
+        shell_quote "$bin_dir/tochka" >&2; printf ' setup\n' >&2
+        return 1
+    fi
     if [ "$modify_path" -eq 1 ]; then
         if ! "$uv_command" tool update-shell; then
             echo "PATH could not be updated. Use: $bin_dir/tochka" >&2
         fi
     fi
     echo ''
-    echo 'Tochka installed. Open a new terminal and run: tochka'
+    echo 'Tochka installed. Promptfoo runtime is ready. Open a new terminal and run: tochka'
     printf 'Run immediately: '; shell_quote "$bin_dir/tochka"; printf '\n'
     echo 'Inside Tochka: /help for commands; /keys to add your own API key.'
     printf 'Uninstall application: '; shell_quote "$uv_command"; printf ' tool uninstall nir-eval\n'

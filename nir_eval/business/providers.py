@@ -131,7 +131,7 @@ def validate_config(config):
             raise ValidationError('generation-provider requires provider object')
         # Only a bounded explicit schema can enter persisted configuration.
         allowed = {'type', 'model_path', 'device', 'dtype', 'max_new_tokens', 'timeout_seconds',
-                   'base_url', 'api_key_env', 'command', 'cwd', 'remote', 'revision', 'threads', 'seed', 'input_price_per_million', 'output_price_per_million'}
+                   'base_url', 'api_key_env', 'command', 'cwd', 'remote', 'revision', 'threads', 'seed', 'input_price_per_million', 'output_price_per_million', 'engine'}
         if provider.keys() - allowed or provider.get('type') not in {'openai-compatible', 'transformers-local', 'command', 'opencode'}:
             raise ValidationError('Unsupported nested generation provider configuration')
         if any(k in provider for k in {'base_url', 'api_key_env'}):

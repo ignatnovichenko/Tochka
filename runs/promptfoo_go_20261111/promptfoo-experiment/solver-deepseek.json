@@ -1,0 +1,21 @@
+{
+  "provider": {
+    "type": "openai-compatible",
+    "base_url": "https://opencode.ai/inference/go/openai/v1",
+    "api_key_env": "OPENCODE_GO_API_KEY",
+    "timeout_seconds": 120.0,
+    "engine": "promptfoo"
+  },
+  "model": "deepseek-v4.1-flash",
+  "configurations": [
+    {
+      "name": "deepseek",
+      "parameters": {
+        "temperature": 0.0,
+        "max_tokens": 1024
+      }
+    }
+  ],
+  "repetitions": 1,
+  "max_calls": 3
+}

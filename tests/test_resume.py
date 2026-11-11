@@ -46,6 +46,20 @@ class ResumeTests(unittest.TestCase):
     def run_it(self,solver,judge,output=None,reuse=None):
         with patch('nir_eval.business.running.make_provider',return_value=solver),patch('nir_eval.business.running.make_judge',return_value=judge),contextlib.redirect_stdout(io.StringIO()):
             return run_business(self.cases,self.rubrics,self.solver,output or self.source,judge_path=self.judge,save_raw_judge=True,reuse_from=reuse)
+    def test_old_solver_or_judge_engine_cannot_be_mixed_on_resume(self):
+        self.run_it(Solver(), Judge())
+        path = self.source/'manifest.json'
+        original = json.loads(path.read_text())
+        for role in ('solver', 'judge'):
+            with self.subTest(role=role):
+                manifest = json.loads(json.dumps(original))
+                manifest['execution_backend'].pop(role)
+                path.write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValidationError, 'engine'):
+                    self.run_it(Solver(), Judge(), self.output, self.source)
+                self.assertFalse(self.output.exists())
+        path.write_text(json.dumps(original))
+
     def test_reuses_solver_and_valid_judge_only(self):
         self.run_it(Solver(),Judge(invalid=2));before=hashes(self.source)
         solver=Solver();judge=Judge();self.run_it(solver,judge,self.output,self.source)

@@ -36,6 +36,14 @@ class WorkflowTests(unittest.TestCase):
         return self.cli('solver-add',str(self.root),'--provider','api','--base-url','https://api.example/v1','--model',model,'--name',name)
     def judge(self, model='fixture-judge'):
         return self.cli('judge-set',str(self.root),'--provider','api','--base-url','https://api.example/v1','--model',model)
+    def test_judge_token_default_and_explicit_override(self):
+        from nir_eval.experiment import parser, configure_provider
+        for command, expected in [('judge-set',8192),('solver-add',2048)]:
+            args=[command,str(self.root),'--model','fixture','--base-url','http://localhost:1234/v1']
+            if command=='solver-add': args+=['--name','baseline']
+            self.assertEqual(configure_provider(parser().parse_args(args))[1]['max_tokens'],expected)
+            self.assertEqual(configure_provider(parser().parse_args(args+['--max-tokens','3072']))[1]['max_tokens'],3072)
+
     def test_paid_model_can_be_configured_without_call(self):
         self.assertEqual(self.solver('paid-model-id'),0)
     def test_unsupported_parameter_blocked(self):

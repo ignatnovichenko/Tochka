@@ -9,6 +9,7 @@ from pathlib import Path
 import time
 
 from ..providers import make_provider,ProviderError
+from ..provenance import source_hashes
 from .schema import ValidationError,canonical,digest,strict_json,import_inputs,fields,identifier,string
 from .evaluation import build_solver_messages,evaluate_matrix
 from .providers import make_judge,validate_config
@@ -97,8 +98,10 @@ def run_business(cases_path,rubrics_path,solver_path,output,*,judge_path=None,
               'solver_model':solver_config['model'],'solver_config_sha256':digest(solver_config),
               'judge_config_sha256':digest(judge_config),'judge_type':judge_config['type'],
               'save_raw_judge':save_raw_judge,'cost_usd':None,
-              'code_sha256':{str(p.relative_to(Path(__file__).parents[1])):sha(p)
-                             for p in sorted(Path(__file__).parents[1].rglob('*.py'))},
+              'code_sha256':source_hashes(),
+              'execution_backend': {'solver': 'promptfoo' if solver_config['provider'].get('type') == 'openai-compatible' else 'legacy-disabled',
+                                    'judge': 'promptfoo' if judge_config.get('type') in {'generation-provider','openai-compatible'} else 'disabled',
+                                    'version': '0.125.1', 'cache': False, 'transport_retries': 0},
               'execution':{'new_solver_calls':0,'new_judge_calls':0,'reused_solver_answers':0,
                            'reused_judgements':0,'new_call_cost_usd':None,
                            'cost_scope':'new attempted requests, excluding known local cooldown/budget refusals; effective per-task costs retain original calls'},

@@ -57,6 +57,11 @@ def load_reusable_run(source,cases_path,rubrics_path,solver,judge):
     manifest=strict_json(mp.read_text())
     if manifest.get('schema_version')!='business-pipeline-v1' or manifest.get('state') not in {'running','interrupted','completed'}:
         raise ValidationError('Unsupported resume source manifest')
+    if solver['provider'].get('type') == 'openai-compatible' and solver['provider'].get('engine') != 'promptfoo' and manifest.get('execution_backend',{}).get('solver') != 'promptfoo':
+        raise ValidationError('Old API engine results remain readable; create a new Promptfoo experiment instead of mixing execution engines on resume')
+    judge_provider = judge.get('provider',{}) if judge.get('type') == 'generation-provider' else judge
+    if judge_provider.get('type') == 'openai-compatible' and judge_provider.get('engine') != 'promptfoo' and manifest.get('execution_backend',{}).get('judge') != 'promptfoo':
+        raise ValidationError('Old judge engine results remain readable; start a new Promptfoo experiment instead of mixing judges on resume')
     expected_hashes={'cases_sha256':sha(cases_path),'rubrics_sha256':sha(rubrics_path),
                      'solver_config_sha256':digest(solver),'judge_config_sha256':digest(judge)}
     if any(manifest.get(k)!=v for k,v in expected_hashes.items()):

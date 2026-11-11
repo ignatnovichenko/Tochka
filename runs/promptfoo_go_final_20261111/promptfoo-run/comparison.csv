@@ -1,0 +1,4 @@
+﻿model,configuration,attempts,judge_evaluated,judge_unknown,judge_coverage,mean_judge_score,judge_pass_rate_among_evaluated,mean_solver_latency_seconds,mean_total_latency_seconds,mean_solver_cost_usd,mean_judge_cost_usd,mean_cost_usd,cost_basis,rejection_reasons
+gpt-6-luna,luna,2,2,0,1.0,1.0,1.0,5.351612,26.801746,0.0,0.0,0.0,,[]
+qwen3.7-plus,qwen,2,2,0,1.0,0.95,1.0,24.5153885,66.6647835,0.0,0.0,0.0,,[]
+glm-5.3-flash,glmflash,2,2,0,1.0,1.0,1.0,4.0123555,37.517317999999996,0.0,0.0,0.0,,[]

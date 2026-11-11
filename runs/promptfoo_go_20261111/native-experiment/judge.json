@@ -1,0 +1,16 @@
+{
+  "type": "generation-provider",
+  "provider": {
+    "type": "openai-compatible",
+    "base_url": "https://opencode.ai/inference/go/openai/v1",
+    "api_key_env": "OPENCODE_GO_API_KEY",
+    "timeout_seconds": 120.0
+  },
+  "model": "glm-5.3",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 3072
+  },
+  "max_calls": 6,
+  "structured_retries": 0
+}

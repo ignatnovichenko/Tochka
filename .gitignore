@@ -9,3 +9,5 @@ credentials.json
 runs/
 
 .nir-opencode-cooldown.json
+
+node_modules/

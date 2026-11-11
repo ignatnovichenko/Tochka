@@ -2,17 +2,10 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 import json
-import time
-import uuid
-from email.utils import parsedate_to_datetime
 import os
 from pathlib import Path
 import signal
 import subprocess
-import urllib.error
-import urllib.parse
-import urllib.request
-from . import __version__
 
 
 @dataclass
@@ -82,83 +75,18 @@ class CommandProvider:
 
 
 class OpenAICompatibleProvider:
-    kind = "model-inference"
+    """Compatibility API name; execution is exclusively through Promptfoo."""
+    kind = 'model-inference'
 
-    def __init__(self, config: dict, allow_remote: bool = False):
-        from .api_support import validate_api_config
-        local = validate_api_config(config, allow_remote=allow_remote, require_key=True)
-        self.config = config
-        base_url = config['base_url'].rstrip('/')
-        self.blocked_until = 0
-        self.session_id = str(uuid.uuid4())
-        self.url = base_url + "/chat/completions"
-        from .credentials import api_key
-        self.api_key = api_key(config)
-        # Refuse redirecting a bearer token or benchmark payload to another destination.
-        class NoRedirect(urllib.request.HTTPRedirectHandler):
-            def redirect_request(self, req, fp, code, msg, headers, newurl):
-                return None
-        self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}) if local else urllib.request.ProxyHandler(), NoRedirect())
+    def __init__(self, config, allow_remote=False):
+        from .promptfoo_backend import PromptfooProvider
+        self.backend = PromptfooProvider(config, allow_remote)
 
-    def generate(self, messages, model, parameters, context) -> Generation:
-        if time.time() < self.blocked_until:
-            exc = ProviderUnavailable('api_cooldown_active')
-            exc.retry_after_seconds = max(0, self.blocked_until - time.time())
-            raise exc
-        blocked = {"messages", "model", "stream", "tools", "tool_choice"} & parameters.keys()
-        if blocked:
-            raise ValueError("Reserved API parameter overridden")
-        body = json.dumps({"model": model, "messages": messages,
-                           "stream": False, **parameters}).encode()
-        headers = {"Content-Type": "application/json", "User-Agent": "Tochka/" + __version__, "x-opencode-session": self.session_id}
-        if self.api_key:
-            headers["Authorization"] = "Bearer " + self.api_key
-        req = urllib.request.Request(self.url, data=body, headers=headers, method="POST")
-        try:
-            with self.opener.open(req, timeout=float(self.config.get("timeout_seconds", 180))) as response:
-                raw = response.read(1_000_001)
-        except urllib.error.HTTPError as exc:
-            # No error body, URL or authorization values are copied to records.
-            error = ProviderUnavailable(f'api_http_{exc.code}') if exc.code in {401,403,404,408,429,500,502,503,504} else ProviderError(f'api_http_{exc.code}')
-            if exc.code == 429:
-                retry = exc.headers.get('Retry-After') if exc.headers else None
-                try:
-                    delay = float(retry)
-                except (ValueError, TypeError):
-                    try: delay = parsedate_to_datetime(retry).timestamp() - time.time()
-                    except (ValueError, TypeError, AttributeError, OverflowError): delay = 60
-                import math
-                if not math.isfinite(delay): delay = 60
-                error.retry_after_seconds = max(1, min(delay, 7*86400))
-                self.blocked_until = time.time() + error.retry_after_seconds
-            exc.close()
-            raise error from None
-        except (urllib.error.URLError, TimeoutError):
-            raise ProviderUnavailable('api_connection_unavailable') from None
-        if len(raw) > 1_000_000:
-            raise ProviderError("API response exceeds 1 MB limit")
-        try:
-            from .business.schema import strict_json
-            data = strict_json(raw)
-            content = data["choices"][0]["message"]["content"]
-            if not isinstance(content, str):
-                raise ValueError("Missing text response")
-            from .api_support import response_metadata
-            if self.api_key:
-                content = content.replace(self.api_key, '[REDACTED_CREDENTIAL]')
-            usage = data.get('usage') if isinstance(data.get('usage'),dict) else {}
-            usage = {k:v for k,v in usage.items() if k in {'prompt_tokens','completion_tokens','total_tokens'} and type(v) is int and v>=0}
-            meta = response_metadata(data, self.config)
-            if self.api_key:
-                def redact(value):
-                    if isinstance(value,str): return value.replace(self.api_key,'[REDACTED_CREDENTIAL]')
-                    if isinstance(value,dict): return {k:redact(v) for k,v in value.items()}
-                    if isinstance(value,list): return [redact(v) for v in value]
-                    return value
-                meta = redact(meta)
-            return Generation(content, usage, meta)
-        except (ValueError, KeyError, IndexError, TypeError, AttributeError):
-            raise ProviderError("Malformed chat completion response") from None
+    def __getattr__(self, name):
+        return getattr(self.backend, name)
+
+    def generate(self, messages, model, parameters, context):
+        return self.backend.generate(messages, model, parameters, context)
 
 
 class ReplayProvider:
@@ -193,7 +121,9 @@ def make_provider(config, allow_remote=False):
             def generate(self, *args, **kwargs):
                 raise ProviderError('api_only_legacy_transport_disabled')
         return APIOnlyProvider()
-    if name == "openai-compatible": return OpenAICompatibleProvider(config, allow_remote)
+    if name == "openai-compatible":
+        from .promptfoo_backend import PromptfooProvider
+        return PromptfooProvider(config, allow_remote)
     if name == "replay": return ReplayProvider(config, allow_remote)
     if name in {"oracle-control", "invalid-control"}: return None
     raise ValueError(f"Unknown provider type: {name}")
