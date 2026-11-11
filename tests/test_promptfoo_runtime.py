@@ -22,6 +22,8 @@ class PromptfooRuntimeTests(unittest.TestCase):
                                      'XDG_DATA_HOME': str(self.root/'data')})
         env.start(); self.addCleanup(env.stop)
         self.status = {'ready': False, 'node_compatible': True}
+        env_patch = patch.object(backend, 'command_environment', side_effect=lambda env: dict(env))
+        env_patch.start(); self.addCleanup(env_patch.stop)
 
     def test_setup_copies_pinned_lock_and_disables_install_scripts(self):
         target = backend.install_path()
@@ -39,7 +41,7 @@ class PromptfooRuntimeTests(unittest.TestCase):
             self.assertEqual(kwargs['timeout'], 900)
             return Mock(returncode=0)
         with patch.object(backend, 'runtime_status', side_effect=[self.status, self.status, {'ready': True}]), \
-             patch.object(backend.shutil, 'which', return_value='/fixture/npm'), \
+             patch.object(backend, 'npm_command', return_value='/fixture/npm'), \
              patch.object(backend.subprocess, 'run', side_effect=install) as run:
             self.assertTrue(backend.setup_runtime()['ready'])
         run.assert_called_once()
@@ -50,7 +52,7 @@ class PromptfooRuntimeTests(unittest.TestCase):
         for error in (Mock(returncode=1), subprocess.TimeoutExpired('npm', 900)):
             with self.subTest(error=type(error).__name__), \
                  patch.object(backend, 'runtime_status', return_value=self.status), \
-                 patch.object(backend.shutil, 'which', return_value='/fixture/npm'), \
+                 patch.object(backend, 'npm_command', return_value='/fixture/npm'), \
                  patch.object(backend.subprocess, 'run') as run:
                 if isinstance(error, Exception): run.side_effect = error
                 else: run.return_value = error
@@ -60,7 +62,7 @@ class PromptfooRuntimeTests(unittest.TestCase):
 
     def test_setup_rejects_failed_final_health_check(self):
         with patch.object(backend, 'runtime_status', return_value=self.status), \
-             patch.object(backend.shutil, 'which', return_value='/fixture/npm'), \
+             patch.object(backend, 'npm_command', return_value='/fixture/npm'), \
              patch.object(backend.subprocess, 'run', return_value=Mock(returncode=0)):
             with self.assertRaisesRegex(ValidationError, 'Promptfoo|runtime|готов|setup'):
                 backend.setup_runtime()
@@ -69,7 +71,7 @@ class PromptfooRuntimeTests(unittest.TestCase):
     def test_invalid_explicit_override_does_not_fall_back(self):
         override = self.root/'nonexistent-runtime'
         with patch.dict(os.environ, {'TOCHKA_PROMPTFOO_DIR': str(override)}), \
-             patch.object(backend.shutil, 'which', return_value=None):
+             patch.object(backend, 'node_command', return_value=None):
             self.assertEqual(backend.runtime_path(), override.resolve())
             self.assertFalse(backend.runtime_status()['ready'])
             with self.assertRaises(ValidationError): backend.require_runtime()
@@ -79,16 +81,27 @@ class PromptfooRuntimeTests(unittest.TestCase):
         package = runtime/'node_modules/promptfoo/package.json'
         package.parent.mkdir(parents=True)
         package.write_text(json.dumps({'version': backend.VERSION}))
-        (runtime/'worker.mjs').write_text('// fixture')
+        (runtime/'worker.mjs').write_bytes((backend.BUNDLED/'worker.mjs').read_bytes())
+        (runtime/'package-lock.json').write_bytes((backend.BUNDLED/'package-lock.json').read_bytes())
         with patch.object(backend, 'runtime_path', return_value=runtime), \
              patch.object(backend, '_VERIFIED', set()), \
-             patch.object(backend.shutil, 'which', return_value='/fixture/node'), \
+             patch.object(backend, 'node_command', return_value='/fixture/node'), \
              patch.object(backend.subprocess, 'run', return_value=Mock(stdout='v24.0.0')), \
              patch.object(backend, 'Worker') as worker:
             worker.return_value.call.return_value = {'ok': False, 'version': backend.VERSION}
             self.assertFalse(backend.runtime_status()['ready'])
             worker.return_value.call.assert_called_once_with({'op':'health', 'timeout_seconds':10})
             worker.return_value.close.assert_called_once_with()
+
+    def test_upgrade_refreshes_bridge_without_reinstalling_dependencies(self):
+        target=backend.install_path(); package=target/'node_modules/promptfoo/package.json'
+        package.parent.mkdir(parents=True); package.write_text(json.dumps({'version':backend.VERSION}))
+        (target/'package-lock.json').write_bytes((backend.BUNDLED/'package-lock.json').read_bytes())
+        (target/'worker.mjs').write_text('// old bridge')
+        with patch.object(backend,'runtime_status',side_effect=[self.status,self.status,{'ready':True}]), patch.object(backend,'npm_command',return_value='/fixture/npm'), patch.object(backend.subprocess,'run') as install:
+            self.assertTrue(backend.setup_runtime()['ready'])
+        install.assert_not_called()
+        self.assertEqual((target/'worker.mjs').read_bytes(),(backend.BUNDLED/'worker.mjs').read_bytes())
 
     def test_ready_runtime_does_not_install(self):
         with patch.object(backend, 'runtime_status', return_value={'ready': True}), \

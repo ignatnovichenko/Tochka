@@ -19,6 +19,42 @@ class WorkflowTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             try: return main(list(args))
             except SystemExit as exc: return exc.code
+    def test_concurrency_parser_defaults_boundaries_and_invalid_input(self):
+        from nir_eval.experiment import parser
+        for command in ('run', 'resume', 'calibrate'):
+            base = [command, str(self.root), '--output', str(self.root/'result')]
+            if command == 'calibrate': base += ['--labels', 'labels.jsonl']
+            self.assertEqual(parser().parse_args(base).concurrency, 4)
+            for value in ('1','32'):
+                self.assertEqual(parser().parse_args(base+['--concurrency', value]).concurrency, int(value))
+            for value in ('0','33','1.5','nan'):
+                self.assertEqual(self.cli(*base,'--concurrency',value),2)
+            self.assertFalse((self.root/'result').exists())
+
+    def test_invalid_programmatic_concurrency_precedes_preflight_and_output(self):
+        from nir_eval.experiment import calibrate
+        target = self.root/'results'
+        with patch('nir_eval.experiment.experiment_plan') as plan:
+            for value in (0,33,True,4.0,'4'):
+                with self.assertRaises(ValueError): run_experiment(self.root,target,max_concurrency=value)
+                with self.assertRaises(ValueError): calibrate(self.root,'not-read',target,max_concurrency=value)
+            plan.assert_not_called()
+        self.assertFalse(target.exists())
+
+    def test_concurrency_is_passed_to_run_calibration_and_resume(self):
+        target = self.root/'results'
+        with patch('nir_eval.experiment.run_experiment',return_value={}) as run, \
+             patch('nir_eval.experiment.terminal_summary',return_value='fixture'):
+            self.assertEqual(self.cli('run',str(self.root),'--output',str(target),'--concurrency','3'),0)
+            run.assert_called_once_with(self.root,target,False,max_concurrency=3)
+        with patch('nir_eval.experiment.calibrate',return_value={}) as calibrate:
+            self.assertEqual(self.cli('calibrate',str(self.root),'--labels','fixture.jsonl','--output',str(target),'--concurrency','2'),0)
+            calibrate.assert_called_once_with(self.root,'fixture.jsonl',target,False,max_concurrency=2)
+        with patch('nir_eval.resume.resume_experiment',return_value={}) as resume, \
+             patch('nir_eval.experiment.terminal_summary',return_value='fixture'):
+            self.assertEqual(self.cli('resume',str(self.root),'--output',str(target),'--concurrency','1'),0)
+            resume.assert_called_once_with(self.root,target,False,max_concurrency=1)
+
     def test_demo_valid(self):
         from nir_eval.business.schema import import_inputs
         cases, rubrics, _ = import_inputs(self.root/'cases.jsonl', self.root/'rubrics.jsonl')

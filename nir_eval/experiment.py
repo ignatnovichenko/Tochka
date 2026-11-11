@@ -11,7 +11,7 @@ import subprocess
 import sys
 from .business.schema import (ValidationError, canonical, strict_json, load_jsonl,
     import_inputs, validate_case, validate_rubric, identifier, digest)
-from .business.running import run_business, load_judge_config, sha
+from .business.running import run_business_matrix, load_judge_config, sha
 from .business.providers import make_judge
 from .business.evaluation import evaluate
 from .business_selection import select_business_run, validate_business_policy
@@ -141,7 +141,21 @@ def report(output, result, source_root=None):
     return write_business_report(Path(output), result, source_root=source_root)
 
 
-def run_experiment(root, output, allow_remote=False):
+def validate_concurrency(value):
+    if type(value) is not int or not 1 <= value <= 32:
+        raise ValidationError('Параллельность должна быть целым числом от 1 до 32.')
+    return value
+
+
+def concurrency_argument(value):
+    try:
+        return validate_concurrency(int(value))
+    except (ValueError, TypeError):
+        raise argparse.ArgumentTypeError('Укажите целое число от 1 до 32.') from None
+
+
+def run_experiment(root, output, allow_remote=False, max_concurrency=4):
+    validate_concurrency(max_concurrency)
     root, output = Path(root).resolve(), Path(output)
     experiment_plan(root, allow_remote=allow_remote, check_credentials=True)
     cfg = config(root)
@@ -154,13 +168,15 @@ def run_experiment(root, output, allow_remote=False):
                 'input_hashes': {p.name: sha(p) for p in inputs.iterdir()}}
     write(output / 'experiment-manifest.json', manifest)
     try:
-        for solver in cfg['solvers']:
-            target = output / Path(solver).stem
-            run_business(inputs / 'cases.jsonl', inputs / 'rubrics.jsonl', inputs / solver, target,
-                         judge_path=inputs / cfg['judge'], allow_remote_solver=allow_remote,
-                         allow_remote_judge=allow_remote, save_raw_judge=True)
-            manifest['runs'].append(target.name)
-            write(output / 'experiment-manifest.json', manifest)
+        specs = [{'cases_path': inputs/'cases.jsonl', 'rubrics_path': inputs/'rubrics.jsonl',
+                  'solver_path': inputs/solver, 'output': output/Path(solver).stem,
+                  'judge_path': inputs/cfg['judge'], 'allow_remote_solver':allow_remote,
+                  'allow_remote_judge':allow_remote,'save_raw_judge':True} for solver in cfg['solvers']]
+        manifest['scheduler'] = {'engine':'promptfoo.evaluate','max_concurrency':max_concurrency}
+        write(output/'experiment-manifest.json',manifest)
+        run_business_matrix(specs,max_concurrency=max_concurrency)
+        manifest['runs'] = [Path(solver).stem for solver in cfg['solvers']]
+        write(output/'experiment-manifest.json',manifest)
         result = compare_runs([output / x for x in manifest['runs']], cfg['policy'])
         report(output, result)
         manifest.update(state='completed', completed_at_utc=datetime.now(timezone.utc).isoformat())
@@ -171,7 +187,9 @@ def run_experiment(root, output, allow_remote=False):
         raise
 
 
-def calibrate(root, labels_path, output, allow_remote=False):
+def calibrate(root, labels_path, output, allow_remote=False, max_concurrency=4):
+    validate_concurrency(max_concurrency)
+    root, output = Path(root), Path(output)
     cfg = config(root)
     cases, rubrics, _ = import_inputs(root / 'cases.jsonl', root / 'rubrics.jsonl')
     cases = {c['id']: c for c in cases}
@@ -184,51 +202,68 @@ def calibrate(root, labels_path, output, allow_remote=False):
         if x['id'] in seen:
             raise ValidationError('Duplicate label ID')
         seen.add(x['id'])
+    if not labels:
+        raise ValidationError('Calibration requires at least one labelled candidate')
     jc = load_judge_config(root / cfg['judge'])
     if len(labels) > jc.get('max_calls', 100):
         raise ValidationError('Calibration exceeds judge budget')
     if jc.get('type') != 'generation-provider' or jc.get('provider',{}).get('type') != 'openai-compatible':
         raise ValidationError('Configure an API judge before calibration')
     validate_api_config(jc['provider'], allow_remote=allow_remote, require_key=True)
-    actual_judge = make_judge(jc, allow_remote)
+    from .promptfoo_backend import require_runtime
+    from .business.judging import evaluate_candidates
+    require_runtime()
     output.mkdir(parents=True, exist_ok=False)
-    shutil.copy2(labels_path, output / 'labels.jsonl')
-    for source in [root / 'cases.jsonl', root / 'rubrics.jsonl', root / cfg['judge']]:
-        shutil.copy2(source, output / source.name)
-    write(output / 'manifest.json', {'state': 'running', 'judge_config_sha256': digest(jc),
+    # Persist the validated in-memory snapshots, so concurrent source edits cannot
+    # change which inputs were executed or make the manifest describe other bytes.
+    jsonl(output / 'labels.jsonl', labels)
+    jsonl(output / 'cases.jsonl', list(cases.values()))
+    jsonl(output / 'rubrics.jsonl', list(rubrics.values()))
+    write(output / 'judge.json', jc)
+    manifest = {'state': 'running', 'judge_config_sha256': digest(jc),
           'started_at_utc': datetime.now(timezone.utc).isoformat(),
           'inputs': {p.name: sha(p) for p in output.iterdir() if p.is_file()},
-          'code_sha256': source_hashes()})
+          'code_sha256': source_hashes(), 'scheduler': 'promptfoo.evaluate',
+          'max_concurrency': max_concurrency, 'started_calls': 0,
+          'judge_latency_scope': 'Sum of Promptfoo provider-call durations and local strict validation; includes explicit repairs, excludes scheduler queue and worker startup'}
+    write(output / 'manifest.json', manifest)
     try:
         rows = []
+        label_by_id = {label['id']: label for label in labels}
+        items = [{'id': label['id'], 'case': cases[label['case_id']],
+                  'rubric': rubrics[cases[label['case_id']]['rubric_id']], 'candidate': label['candidate']}
+                 for label in labels]
         with (output / 'raw.jsonl').open('w', encoding='utf-8') as raw, (output / 'records.jsonl').open('w', encoding='utf-8') as records:
-            class Recording:
-                kind = actual_judge.kind
-                model = actual_judge.model
-                structured_retries = getattr(actual_judge, 'structured_retries', 0)
-                def judge(self, messages, case_id):
-                    reply = actual_judge.judge(messages, case_id)
-                    raw.write(canonical({'case_id': case_id, 'raw_output': reply.text, 'metadata': reply.metadata}) + '\n'); raw.flush()
-                    return reply
-            for label in labels:
-                case = cases[label['case_id']]
-                row = evaluate(case, rubrics[case['rubric_id']], label['candidate'], Recording())
+            def raw_result(label_id, detail):
+                raw.write(canonical({'label_id': label_id, **detail}) + '\n'); raw.flush()
+                import os
+                os.fsync(raw.fileno())
+            def started(job_id, started_at):
+                manifest['started_calls'] += 1
+                write(output / 'manifest.json', manifest)
+            def record(label_id, row):
+                label = label_by_id[label_id]
                 evaluated = row['judge']['status'] == 'evaluated'
                 critical = any(c['detected'] for c in row['judge'].get('critical_errors', [])) if evaluated else None
-                row.update(label_id=label['id'], expected_pass=label['expected_pass'], expected_critical=label['expected_critical'],
+                row.update(label_id=label_id, expected_pass=label['expected_pass'], expected_critical=label['expected_critical'],
                            pass_agreement=(row['passed'] == label['expected_pass']) if evaluated else None,
                            critical_agreement=(critical == label['expected_critical']) if evaluated else None)
                 rows.append(row); records.write(canonical(row) + '\n'); records.flush()
+                import os
+                os.fsync(records.fileno())
                 print(f'calibration {len(rows)}/{len(labels)}: {row["judge"]["status"]}', flush=True)
+            execution = evaluate_candidates(items, jc, max_concurrency, allow_remote=allow_remote,
+                                            on_record=record, on_raw=raw_result, on_started=started)
         known = [r for r in rows if r['pass_agreement'] is not None]
         summary = {'total': len(rows), 'evaluated': len(known), 'unknown': len(rows) - len(known),
                    'coverage': len(known) / len(rows),
                    'pass_agreement': sum(r['pass_agreement'] for r in known) / len(known) if known else None,
                    'critical_agreement': sum(r['critical_agreement'] for r in known) / len(known) if known else None,
-                   'judge_model': actual_judge.model, 'judge_config_sha256': digest(jc), 'labels_sha256': sha(labels_path),
+                   'judge_model': jc['model'], 'judge_config_sha256': digest(jc), 'labels_sha256': sha(output / 'labels.jsonl'),
                    'limitation': 'Small synthetic author-labelled control set; not independent human certification.'}
         write(output / 'summary.json', summary)
-        manifest = read(output / 'manifest.json'); manifest.update(state='completed', records_sha256=sha(output / 'records.jsonl'), summary_sha256=sha(output / 'summary.json'))
+        manifest.update(state='completed', records_sha256=sha(output / 'records.jsonl'),
+                        summary_sha256=sha(output / 'summary.json'), execution=execution)
         write(output / 'manifest.json', manifest)
         return summary
     except BaseException as exc:
@@ -249,6 +284,7 @@ def parser():
     plan = sub.add_parser('plan', help='План вызовов без inference'); plan.add_argument('directory')
     plan.add_argument('--allow-remote', action='store_true')
     resume = sub.add_parser('resume', help='Продолжить прогон в новой папке, сохранив старый'); resume.add_argument('run'); resume.add_argument('--output', required=True); resume.add_argument('--allow-remote', action='store_true'); resume.add_argument('--plan-only', action='store_true')
+    resume.add_argument('--concurrency', type=concurrency_argument, default=4, help='Максимум одновременных запросов Promptfoo, 1–32 (по умолчанию 4)')
     reselect = sub.add_parser('reselect', help='Пересчитать выбор и отчёт без новых модельных запросов'); reselect.add_argument('run'); reselect.add_argument('--output', required=True)
     for flag in ['min-quality','min-coverage','min-pass-rate','max-latency','max-cost','max-critical-rate']:
         reselect.add_argument('--'+flag,type=float)
@@ -277,6 +313,7 @@ def parser():
             q.add_argument('--max-cost', type=float); q.add_argument('--max-critical-rate', type=float, default=0)
         if name in ['run', 'calibrate']:
             q.add_argument('--output', required=True); q.add_argument('--allow-remote', action='store_true')
+            q.add_argument('--concurrency', type=concurrency_argument, default=4, help='Максимум одновременных запросов Promptfoo, 1–32 (по умолчанию 4)')
         if name == 'calibrate': q.add_argument('--labels', required=True)
     q = sub.add_parser('results'); q.add_argument('run'); q.add_argument('--json', action='store_true')
     q = sub.add_parser('select'); q.add_argument('run'); q.add_argument('--policy', required=True); q.add_argument('--output', required=True)
@@ -312,7 +349,7 @@ def main(argv=None):
             from .resume import resume_experiment, resume_plan
             if args.plan_only:
                 print(json.dumps(resume_plan(Path(args.run)),ensure_ascii=False,indent=2)); return 0
-            result = resume_experiment(Path(args.run),Path(args.output),args.allow_remote)
+            result = resume_experiment(Path(args.run),Path(args.output),args.allow_remote,max_concurrency=args.concurrency)
             print(terminal_summary(result)); print('Отчёт: ' + str(Path(args.output)/'report.html')); return 0
         if args.command == 'reselect':
             source = Path(args.run).resolve()
@@ -408,9 +445,9 @@ def main(argv=None):
             cfg['policy'] = validate_business_policy(value)
             write(root / 'policy.json', cfg['policy'])
         elif args.command == 'run':
-            result = run_experiment(root, Path(args.output), args.allow_remote); print(terminal_summary(result)); print('Отчёт: '+str(Path(args.output)/'report.html')); return 0
+            result = run_experiment(root, Path(args.output), args.allow_remote, max_concurrency=args.concurrency); print(terminal_summary(result)); print('Отчёт: '+str(Path(args.output)/'report.html')); return 0
         elif args.command == 'calibrate':
-            result = calibrate(root, args.labels, Path(args.output), args.allow_remote); print(json.dumps(result, ensure_ascii=False)); return 0
+            result = calibrate(root, args.labels, Path(args.output), args.allow_remote, max_concurrency=args.concurrency); print(json.dumps(result, ensure_ascii=False)); return 0
         write(root / 'experiment.json', cfg)
         print('Готово'); return 0
     except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:

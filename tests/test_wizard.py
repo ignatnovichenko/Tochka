@@ -14,12 +14,12 @@ from nir_eval.wizard import (ModelSettings, estimated_cost, main, model_command,
 
 
 def answers(*, confirmation='', endpoint='', mode='1', import_paths=(), documents=(),
-            judge_model='judge-model', judge_extra=(), prices=('', ''), tokens=()):
+            judge_model='judge-model', judge_extra=(), prices=('', ''), tokens=(), concurrency=''):
     result = [mode, *import_paths, *[str(d) for d in documents], '', endpoint, '', '']
     for model in ['solver-a', 'solver-b']:
         result += [model, '', '', '', '', '', *prices]
     result += [judge_model, *judge_extra, '', '', '', '', *prices]
-    result += ['', '', '', '', '', *tokens, confirmation]
+    result += ['', '', '', '', '', concurrency, *tokens, confirmation]
     return result
 
 
@@ -78,7 +78,12 @@ class WizardTests(unittest.TestCase):
 
     def test_only_explicit_yes_starts_local_run(self):
         self.assertEqual(self.run_dialog(answers(confirmation='да')), 0)
-        self.assertEqual(self.commands[-1], ['run', str(self.root), '--output', str(self.output)])
+        self.assertEqual(self.commands[-1], ['run', str(self.root), '--output', str(self.output), '--concurrency', '4'])
+
+    def test_requested_concurrency_is_in_run_and_saved_command(self):
+        self.assertEqual(self.run_dialog(answers(confirmation='да', concurrency='2')), 0)
+        self.assertEqual(self.commands[-1][-2:], ['--concurrency', '2'])
+        self.assertIn('Одновременных запросов: до 2', '\n'.join(self.messages))
 
     def test_english_yes_does_not_start(self):
         self.assertEqual(self.run_dialog(answers(confirmation='yes')), 0)

@@ -1,0 +1,135 @@
+{
+  "schema_version": "business-experiment-v1",
+  "policy": {
+    "min_judge_coverage": 1.0,
+    "min_mean_judge_score": 0.8,
+    "max_generation_error_rate": 0.0,
+    "max_judge_critical_error_rate": 0,
+    "min_tasks": 1,
+    "objective": "quality"
+  },
+  "status": "no_eligible_configuration",
+  "eligible_count": 0,
+  "selected": null,
+  "tied": [],
+  "candidates": [
+    {
+      "model": "gpt-6-luna",
+      "configuration": "luna",
+      "attempts": 2,
+      "unique_tasks": 2,
+      "repetitions": 1,
+      "attempt_coverage": 1.0,
+      "judge_evaluated": 0,
+      "judge_coverage": 0.0,
+      "judge_unknown": 2,
+      "judge_status_counts": {
+        "evaluated": 0,
+        "unavailable": 0,
+        "error": 0,
+        "not_evaluated": 2
+      },
+      "mean_judge_score": null,
+      "judge_pass_rate_among_evaluated": null,
+      "judge_critical_error_rate_among_evaluated": null,
+      "generation_error_rate": 1.0,
+      "mean_solver_latency_seconds": 2.4913385,
+      "solver_latency_scope": "Promptfoo scheduled API call; excludes queue wait, worker startup and judge.",
+      "mean_total_latency_seconds": null,
+      "total_latency_scope": null,
+      "mean_cost_usd": null,
+      "rejection_reasons": [
+        "judge_coverage_below_threshold",
+        "judge_quality_unknown",
+        "generation_error_rate_above_limit"
+      ],
+      "run": "solver-luna"
+    },
+    {
+      "model": "qwen3.7-plus",
+      "configuration": "qwen",
+      "attempts": 2,
+      "unique_tasks": 2,
+      "repetitions": 1,
+      "attempt_coverage": 1.0,
+      "judge_evaluated": 0,
+      "judge_coverage": 0.0,
+      "judge_unknown": 2,
+      "judge_status_counts": {
+        "evaluated": 0,
+        "unavailable": 2,
+        "error": 0,
+        "not_evaluated": 0
+      },
+      "mean_judge_score": null,
+      "judge_pass_rate_among_evaluated": null,
+      "judge_critical_error_rate_among_evaluated": null,
+      "generation_error_rate": 0.0,
+      "mean_solver_latency_seconds": 22.179986,
+      "solver_latency_scope": "Promptfoo scheduled API call; excludes queue wait, worker startup and judge.",
+      "mean_total_latency_seconds": 22.1811665,
+      "total_latency_scope": "solver_plus_judge_call_seconds",
+      "mean_cost_usd": null,
+      "rejection_reasons": [
+        "judge_coverage_below_threshold",
+        "judge_quality_unknown"
+      ],
+      "run": "solver-qwen"
+    },
+    {
+      "model": "glm-5.3-flash",
+      "configuration": "glmflash",
+      "attempts": 2,
+      "unique_tasks": 2,
+      "repetitions": 1,
+      "attempt_coverage": 1.0,
+      "judge_evaluated": 0,
+      "judge_coverage": 0.0,
+      "judge_unknown": 2,
+      "judge_status_counts": {
+        "evaluated": 0,
+        "unavailable": 0,
+        "error": 0,
+        "not_evaluated": 2
+      },
+      "mean_judge_score": null,
+      "judge_pass_rate_among_evaluated": null,
+      "judge_critical_error_rate_among_evaluated": null,
+      "generation_error_rate": 1.0,
+      "mean_solver_latency_seconds": 0.00010899999999999999,
+      "solver_latency_scope": "Promptfoo scheduled API call; excludes queue wait, worker startup and judge.",
+      "mean_total_latency_seconds": null,
+      "total_latency_scope": null,
+      "mean_cost_usd": null,
+      "rejection_reasons": [
+        "judge_coverage_below_threshold",
+        "judge_quality_unknown",
+        "generation_error_rate_above_limit"
+      ],
+      "run": "solver-glmflash"
+    }
+  ],
+  "sources": [
+    {
+      "run": "solver-luna",
+      "manifest_sha256": "2c78ae56d829f4409c6b3f164be25dfb6cf8e9544b199e25a3ba57610b22cfdf"
+    },
+    {
+      "run": "solver-qwen",
+      "manifest_sha256": "464e87f8dd973051d6c5c8793d28135c9f9811749adfe64a040bbe2be1a2dafb"
+    },
+    {
+      "run": "solver-glmflash",
+      "manifest_sha256": "f47f895481537b514e3a7e048387d9e0cb57b885f18da3736bb19f21a8142945"
+    }
+  ],
+  "warnings": [
+    "This is a descriptive selection on saved cases, not a guarantee of future quality or an SLA.",
+    "Judge unknown/error/unavailable scores remain null. Coverage uses all planned attempts.",
+    "Deterministic checks are diagnostics only and never used for quality selection.",
+    "The judge is not independently certified. Scores and critical errors reflect its judgement.",
+    "Hash verification detects changed evidence relative to the manifest, not source authenticity.",
+    "Cost stays unknown without complete provider-reported solver-plus-judge costs.",
+    "Total latency means the sum of recorded solver and judge calls, not end-to-end wall time including setup and reporting."
+  ]
+}

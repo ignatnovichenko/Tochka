@@ -1,0 +1,19 @@
+{
+  "version": "0.5.0",
+  "unit_integration_tests_passed": 405,
+  "finqa_reference_checks": 883,
+  "old_run_evidence_files_unchanged": 581,
+  "real_model_successful_run": "runs/promptfoo_scheduler_available_20261111",
+  "real_model_429_run": "runs/promptfoo_scheduler_20261111",
+  "installer": {
+    "platform": "Omarchy Linux x86_64",
+    "isolated_from_system_node": true,
+    "wheel_version": "0.5.0",
+    "node_version": "24.22.2",
+    "npm_version": "11.19.1",
+    "promptfoo_version": "0.125.1",
+    "fresh_process_discovery": true,
+    "demo_creation": true
+  },
+  "macos_actual_validation": "CI configured; not executed locally"
+}

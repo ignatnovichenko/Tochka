@@ -220,6 +220,7 @@ def run_wizard(directory=None, output=None, *, input_fn=None, print_fn=None, com
         pass_rate = q.number('Минимальная доля прошедших задач, %', 100, low=0, high=100)
         latency = q.number('Максимальное среднее время solver, секунд (Enter — без лимита)', low=0, optional=True)
         cost = q.number('Максимальная средняя стоимость solver + judge, USD (Enter — без лимита)', low=0, optional=True)
+        concurrency = q.number('Максимум одновременных запросов к моделям', 4, low=1, high=32, integer=True)
         target = requested_output if requested_output is not None else q.ask('Папка результатов', str(Path('runs') / root.name), lambda value: _output_path(value, root))
         solver_input = judge_input = None
         if all(m.input_price is not None and m.output_price is not None for m in [*solvers, judge]) and any(m.input_price != 0 or m.output_price != 0 for m in [*solvers, judge]):
@@ -247,6 +248,7 @@ def run_wizard(directory=None, output=None, *, input_fn=None, print_fn=None, com
         q.print('\nПлан запуска')
         q.print(f'Задач: {len(cases)} · Конфигураций: {count} · Solver-запросов: {len(cases) * count}')
         q.print(f'Judge-запросов: {len(cases) * count}; максимум с исправлениями: {len(cases) * count * (1 + retries)}')
+        q.print(f'Одновременных запросов: до {concurrency}. Параллельность не увеличивает число задач.')
         for m in solvers:
             q.print(f'  {m.name}: {m.model} — {m.endpoint}')
         q.print(f'Судья: {judge.model} — {judge.endpoint}')
@@ -266,13 +268,13 @@ def run_wizard(directory=None, output=None, *, input_fn=None, print_fn=None, com
         q.print('Результаты будут сохранены: ' + str(target))
         if q.ask('Запустить сейчас? Только «да» запускает API-вызовы; Enter — сохранить без запуска', optional=True) not in {'да', 'ДА', 'Да'}:
             q.print('Запуск не выполнялся. Для запуска позже:')
-            q.print(f'tochka experiment run {shlex.quote(str(root))} --output {shlex.quote(str(target))}' + (' --allow-remote' if remote else ''))
+            q.print(f'tochka run {shlex.quote(str(root))} --output {shlex.quote(str(target))} --concurrency {concurrency}' + (' --allow-remote' if remote else ''))
             return 0
         for m in [*solvers, judge]:
             if is_remote(m.endpoint) and not request_api_key({'base_url': m.endpoint, 'api_key_env': m.key_env}):
                 q.print('Запуск не выполнен: для скрытого ввода откройте CLI в терминале или задайте переменную ' + m.key_env + '. Настройки сохранены.')
                 return 2
-        args = ['run', str(root), '--output', str(target)] + (['--allow-remote'] if remote else [])
+        args = ['run', str(root), '--output', str(target), '--concurrency', str(concurrency)] + (['--allow-remote'] if remote else [])
         return command_fn(args)
     except (EOFError, KeyboardInterrupt):
         q.print('\nМастер остановлен. Не подтверждённый запуск не выполнялся.')

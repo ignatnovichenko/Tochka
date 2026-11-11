@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import shutil
 from .business.schema import ValidationError, strict_json, digest, canonical, import_inputs
-from .business.running import sha, load_solver_config, load_judge_config, run_business
+from .business.running import sha, load_solver_config, load_judge_config, run_business_matrix
 from .business.evaluation import build_solver_messages, build_judge_messages, parse_judgement
 
 
@@ -186,9 +186,10 @@ def resume_plan(source):
     return totals
 
 
-def resume_experiment(source,output,allow_remote=False):
+def resume_experiment(source,output,allow_remote=False,*,max_concurrency=4):
     """Resume a snapshot into a fresh directory; original files never change."""
-    from .experiment import compare_runs, report, write
+    from .experiment import compare_runs, report, write, validate_concurrency
+    validate_concurrency(max_concurrency)
     source,old_manifest,inputs,cfg=_snapshot(source)
     output=Path(output).resolve()
     if output==source or output.is_relative_to(source):raise ValidationError('Resume output must be outside the source experiment')
@@ -215,14 +216,19 @@ def resume_experiment(source,output,allow_remote=False):
               'resume':{'source_manifest_sha256':sha(source/'experiment-manifest.json'),'source_name':source.name,'plan':plan}}
     write(output/'experiment-manifest.json',manifest)
     try:
+        specs=[]
         for name in cfg['solvers']:
             original=source/Path(name).stem
-            target=output/Path(name).stem
-            run_business(output/'inputs/cases.jsonl',output/'inputs/rubrics.jsonl',output/'inputs'/name,target,
-                         judge_path=output/'inputs'/cfg['judge'],allow_remote_solver=allow_remote,
-                         allow_remote_judge=allow_remote,save_raw_judge=True,
-                         reuse_from=original if original.exists() else None)
-            manifest['runs'].append(target.name);write(output/'experiment-manifest.json',manifest)
+            specs.append({'cases_path':output/'inputs/cases.jsonl','rubrics_path':output/'inputs/rubrics.jsonl',
+                'solver_path':output/'inputs'/name,'output':output/Path(name).stem,
+                'judge_path':output/'inputs'/cfg['judge'],'allow_remote_solver':allow_remote,
+                'allow_remote_judge':allow_remote,'save_raw_judge':True,
+                'reuse_from':original if original.exists() else None})
+        manifest['scheduler']={'engine':'promptfoo.evaluate','max_concurrency':max_concurrency}
+        write(output/'experiment-manifest.json',manifest)
+        run_business_matrix(specs,max_concurrency=max_concurrency)
+        manifest['runs']=[Path(name).stem for name in cfg['solvers']]
+        write(output/'experiment-manifest.json',manifest)
         result=compare_runs([output/p for p in manifest['runs']],cfg['policy'])
         report(output,result)
         manifest.update(state='completed',completed_at_utc=datetime.now(timezone.utc).isoformat())

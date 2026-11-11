@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "solvers": [
+    "solver-qwen.json",
+    "solver-glmflash.json"
+  ],
+  "judge": "judge.json",
+  "policy": {
+    "min_judge_coverage": 1.0,
+    "min_mean_judge_score": 0.8,
+    "max_generation_error_rate": 0.0,
+    "max_judge_critical_error_rate": 0,
+    "min_tasks": 1,
+    "objective": "quality"
+  }
+}

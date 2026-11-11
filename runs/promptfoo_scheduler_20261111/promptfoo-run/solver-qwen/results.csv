@@ -1,0 +1,3 @@
+﻿id,model,configuration,repetition,response_status,status,passed,score,deterministic_status,judge_status,judge_model,judge_provenance,judge_reason
+refund_01,qwen3.7-plus,qwen,0,ok,not_evaluated,,,not_configured,unavailable,glm-5.3,model-inference,judge_api_cooldown_active
+revenue_growth_01,qwen3.7-plus,qwen,0,ok,not_evaluated,,,not_configured,unavailable,glm-5.3,model-inference,judge_api_cooldown_active

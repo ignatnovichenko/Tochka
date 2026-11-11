@@ -1,0 +1,60 @@
+{
+  "schema_version": "business-judge-v1",
+  "summary": {
+    "attempts": 2,
+    "passed": 0,
+    "failed": 0,
+    "not_evaluated": 2,
+    "evaluation_errors": 0,
+    "decided": 0,
+    "judge_evaluated": 0,
+    "judge_coverage": 0.0,
+    "judge_status_counts": {
+      "unavailable": 2
+    },
+    "pass_rate_among_decided": null,
+    "all_attempts_pass_lower_bound": null,
+    "mean_judge_score": null,
+    "candidate_generation_errors": 0,
+    "candidate_missing": 0,
+    "diagnostic_check_failures": 0,
+    "judge_provenance_counts": {
+      "model-inference": 2
+    }
+  },
+  "groups": [
+    {
+      "model": "qwen3.7-plus",
+      "configuration": "qwen",
+      "attempts": 2,
+      "passed": 0,
+      "failed": 0,
+      "not_evaluated": 2,
+      "evaluation_errors": 0,
+      "decided": 0,
+      "judge_evaluated": 0,
+      "judge_coverage": 0.0,
+      "judge_status_counts": {
+        "unavailable": 2
+      },
+      "pass_rate_among_decided": null,
+      "all_attempts_pass_lower_bound": null,
+      "mean_judge_score": null,
+      "candidate_generation_errors": 0,
+      "candidate_missing": 0,
+      "diagnostic_check_failures": 0,
+      "judge_provenance_counts": {
+        "model-inference": 2
+      }
+    }
+  ],
+  "limitations": [
+    "Rubric score requires a connected judge and is not an objective ground truth.",
+    "Unavailable, invalid and missing judgements have null scores, not zero quality.",
+    "Programmatic checks are diagnostics only. Only a valid judge judgement determines quality pass/fail.",
+    "All-attempts pass lower bound is a coverage bound, not imputed quality.",
+    "Multiple repetitions share cases; these descriptive rates have no independence claim.",
+    "Prompt isolation and schema validation mitigate but do not eliminate prompt injection.",
+    "A model-inference label describes transport execution, not independent verification of the model or its quality."
+  ]
+}

@@ -1,0 +1,43 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>НИР · Оценка бизнес-текстов</title><style>body{font:16px system-ui;max-width:1100px;margin:40px auto;padding:0 20px;color:#183047;background:#f7fafc}table{border-collapse:collapse;width:100%;background:white}td,th{border:1px solid #d5e0e8;padding:10px;text-align:left}th{background:#e6eef4}.note{padding:18px;background:#fff3cf}code{overflow-wrap:anywhere}</style>
+<h1>Оценка бизнес-текстов</h1><p class="note">Судья не является эталоном истины. Пропуски и ошибки оценки не равны нулевому качеству. Рубрика требует независимой калибровки человеком.</p>
+<h2>Сводка</h2><table><tr><th>Модель / конфигурация</th><th>Попытки</th><th>Оценено судьёй</th><th>Passed / failed</th><th>Средний score</th></tr>
+<tr><td>qwen3.7-plus<br>qwen</td><td>2</td><td>2</td><td>2 / 0</td><td>0.950</td></tr>
+</table><h2>Покрытие и ограничения</h2><ul>
+<li>Rubric score requires a connected judge and is not an objective ground truth.</li>
+<li>Unavailable, invalid and missing judgements have null scores, not zero quality.</li>
+<li>Programmatic checks are diagnostics only. Only a valid judge judgement determines quality pass/fail.</li>
+<li>All-attempts pass lower bound is a coverage bound, not imputed quality.</li>
+<li>Multiple repetitions share cases; these descriptive rates have no independence claim.</li>
+<li>Prompt isolation and schema validation mitigate but do not eliminate prompt injection.</li>
+<li>A model-inference label describes transport execution, not independent verification of the model or its quality.</li>
+</ul><h2>Отдельные попытки</h2><table><tr><th>Задача / конфигурация</th><th>Статус</th><th>Диагностика (не оценка)</th><th>Судья</th><th>Причина</th></tr>
+<tr><td>refund_01 / qwen / 0</td><td>passed</td><td>not_configured</td><td>evaluated</td><td></td></tr>
+<tr><td>revenue_growth_01 / qwen / 0</td><td>passed</td><td>not_configured</td><td>evaluated</td><td></td></tr>
+</table><h2>Обоснования судьи</h2>
+<details><summary>refund_01 / qwen</summary>
+<p>Оценка: 0.9</p>
+<p><b>eligibility: 4/4</b> — Кандидат корректно разрешает возврат, указывая все три условия из правил: прошло 5 дней (менее 14), товар не использовался, чек есть.</p>
+<blockquote>candidate: Да, вы можете вернуть товар</blockquote>
+<blockquote>candidate: прошло менее 14 дней (5 дней)</blockquote>
+<blockquote>candidate: товар не использовался, и у вас есть чек</blockquote>
+<p><b>amount: 4/4</b> — Сумма возврата указана ровно 2400 руб., при этом явно отмечено, что доставка 300 руб. не возвращается, что соответствует правилам.</p>
+<blockquote>candidate: Сумма возврата составит **2400 рублей**</blockquote>
+<blockquote>candidate: Стоимость первоначальной доставки (300 руб.) согласно правилам магазина не возвращается</blockquote>
+<p><b>action: 2/4</b> — Дальнейшее действие дано без выдуманных сроков, однако кандидат придумывает каналы оформления (личный кабинет на сайте, служба поддержки), которых нет в правилах, и не просит предоставить товар — запрашивается лишь фотография чека и номер заказа.</p>
+<blockquote>candidate: подайте заявку на возврат через ваш личный кабинет</blockquote>
+<blockquote>candidate: номер заказа и фотографию чека</blockquote>
+<p><b>Критическая ошибка policy_violation: False</b> — Возврат разрешён, сумма возврата ровно 2400 руб., доставка 300 руб. явно исключена из возврата — нарушений политики нет.</p>
+</details>
+<details><summary>revenue_growth_01 / qwen</summary>
+<p>Оценка: 1.0</p>
+<p><b>number_and_units: 4/4</b> — Независимая проверка: (92 − 80) / 80 × 100% = 15%. Кандидат указывает относительный рост 15% с единицами в процентах и корректно отличает абсолютный прирост 12 млн руб. от процентного роста. В пределах допуска ±0.01 п.п.</p>
+<blockquote>candidate: **Рост выручки:** 15%</blockquote>
+<blockquote>candidate: % (проценты)</blockquote>
+<blockquote>candidate: Абсолютный прирост измеряется в млн руб. и составил 12 млн руб.</blockquote>
+<p><b>calculation: 4/4</b> — Короткое вычисление корректно использует исходные данные (92 и 80) и базовый период 80 млн руб. в знаменателе, результат 15% верен.</p>
+<blockquote>candidate: ((92 - 80) / 80) * 100%</blockquote>
+<blockquote>candidate: (12 / 80) * 100% = 15%</blockquote>
+<p><b>Критическая ошибка wrong_scale: False</b> — Ответ даёт 15%, а не 0.15% или 1500%; знаменатель — базовый период 80 млн руб.; абсолютный и относительный прирост чётко различены.</p>
+</details>
+<p>Полные ответы: responses.jsonl; критерии и хеши: records.jsonl; время, токены и метаданные генератора: solver_records.jsonl.</p></html>

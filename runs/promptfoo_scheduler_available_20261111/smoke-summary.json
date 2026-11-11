@@ -1,0 +1,15 @@
+{
+  "attempts": 14,
+  "stop": false,
+  "reserved": 14,
+  "max_provider_attempts": 30,
+  "models": [
+    "qwen3.7-plus",
+    "glm-5.3-flash"
+  ],
+  "judge": "glm-5.3",
+  "max_concurrency": 2,
+  "cases_per_engine": 2,
+  "calibration_labels": "synthetic author labels; not independent certification",
+  "purpose": "integration smoke; insufficient sample to rank models or engines"
+}

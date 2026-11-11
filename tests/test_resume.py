@@ -12,6 +12,7 @@ from nir_eval.business.schema import ValidationError, load_jsonl
 from nir_eval.business_selection import select_business_run
 from nir_eval.providers import Generation
 from nir_eval.business.providers import JudgeReply
+from batch_fixture import batch_fixture
 from nir_eval.resume import load_reusable_run, resume_experiment, resume_plan
 
 
@@ -44,7 +45,7 @@ class ResumeTests(unittest.TestCase):
         self.judge.write_text(json.dumps({'type':'generation-provider','provider':provider,'model':'fixture-judge','parameters':{},'max_calls':4}))
         self.source=self.root/'source';self.output=self.root/'resumed'
     def run_it(self,solver,judge,output=None,reuse=None):
-        with patch('nir_eval.business.running.make_provider',return_value=solver),patch('nir_eval.business.running.make_judge',return_value=judge),contextlib.redirect_stdout(io.StringIO()):
+        with patch('nir_eval.business.running.evaluate_jobs',side_effect=batch_fixture(solver,judge)),contextlib.redirect_stdout(io.StringIO()):
             return run_business(self.cases,self.rubrics,self.solver,output or self.source,judge_path=self.judge,save_raw_judge=True,reuse_from=reuse)
     def test_old_solver_or_judge_engine_cannot_be_mixed_on_resume(self):
         self.run_it(Solver(), Judge())
@@ -93,6 +94,18 @@ class ResumeTests(unittest.TestCase):
         with (self.source/'responses.jsonl').open('a') as stream:stream.write('{}\n')
         with self.assertRaises(ValidationError):self.run_it(Solver(),Judge(),self.output,self.source)
         self.assertFalse(self.output.exists())
+    def test_mixed_old_new_judge_timing_is_not_relabelled(self):
+        self.run_it(Solver(),Judge(invalid=2))
+        path=self.source/'manifest.json';manifest=json.loads(path.read_text())
+        manifest['judge_latency_scope']='Legacy full call including startup'
+        path.write_text(json.dumps(manifest))
+        self.run_it(Solver(),Judge(),self.output,self.source)
+        updated=json.loads((self.output/'manifest.json').read_text())
+        self.assertIsNone(updated['judge_latency_scope'])
+        result=select_business_run(self.output,{})
+        self.assertEqual(result['candidates'][0]['judge_coverage'],1)
+        self.assertIsNone(result['candidates'][0]['mean_total_latency_seconds'])
+
     def test_changed_inputs_rejected(self):
         self.run_it(Solver(),Judge())
         self.cases.write_text(self.cases.read_text().replace('Return 5','Return 6'))

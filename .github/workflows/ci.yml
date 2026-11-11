@@ -51,13 +51,28 @@ jobs:
           curl --proto '=https' --tlsv1.2 -fsSL https://astral.sh/uv/0.13.4/install.sh -o "$RUNNER_TEMP/uv-install.sh"
           UV_INSTALL_DIR="$RUNNER_TEMP/tochka-uv" UV_NO_MODIFY_PATH=1 sh "$RUNNER_TEMP/uv-install.sh"
           echo "$RUNNER_TEMP/tochka-uv" >> "$GITHUB_PATH"
-      - name: Install into isolated tool environment and check bundled demo
+      - name: Bootstrap managed Node and verify isolated installation
         shell: bash
         run: |
           export UV_TOOL_DIR="$RUNNER_TEMP/tochka-tools"
           export UV_TOOL_BIN_DIR="$RUNNER_TEMP/tochka-bin"
+          export XDG_DATA_HOME="$RUNNER_TEMP/tochka-data"
+          # Hide setup-node with failing commands to exercise the automatic download
+          # on Linux x64, macOS ARM64 and macOS Intel without touching the runner.
+          stub_bin="$RUNNER_TEMP/tochka-no-system-node"
+          mkdir -p "$stub_bin"
+          printf '#!/bin/sh\nexit 1\n' > "$stub_bin/node"
+          printf '#!/bin/sh\nexit 1\n' > "$stub_bin/npm"
+          chmod +x "$stub_bin/node" "$stub_bin/npm"
+          export PATH="$stub_bin:$PATH"
+          unset TOCHKA_PROMPTFOO_DIR
           TOCHKA_INSTALL_SOURCE="$GITHUB_WORKSPACE" sh install.sh --no-modify-path
+          # The installer's managed Node PATH exists only in its child process.
+          # A new CLI process must discover that runtime without a shell profile edit.
+          test "$(command -v node)" = "$stub_bin/node"
+          test "$(command -v npm)" = "$stub_bin/npm"
           "$UV_TOOL_BIN_DIR/tochka" --help
+          "$UV_TOOL_BIN_DIR/tochka" setup --check
           "$UV_TOOL_BIN_DIR/tochka" init "$RUNNER_TEMP/tochka-demo" --demo
           test -s "$RUNNER_TEMP/tochka-demo/cases.jsonl"
           uv tool uninstall nir-eval

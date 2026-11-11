@@ -6,6 +6,8 @@ import subprocess
 import tempfile
 import unittest
 
+from nir_eval.node_runtime import NODE_VERSION, NODE_SHA256
+
 INSTALLER = Path(__file__).resolve().parents[1] / 'install.sh'
 
 
@@ -23,8 +25,8 @@ class InstallerTests(unittest.TestCase):
         self.env.update(PATH=str(self.commands), XDG_DATA_HOME=str(self.root/'data files'),
                         XDG_CONFIG_HOME=str(self.root/'config files'), XDG_STATE_HOME=str(self.root/'state files'),
                         TMPDIR=str(self.root), TEST_LOG=str(self.log), TEST_BIN=str(self.bin),
-                        TEST_OS='Linux',TEST_ARCH='x86_64',TEST_UV_STATUS='0',TEST_HELP_STATUS='0',TEST_SETUP_STATUS='0',TEST_NODE_STATUS='0',TEST_CURL_STATUS='37')
-        for name in ['sh','mktemp','rm','grep','sed']:
+                        TEST_OS='Linux',TEST_ARCH='x86_64',TEST_UV_STATUS='0',TEST_HELP_STATUS='0',TEST_SETUP_STATUS='0',TEST_NODE_STATUS='0',TEST_CURL_STATUS='37',TEST_NODE_SHA=NODE_SHA256['linux-x64'],TEST_DOWNLOAD_URL=str(self.root/'download-url'),TEST_TAR_STATUS='0',TEST_EXTRACTED_NODE_STATUS='0')
+        for name in ['sh','mktemp','rm','grep','sed','mkdir','mv','chmod','cat']:
             binary=shutil.which(name)
             if binary is None:self.skipTest(name+' unavailable')
             (self.commands/name).symlink_to(binary)
@@ -46,7 +48,41 @@ esac
   *) exit 99 ;;
 esac
 ''')
-        self.script(self.commands/'curl', 'printf "CURL\\n" >> "$TEST_LOG"\nexit "$TEST_CURL_STATUS"\n')
+        self.bootstrap_fixtures()
+
+
+    def bootstrap_fixtures(self):
+        self.script(self.commands/'curl', """printf 'CURL\n' >> "$TEST_LOG"
+[ "$TEST_CURL_STATUS" = 0 ] || exit "$TEST_CURL_STATUS"
+while [ "$#" -gt 0 ]; do
+  case "$1" in https:*) printf '%s\n' "$1" > "$TEST_DOWNLOAD_URL";; -o) shift; printf 'fixture archive' > "$1";; esac
+  shift
+done
+""")
+        self.script(self.commands/'sha256sum', 'printf \'%s  %s\\n\' "$TEST_NODE_SHA" "$1"\n')
+        self.script(self.commands/'tar', """printf 'TAR\n' >> "$TEST_LOG"
+[ "$TEST_TAR_STATUS" = 0 ] || exit "$TEST_TAR_STATUS"
+while [ "$#" -gt 0 ]; do
+  if [ "$1" = '-C' ]; then shift; destination=$1; fi
+  shift
+done
+case "$TEST_OS-$TEST_ARCH" in
+  Linux-x86_64) platform=linux-x64;; Linux-aarch64|Linux-arm64) platform=linux-arm64;;
+  Darwin-x86_64) platform=darwin-x64;; Darwin-arm64|Darwin-aarch64) platform=darwin-arm64;;
+esac
+mkdir -p "$destination/node-v24.22.2-$platform/bin"
+cat > "$destination/node-v24.22.2-$platform/bin/node" <<'NODE'
+#!/bin/sh
+printf 'MANAGED_NODE\n' >> "$TEST_LOG"
+[ "$TEST_EXTRACTED_NODE_STATUS" = 0 ] || exit "$TEST_EXTRACTED_NODE_STATUS"
+case "$1" in --version) printf 'v24.22.2\n';; *) exit 0;; esac
+NODE
+cat > "$destination/node-v24.22.2-$platform/bin/npm" <<'NPM'
+#!/bin/sh
+exit 0
+NPM
+chmod +x "$destination/node-v24.22.2-$platform/bin/node" "$destination/node-v24.22.2-$platform/bin/npm"
+""")
 
     def script(self,path,body):
         path.write_text('#!/bin/sh\n'+body);path.chmod(0o755)
@@ -58,9 +94,9 @@ esac
         return self.log.read_text() if self.log.exists() else ''
 
     def test_linux_install_source_version_and_space_paths(self):
-        result=self.run_installer('--version','v0.4.0')
+        result=self.run_installer('--version','v0.5.0')
         self.assertEqual(result.returncode,0,result.stderr)
-        self.assertIn('UV<tool><install><--python><3.11><--force><https://github.com/ignatnovichenko/Tochka/archive/refs/tags/v0.4.0.tar.gz>',self.calls())
+        self.assertIn('UV<tool><install><--python><3.11><--force><https://github.com/ignatnovichenko/Tochka/archive/refs/tags/v0.5.0.tar.gz>',self.calls())
         self.assertIn('TOCHKA_HELP\nTOCHKA_SETUP',self.calls())
         self.assertIn('UV<tool><update-shell>',self.calls())
         self.assertIn(str(self.bin/'tochka'),result.stdout)
@@ -69,7 +105,7 @@ esac
     def test_default_release_and_required_runtime_setup(self):
         result=self.run_installer('--no-modify-path')
         self.assertEqual(result.returncode,0,result.stderr)
-        self.assertIn('/v0.4.0.tar.gz>',self.calls())
+        self.assertIn('/v0.5.0.tar.gz>',self.calls())
         self.assertIn('TOCHKA_HELP\nTOCHKA_SETUP',self.calls())
         self.assertIn('Promptfoo runtime is ready',result.stdout)
 
@@ -83,23 +119,71 @@ esac
         self.assertIn('CLI was installed, but Promptfoo setup failed',result.stderr)
         self.assertIn(str(self.bin/'tochka'),result.stderr)
 
-    def test_missing_node_or_npm_rejected_before_install(self):
+    def test_missing_node_or_npm_bootstraps_locally(self):
         for name in ['node','npm']:
             with self.subTest(name=name):
                 tool=self.commands/name
-                body=tool.read_text()
-                tool.unlink()
-                result=self.run_installer()
+                body=tool.read_text(); tool.unlink()
+                result=self.run_installer(TEST_CURL_STATUS='0')
                 tool.write_text(body);tool.chmod(0o755)
-                self.assertNotEqual(result.returncode,0)
-                self.assertIn('Node.js >=22.22.0 and npm',result.stderr)
-                self.assertEqual(self.calls(),'')
+                self.assertEqual(result.returncode,0,result.stderr)
+                self.assertIn('TOCHKA_SETUP',self.calls())
+                target=self.root/'data files/tochka/node'/f'node-v{NODE_VERSION}-linux-x64'
+                self.assertTrue((target/'bin/node').exists())
+                self.assertTrue((target/'bin/npm').exists())
+                self.assertFalse(list(target.parent.glob('.node-install.*')))
 
-    def test_old_node_rejected_before_install(self):
-        result=self.run_installer(TEST_NODE_STATUS='1')
+    def test_old_node_uses_managed_runtime_without_replacing_system(self):
+        original=(self.commands/'node').read_bytes()
+        result=self.run_installer(TEST_NODE_STATUS='1',TEST_CURL_STATUS='0')
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertIn('MANAGED_NODE',self.calls())
+        self.assertEqual((self.commands/'node').read_bytes(),original)
+        self.assertEqual((self.root/'download-url').read_text().strip(),f'https://nodejs.org/dist/v{NODE_VERSION}/node-v{NODE_VERSION}-linux-x64.tar.gz')
+
+    def test_managed_node_platforms_have_pinned_official_checksums(self):
+        for system,arch,target in [('Linux','aarch64','linux-arm64'),('Darwin','x86_64','darwin-x64'),('Darwin','arm64','darwin-arm64')]:
+            with self.subTest(target=target):
+                result=self.run_installer(TEST_NODE_STATUS='1',TEST_CURL_STATUS='0',TEST_OS=system,TEST_ARCH=arch,TEST_NODE_SHA=NODE_SHA256[target])
+                self.assertEqual(result.returncode,0,result.stderr)
+                self.assertTrue((self.root/'data files/tochka/node'/f'node-v{NODE_VERSION}-{target}'/'bin/npm').is_file())
+
+    def test_checksum_failure_never_extracts_or_installs(self):
+        result=self.run_installer(TEST_NODE_STATUS='1',TEST_CURL_STATUS='0',TEST_NODE_SHA='incorrect')
         self.assertNotEqual(result.returncode,0)
-        self.assertIn('Node.js >=22.22.0 is required',result.stderr)
+        self.assertIn('checksum mismatch',result.stderr)
+        self.assertNotIn('TAR',self.calls())
+        self.assertNotIn('UV',self.calls())
+        parent=self.root/'data files/tochka/node'
+        self.assertFalse(list(parent.glob('node-v*')))
+        self.assertFalse(list(parent.glob('.node-install.*')))
+
+    def test_download_extract_and_execution_failure_clean_staging(self):
+        for env in [{'TEST_CURL_STATUS':'37'}, {'TEST_CURL_STATUS':'0','TEST_TAR_STATUS':'2'},
+                    {'TEST_CURL_STATUS':'0','TEST_EXTRACTED_NODE_STATUS':'126'}]:
+            with self.subTest(env=env):
+                result=self.run_installer(TEST_NODE_STATUS='1',**env)
+                self.assertNotEqual(result.returncode,0)
+                parent=self.root/'data files/tochka/node'
+                self.assertFalse(list(parent.glob('node-v*')))
+                self.assertFalse(list(parent.glob('.node-install.*')))
+                self.assertNotIn('TOCHKA_SETUP',self.calls())
+
+    def test_existing_damaged_managed_directory_is_preserved(self):
+        target=self.root/'data files/tochka/node'/f'node-v{NODE_VERSION}-linux-x64'
+        target.mkdir(parents=True)
+        (target/'sentinel').write_text('preserve')
+        result=self.run_installer(TEST_NODE_STATUS='1',TEST_CURL_STATUS='0')
+        self.assertNotEqual(result.returncode,0)
+        self.assertIn('incomplete',result.stderr)
+        self.assertEqual((target/'sentinel').read_text(),'preserve')
         self.assertEqual(self.calls(),'')
+
+    def test_shasum_supported_for_macos(self):
+        (self.commands/'sha256sum').unlink()
+        self.script(self.commands/'shasum', 'printf \'%s  %s\\n\' "$TEST_NODE_SHA" "$3"\n')
+        result=self.run_installer(TEST_NODE_STATUS='1',TEST_CURL_STATUS='0',TEST_OS='Darwin',TEST_ARCH='arm64',TEST_NODE_SHA=NODE_SHA256['darwin-arm64'])
+        self.assertEqual(result.returncode,0,result.stderr)
 
     def test_darwin_arm_install_no_modify_path(self):
         result=self.run_installer('--version','1.2.3','--no-modify-path',TEST_OS='Darwin',TEST_ARCH='arm64')

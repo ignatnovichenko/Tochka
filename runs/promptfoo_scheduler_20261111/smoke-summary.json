@@ -1,0 +1,16 @@
+{
+  "attempts": 4,
+  "stop": false,
+  "reserved": 12,
+  "max_provider_attempts": 30,
+  "models": [
+    "gpt-6-luna",
+    "qwen3.7-plus",
+    "glm-5.3-flash"
+  ],
+  "judge": "glm-5.3",
+  "max_concurrency": 4,
+  "cases_per_engine": 2,
+  "calibration_labels": "synthetic author labels; not independent certification",
+  "purpose": "integration smoke; insufficient sample to rank models or engines"
+}

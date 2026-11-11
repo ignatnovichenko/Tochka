@@ -169,7 +169,7 @@ class ExperimentPreflightTests(unittest.TestCase):
         path=self.root/'experiment.json';config=json.loads(path.read_text())
         config['policy']['min_mean_judge_score']=2
         path.write_text(json.dumps(config))
-        with patch('nir_eval.experiment.run_business') as run:
+        with patch('nir_eval.experiment.run_business_matrix') as run:
             with self.assertRaises(ValueError):run_experiment(self.root,self.root/'output')
             run.assert_not_called()
 
@@ -185,13 +185,14 @@ class ExperimentPreflightTests(unittest.TestCase):
         from nir_eval.experiment import run_experiment
         output=self.root/'output'
         result={'status':'no_eligible_configuration','candidates':[],'policy':{},'selected':None,'tied':[],'sources':[]}
-        with patch('nir_eval.experiment.run_business') as run, patch('nir_eval.experiment.compare_runs',return_value=result), patch('nir_eval.experiment.report'):
+        with patch('nir_eval.experiment.run_business_matrix') as run, patch('nir_eval.experiment.compare_runs',return_value=result), patch('nir_eval.experiment.report'):
             run_experiment(self.root,output)
-        cases_path,rubrics_path,solver_path,_=run.call_args.args
+        spec=run.call_args.args[0][0]
+        cases_path,rubrics_path,solver_path=(spec[k] for k in ('cases_path','rubrics_path','solver_path'))
         self.assertEqual(cases_path,output/'inputs/cases.jsonl')
         self.assertEqual(rubrics_path,output/'inputs/rubrics.jsonl')
         self.assertEqual(solver_path,output/'inputs/solver-baseline.json')
-        self.assertEqual(run.call_args.kwargs['judge_path'],output/'inputs/judge.json')
+        self.assertEqual(spec['judge_path'],output/'inputs/judge.json')
 
 
 if __name__ == '__main__':

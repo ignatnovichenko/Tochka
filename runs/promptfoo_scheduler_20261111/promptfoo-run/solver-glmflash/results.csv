@@ -1,0 +1,3 @@
+﻿id,model,configuration,repetition,response_status,status,passed,score,deterministic_status,judge_status,judge_model,judge_provenance,judge_reason
+refund_01,glm-5.3-flash,glmflash,0,error,not_evaluated,,,not_evaluated,not_evaluated,glm-5.3,model-inference,candidate_generation_error
+revenue_growth_01,glm-5.3-flash,glmflash,0,error,not_evaluated,,,not_evaluated,not_evaluated,glm-5.3,model-inference,candidate_generation_error

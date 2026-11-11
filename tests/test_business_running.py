@@ -10,6 +10,7 @@ from nir_eval.business.running import run_business,load_solver_config
 from nir_eval.business.schema import ValidationError,strict_json
 from nir_eval.providers import Generation
 from nir_eval.business.providers import JudgeReply
+from batch_fixture import batch_fixture
 
 
 class BusinessRunTests(unittest.TestCase):
@@ -24,10 +25,11 @@ class BusinessRunTests(unittest.TestCase):
         (self.root/'solver.json').write_text(json.dumps(self.config))
 
     def run_fixture(self,provider,judge=None,**kwargs):
-        with patch('nir_eval.business.running.make_provider',return_value=provider),contextlib.redirect_stdout(io.StringIO()):
-            if judge:
-                with patch('nir_eval.business.running.make_judge',return_value=judge):
-                    return run_business(self.root/'cases.jsonl',self.root/'rubrics.jsonl',self.root/'solver.json',self.root/'out',**kwargs)
+        if judge is not None:
+            path=self.root/'judge.json'
+            path.write_text(json.dumps({'type':'generation-provider','provider':{'type':'openai-compatible','base_url':'http://127.0.0.1:1/v1'},'model':judge.model,'parameters':{},'max_calls':10}))
+            kwargs['judge_path']=path
+        with patch('nir_eval.business.running.evaluate_jobs',side_effect=batch_fixture(provider,judge)),contextlib.redirect_stdout(io.StringIO()):
             return run_business(self.root/'cases.jsonl',self.root/'rubrics.jsonl',self.root/'solver.json',self.root/'out',**kwargs)
 
     def test_disabled_judge_unknown_and_solver_whitelist(self):
@@ -67,7 +69,7 @@ class BusinessRunTests(unittest.TestCase):
         self.assertFalse((self.root/'out').exists())
 
     def test_provider_initialization_failure_marks_interrupted(self):
-        with patch('nir_eval.business.running.make_provider',side_effect=ValueError('missing dependency')):
+        with patch('nir_eval.business.running.evaluate_jobs',side_effect=ValueError('missing dependency')):
             with self.assertRaises(ValueError):run_business(self.root/'cases.jsonl',self.root/'rubrics.jsonl',self.root/'solver.json',self.root/'out')
         self.assertEqual(json.loads((self.root/'out/manifest.json').read_text())['state'],'interrupted')
 

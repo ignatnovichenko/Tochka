@@ -1,0 +1,4 @@
+﻿model,configuration,attempts,judge_evaluated,judge_unknown,judge_coverage,mean_judge_score,judge_pass_rate_among_evaluated,mean_solver_latency_seconds,mean_total_latency_seconds,mean_solver_cost_usd,mean_judge_cost_usd,mean_cost_usd,cost_basis,rejection_reasons
+gpt-6-luna,luna,2,0,2,0.0,,,2.4913385,,,,,,"[""judge_coverage_below_threshold"", ""judge_quality_unknown"", ""generation_error_rate_above_limit""]"
+qwen3.7-plus,qwen,2,0,2,0.0,,,22.179986,22.1811665,0.0,,,,"[""judge_coverage_below_threshold"", ""judge_quality_unknown""]"
+glm-5.3-flash,glmflash,2,0,2,0.0,,,0.00010899999999999999,,,,,,"[""judge_coverage_below_threshold"", ""judge_quality_unknown"", ""generation_error_rate_above_limit""]"
