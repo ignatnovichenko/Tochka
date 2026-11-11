@@ -32,8 +32,8 @@ class WizardTests(unittest.TestCase):
         storage_patch = patch('nir_eval.key_store.store_path', return_value=Path(self.temp.name) / 'local-config' / 'credentials.json')
         storage_patch.start()
         self.addCleanup(storage_patch.stop)
-        self.root = Path(self.temp.name) / 'settings'
-        self.output = Path(self.temp.name) / 'results'
+        self.root = Path(self.temp.name).resolve() / 'settings'
+        self.output = Path(self.temp.name).resolve() / 'results'
         self.commands = []
         self.messages = []
 

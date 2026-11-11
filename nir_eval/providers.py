@@ -12,6 +12,7 @@ import subprocess
 import urllib.error
 import urllib.parse
 import urllib.request
+from . import __version__
 
 
 @dataclass
@@ -109,7 +110,7 @@ class OpenAICompatibleProvider:
             raise ValueError("Reserved API parameter overridden")
         body = json.dumps({"model": model, "messages": messages,
                            "stream": False, **parameters}).encode()
-        headers = {"Content-Type": "application/json", "User-Agent": "Tochka/0.3.0", "x-opencode-session": self.session_id}
+        headers = {"Content-Type": "application/json", "User-Agent": "Tochka/" + __version__, "x-opencode-session": self.session_id}
         if self.api_key:
             headers["Authorization"] = "Bearer " + self.api_key
         req = urllib.request.Request(self.url, data=body, headers=headers, method="POST")

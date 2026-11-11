@@ -64,6 +64,7 @@ class InteractiveTests(unittest.TestCase):
 
     def test_active_experiment(self):
         with tempfile.TemporaryDirectory() as root:
+            root = str(Path(root).resolve())
             Path(root, 'experiment.json').write_text('{}')
             _, calls = self.shell([f'/use "{root}"', '/show', '/models', '/run other --output out', '/exit'])
             self.assertEqual(calls, [['show', root], ['models', '--directory', root], ['run', 'other', '--output', 'out']])
