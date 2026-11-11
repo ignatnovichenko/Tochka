@@ -1,5 +1,5 @@
 {
-  "version": "0.5.0",
+  "version": "0.5.1",
   "date": "2026-11-11",
   "source_archive_sha256": "f81badfdc95135638676234ed035f13c4da6f889bf88e8b249ab7b75214eadae",
   "cli_workflow": "interactive slash menu and command CLI implemented; installed terminal smoke verified",
@@ -104,5 +104,10 @@
     "old_statistics_preserved": true,
     "privacy_settings_changed": false
   },
-  "history_files_verified_unchanged": 581
+  "history_files_verified_unchanged": 581,
+  "patch_validation": {
+    "tests_passed": 39,
+    "scope": "interactive console, setup CLI, installer",
+    "change": "Removed redundant /help; / is the command menu; command --help remains supported"
+  }
 }

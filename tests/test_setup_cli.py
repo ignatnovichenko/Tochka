@@ -39,11 +39,11 @@ class SetupCliTests(unittest.TestCase):
         command.assert_called_once_with(['--check'])
 
     def test_shell_has_setup_without_engine_choice(self):
-        answers = iter(['/help', '/setup --check', '/exit']); calls = []
+        answers = iter(['/', '', '/setup --check', '/exit']); calls = []
         run_shell(input_fn=lambda _: next(answers), print_fn=self.lines.append,
                   command_fn=lambda args: calls.append(args) or 0)
         self.assertEqual(calls, [['setup', '--check']])
-        self.assertTrue(any(s.startswith('/setup —') for s in self.lines))
+        self.assertTrue(any('/setup —' in s for s in self.lines))
         self.assertFalse(any(s.startswith('/engine —') for s in self.lines))
 
     def test_provider_always_promptfoo_and_engine_flag_removed(self):

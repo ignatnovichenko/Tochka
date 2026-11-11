@@ -94,9 +94,9 @@ chmod +x "$destination/node-v24.22.2-$platform/bin/node" "$destination/node-v24.
         return self.log.read_text() if self.log.exists() else ''
 
     def test_linux_install_source_version_and_space_paths(self):
-        result=self.run_installer('--version','v0.5.0')
+        result=self.run_installer('--version','v0.5.1')
         self.assertEqual(result.returncode,0,result.stderr)
-        self.assertIn('UV<tool><install><--python><3.11><--force><https://github.com/ignatnovichenko/Tochka/archive/refs/tags/v0.5.0.tar.gz>',self.calls())
+        self.assertIn('UV<tool><install><--python><3.11><--force><https://github.com/ignatnovichenko/Tochka/archive/refs/tags/v0.5.1.tar.gz>',self.calls())
         self.assertIn('TOCHKA_HELP\nTOCHKA_SETUP',self.calls())
         self.assertIn('UV<tool><update-shell>',self.calls())
         self.assertIn(str(self.bin/'tochka'),result.stdout)
@@ -105,7 +105,7 @@ chmod +x "$destination/node-v24.22.2-$platform/bin/node" "$destination/node-v24.
     def test_default_release_and_required_runtime_setup(self):
         result=self.run_installer('--no-modify-path')
         self.assertEqual(result.returncode,0,result.stderr)
-        self.assertIn('/v0.5.0.tar.gz>',self.calls())
+        self.assertIn('/v0.5.1.tar.gz>',self.calls())
         self.assertIn('TOCHKA_HELP\nTOCHKA_SETUP',self.calls())
         self.assertIn('Promptfoo runtime is ready',result.stdout)
 

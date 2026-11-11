@@ -26,7 +26,6 @@ DESCRIPTIONS = {
     'use': 'Выбрать активную папку эксперимента',
     'model': 'Посмотреть или изменить модель помощника /doctor',
     'doctor': 'Диагностика и помощь с отдельным подтверждением отправки',
-    'help': 'Все команды или /help КОМАНДА',
     'exit': 'Выйти',
 }
 
@@ -51,10 +50,10 @@ def run_shell(*, input_fn=None, print_fn=None, command_fn=None):
     input_fn, print_fn = input_fn or input, print_fn or print
     command_fn = command_fn or (lambda args: dispatch(args, input_fn, print_fn))
     parsers = command_parsers()
-    commands = list(parsers) + ['use', 'model', 'doctor', 'help', 'exit']
+    commands = list(parsers) + ['use', 'model', 'doctor', 'exit']
     active = None
     last_error = None
-    print_fn('Tochka — интерактивная консоль. / — меню, /help — все команды, /exit — выход.')
+    print_fn('Tochka — интерактивная консоль. / — все команды, /exit — выход.')
     print_fn('Аргументы с пробелами заключайте в кавычки. Команды выполняются без системной оболочки.')
     while True:
         try:
@@ -85,25 +84,6 @@ def run_shell(*, input_fn=None, print_fn=None, command_fn=None):
             name, args = parts[0], parts[1:]
             if name in {'exit', 'quit'}:
                 return 0
-            if name == 'help':
-                if not args:
-                    for item in commands:
-                        print_fn(f'/{item} — {DESCRIPTIONS.get(item, item)}')
-                elif len(args) == 1 and args[0].lstrip('/') in commands:
-                    target = args[0].lstrip('/')
-                    if target in parsers:
-                        command_fn([target, '--help'])
-                    elif target in {'model', 'doctor'}:
-                        if target == 'model':
-                            from .doctor_settings import main
-                        else:
-                            from .doctor import main
-                        main(['--help'])
-                    else:
-                        print_fn(f'/{target} — {DESCRIPTIONS[target]}')
-                else:
-                    print_fn('Неизвестная команда. /help показывает список.')
-                continue
             if name == 'use':
                 raw = ' '.join(args) if args else input_fn('Папка эксперимента (Enter — показать текущую): ').strip()
                 if raw:
@@ -137,7 +117,7 @@ def run_shell(*, input_fn=None, print_fn=None, command_fn=None):
                         args = ['--directory', str(active)]
                 status = command_fn([name, *args])
             else:
-                print_fn('Неизвестная команда. Введите / или /help.')
+                print_fn('Неизвестная команда. Введите / для списка действий.')
                 continue
             if isinstance(status, int) and status:
                 last_error = f'Команда {name} завершилась с кодом {status}.'
@@ -151,7 +131,7 @@ def run_shell(*, input_fn=None, print_fn=None, command_fn=None):
         except SystemExit as exc:
             if exc.code:
                 last_error = 'Ошибка аргументов команды.'
-                print_fn(last_error + ' Используйте /help КОМАНДА.')
+                print_fn(last_error + ' Добавьте --help к команде, например /run --help.')
         except Exception as exc:
             # Provider exceptions can contain credentials or business data.
             last_error = f'Ошибка выполнения ({type(exc).__name__}).'

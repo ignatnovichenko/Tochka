@@ -74,7 +74,7 @@ prepare_node() {
 }
 
 install_tochka() {
-    tochka_version='0.5.0'
+    tochka_version='0.5.1'
     node_stage=''; temp_dir=''
     trap cleanup_install EXIT
     trap 'exit 130' INT TERM
@@ -86,7 +86,7 @@ install_tochka() {
                 [ "$#" -ge 2 ] || { echo 'Missing version' >&2; return 2; }
                 tochka_version=${2#v}; shift 2 ;;
             --help|-h)
-                echo 'Usage: sh install.sh [--version 0.5.0] [--no-modify-path]'
+                echo 'Usage: sh install.sh [--version 0.5.1] [--no-modify-path]'
                 echo 'Installs Tochka, Promptfoo, and Node.js/npm automatically when needed (Linux/macOS).'
                 echo 'Uses an isolated user environment with uv; no root or model API calls.'
                 return 0 ;;
@@ -94,7 +94,7 @@ install_tochka() {
         esac
     done
     if ! printf '%s\n' "$tochka_version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-        echo 'Version must have the form 0.5.0.' >&2; return 2
+        echo 'Version must have the form 0.5.1.' >&2; return 2
     fi
     case "$(uname -s)" in
         Linux|Darwin) ;;
@@ -139,7 +139,7 @@ install_tochka() {
     echo ''
     echo 'Tochka installed. Promptfoo runtime is ready. Open a new terminal and run: tochka'
     printf 'Run immediately: '; shell_quote "$bin_dir/tochka"; printf '\n'
-    echo 'Inside Tochka: /help for commands; /keys to add your own API key.'
+    echo 'Inside Tochka: / for the command menu; /keys to add your own API key.'
     printf 'Uninstall application: '; shell_quote "$uv_command"; printf ' tool uninstall nir-eval\n'
     echo 'API keys, experiments and results are not removed when uninstalling the application.'
 }

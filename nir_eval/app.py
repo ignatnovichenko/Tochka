@@ -7,7 +7,7 @@ def main(argv=None):
     if args in [['--help'], ['-h']]:
         from .experiment import parser
         parser().print_help()
-        print('\nИнтерактивно: tochka → / → номер действия. /help — все команды.')
+        print('\nИнтерактивно: tochka → / → номер действия. Добавьте --help к команде для подробностей.')
         print('Дополнительно: tochka doctor, tochka model, tochka shell; добавьте --help для подробностей.')
         return 0
     if not args:

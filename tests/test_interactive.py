@@ -23,11 +23,12 @@ class InteractiveTests(unittest.TestCase):
         self.assertEqual(status, 0)
         return output, calls
 
-    def test_help_includes_every_experiment_command(self):
-        output, calls = self.shell(['/help', '/exit'])
+    def test_menu_includes_every_experiment_command(self):
+        output, calls = self.shell(['/', '', '/exit'])
         for name in command_parsers():
-            self.assertTrue(any(line.startswith('/'+name+' —') for line in output), name)
+            self.assertTrue(any(('/'+name+' —') in line for line in output), name)
         self.assertFalse(calls)
+        self.assertNotIn('/help', '\n'.join(output))
 
     def test_menu_selection_and_quoted_args(self):
         names = list(command_parsers())
@@ -36,7 +37,7 @@ class InteractiveTests(unittest.TestCase):
         self.assertTrue(any('/wizard' in s for s in output))
 
     def test_argument_help_keys_and_wizard_delegated(self):
-        _, calls = self.shell(['/help run', '/keys list', '/wizard', '/exit'])
+        _, calls = self.shell(['/run --help', '/keys list', '/wizard', '/exit'])
         self.assertEqual(calls, [['run', '--help'], ['keys', 'list'], ['wizard']])
 
     def test_no_shell_execution(self):
@@ -52,7 +53,7 @@ class InteractiveTests(unittest.TestCase):
             if args[0] == 'plan':
                 raise KeyboardInterrupt()
             raise SystemExit(0)
-        output, _ = self.shell(['/show', '/run', '/plan', '/help init', '/exit'], command)
+        output, _ = self.shell(['/show', '/run', '/plan', '/init --help', '/exit'], command)
         joined = '\n'.join(output)
         self.assertNotIn('SECRET', joined)
         self.assertIn('ValueError', joined)
@@ -90,7 +91,7 @@ class InteractiveTests(unittest.TestCase):
         self.assertIn('кодом 2', doctors[0]['last_error'])
 
     def test_unknown_invalid_menu_and_bad_quotes_recover(self):
-        output, calls = self.shell(['/wat', '/', '999', '/init "', '/exit'])
+        output, calls = self.shell(['/help', '/wat', '/', '999', '/init "', '/exit'])
         self.assertFalse(calls)
         self.assertIn('Выберите номер', '\n'.join(output))
 
