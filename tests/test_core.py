@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from urllib.error import HTTPError
 from unittest.mock import Mock, patch
 
 from nir_eval.datasets import load_finqa, select_cases, file_sha256
@@ -90,11 +91,6 @@ class ScoringTests(unittest.TestCase):
 
 
 class ProviderTests(unittest.TestCase):
-    def setUp(self):
-        runtime = patch('nir_eval.promptfoo_backend.require_runtime', return_value=ROOT)
-        runtime.start()
-        self.addCleanup(runtime.stop)
-
     def test_remote_guard(self):
         with self.assertRaises(ValueError):
             OpenAICompatibleProvider({"base_url": "https://example.org/v1"})
@@ -233,30 +229,25 @@ class ImportTests(unittest.TestCase):
 
 
 class HTTPAdapterTests(unittest.TestCase):
-    def setUp(self):
-        runtime = patch('nir_eval.promptfoo_backend.require_runtime', return_value=ROOT)
-        runtime.start()
-        self.addCleanup(runtime.stop)
-
     def test_request_and_usage(self):
         provider = OpenAICompatibleProvider({"base_url": "http://localhost:8000/v1"})
         data = {"choices": [{"message": {"content": '{"answer": 2}'}, "finish_reason": "stop"}],
                 "usage": {"prompt_tokens": 9}, "model": "served-version"}
-        provider.worker.call = Mock(return_value={'id': 1, 'ok': True, 'raw_response': json.dumps(data),
-                                    'engine': 'promptfoo', 'version': '0.125.1', 'latency_ms': 1})
+        provider.opener.open = Mock(return_value=io.BytesIO(json.dumps(data).encode()))
         messages = [{"role": "user", "content": "test"}]
         response = provider.generate(messages, 'test-model', {"temperature": 0}, {})
         self.assertEqual(response.usage['prompt_tokens'], 9)
-        request = provider.worker.call.call_args.args[0]
+        request = json.loads(provider.opener.open.call_args.args[0].data)
         self.assertEqual(request['model'], 'test-model')
         self.assertEqual(request['messages'], messages)
-        self.assertEqual(request['parameters'], {'temperature': 0})
+        self.assertEqual(request['temperature'], 0)
+        self.assertIs(request['stream'], False)
         self.assertEqual(response.metadata['response_model'], 'served-version')
         with self.assertRaises(ValueError): provider.generate([], 'm', {"model": "override"}, {})
 
     def test_http_error_body_is_not_logged(self):
         provider = OpenAICompatibleProvider({"base_url": "http://localhost:8000/v1"})
-        provider.worker.call = Mock(return_value={'ok': False, 'status': 401, 'error': 'PRIVATE_SECRET'})
+        provider.opener.open = Mock(side_effect=HTTPError('http://localhost:8000/v1/chat/completions', 401, 'fixture', {}, io.BytesIO(b'PRIVATE_SECRET')))
         with self.assertRaises(ProviderError) as result:
             provider.generate([], 'm', {}, {})
         self.assertEqual(str(result.exception), 'api_http_401')

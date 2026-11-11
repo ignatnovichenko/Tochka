@@ -21,7 +21,7 @@ class CalibrationBatchTests(unittest.TestCase):
         self.items = [{'id': 'positive', 'case': self.case, 'rubric': self.rubric, 'candidate': 'five'},
                       {'id': 'negative', 'case': self.case, 'rubric': self.rubric, 'candidate': 'six'}]
         self.config = {'type': 'generation-provider', 'model': 'fixture-judge',
-                       'provider': {'type': 'openai-compatible', 'engine': 'promptfoo', 'base_url': 'http://localhost:1/v1'},
+                       'provider': {'type': 'openai-compatible', 'engine': 'native', 'base_url': 'http://localhost:1/v1'},
                        'parameters': {'max_tokens': 8192}, 'max_calls': 4, 'structured_retries': 1}
         self.records, self.raw, self.rounds = {}, [], []
 
@@ -41,7 +41,7 @@ class CalibrationBatchTests(unittest.TestCase):
         for job in reversed(jobs):
             if on_started: on_started(job['job_id'], '2026-11-11T00:00:00+00:00')
             on_result(job['job_id'], self.generation(job), .2)
-        return {'scheduler': 'promptfoo.evaluate', 'completed': len(jobs), 'total_calls': len(jobs),
+        return {'scheduler': 'native.threadpool', 'completed': len(jobs), 'total_calls': len(jobs),
                 'test_count': len(jobs), 'max_active_requests': min(len(jobs), max_concurrency)}
 
     def run_batch(self, execute=None, items=None):
@@ -60,13 +60,13 @@ class CalibrationBatchTests(unittest.TestCase):
         self.assertEqual(set(key for key, _ in self.raw), {'positive','negative'})
         self.assertTrue(all(row['judge']['latency_seconds'] >= .2 for row in self.records.values()))
 
-    def test_repairs_use_second_promptfoo_round_and_preserve_costs(self):
+    def test_repairs_use_second_native_round_and_preserve_costs(self):
         def execute(jobs, concurrency, on_result, **kwargs):
             if not self.rounds:
                 self.rounds.append(jobs)
                 for job in jobs:
                     on_result(job['job_id'], Generation('{}', {}, {'cost_usd':.01}), .1)
-                return {'scheduler':'promptfoo.evaluate','completed':len(jobs)}
+                return {'scheduler':'native.threadpool','completed':len(jobs)}
             return self.execute(jobs, concurrency, on_result, **kwargs)
         result = self.run_batch(execute)
         self.assertEqual(len(self.rounds), 2)
@@ -82,7 +82,7 @@ class CalibrationBatchTests(unittest.TestCase):
         def execute(jobs, concurrency, on_result, **kwargs):
             self.rounds.append(jobs)
             for job in jobs: on_result(job['job_id'], Generation('{}', {}, {}), .1)
-            return {'scheduler':'promptfoo.evaluate','completed':len(jobs)}
+            return {'scheduler':'native.threadpool','completed':len(jobs)}
         self.run_batch(execute)
         self.assertEqual(len(self.rounds), 1)
         for row in self.records.values():
@@ -96,10 +96,10 @@ class CalibrationBatchTests(unittest.TestCase):
             if not self.rounds:
                 self.rounds.append(jobs)
                 on_result(jobs[0]['job_id'], Generation('{}', {}, {}), .1)
-                error = ProviderUnavailable('promptfoo_connection_unavailable')
+                error = ProviderUnavailable('api_connection_unavailable')
                 error.request_attempted = False
                 on_result(jobs[1]['job_id'], error, 0)
-                return {'scheduler':'promptfoo.evaluate','completed':len(jobs)}
+                return {'scheduler':'native.threadpool','completed':len(jobs)}
             return self.execute(jobs, concurrency, on_result, **kwargs)
         result = self.run_batch(execute)
         self.assertEqual(len(self.rounds), 2)
@@ -117,7 +117,7 @@ class CalibrationBatchTests(unittest.TestCase):
                 error.request_attempted = False
                 error.retry_after_seconds = 60
                 on_result(job['job_id'], error, .2)
-            return {'scheduler':'promptfoo.evaluate','completed':len(jobs)}
+            return {'scheduler':'native.threadpool','completed':len(jobs)}
         result = self.run_batch(execute)
         self.assertEqual(result['attempted_calls'], 0)
         for row in self.records.values():
@@ -131,7 +131,7 @@ class CalibrationBatchTests(unittest.TestCase):
             error = ProviderUnavailable('api_http_429'); error.retry_after_seconds = 60
             error.request_attempted = True
             on_result(jobs[1]['job_id'], error, .2)
-            return {'scheduler':'promptfoo.evaluate','completed':len(jobs)}
+            return {'scheduler':'native.threadpool','completed':len(jobs)}
         self.run_batch(execute)
         self.assertEqual(len(self.rounds), 1)
         self.assertEqual(self.records['positive']['judge']['reason_code'], 'judge_api_cooldown_active')
@@ -154,8 +154,7 @@ class CalibrationBatchTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root, output = Path(directory)/'experiment', Path(directory)/'results'
             self.setup_experiment(root)
-            with patch('nir_eval.promptfoo_backend.require_runtime'), \
-                 patch('nir_eval.business.judging.evaluate_jobs', side_effect=self.execute), \
+            with patch('nir_eval.business.judging.evaluate_jobs', side_effect=self.execute), \
                  contextlib.redirect_stdout(io.StringIO()):
                 summary = calibrate(root, root/'labels.jsonl', output, max_concurrency=3)
             self.assertEqual(summary['evaluated'], 2)
@@ -165,7 +164,7 @@ class CalibrationBatchTests(unittest.TestCase):
             self.assertEqual({row['label_id'] for row in load_jsonl(output/'raw.jsonl')}, {'positive','negative'})
             manifest=json.loads((output/'manifest.json').read_text())
             self.assertEqual(manifest['state'], 'completed')
-            self.assertEqual(manifest['scheduler'], 'promptfoo.evaluate')
+            self.assertEqual(manifest['scheduler'], 'native.threadpool')
             self.assertEqual(manifest['max_concurrency'], 3)
             self.assertEqual(manifest['started_calls'], 2)
 
@@ -176,8 +175,7 @@ class CalibrationBatchTests(unittest.TestCase):
             def interrupted(jobs, concurrency, callback, **kwargs):
                 callback(jobs[0]['job_id'], self.generation(jobs[0]), .1)
                 raise KeyboardInterrupt()
-            with patch('nir_eval.promptfoo_backend.require_runtime'), \
-                 patch('nir_eval.business.judging.evaluate_jobs', side_effect=interrupted), \
+            with patch('nir_eval.business.judging.evaluate_jobs', side_effect=interrupted), \
                  contextlib.redirect_stdout(io.StringIO()):
                 with self.assertRaises(KeyboardInterrupt):
                     calibrate(root, root/'labels.jsonl', output, max_concurrency=3)
@@ -186,13 +184,13 @@ class CalibrationBatchTests(unittest.TestCase):
             self.assertEqual(json.loads((output/'manifest.json').read_text())['state'], 'interrupted')
             self.assertFalse((output/'summary.json').exists())
 
-    def test_bad_concurrency_and_runtime_fail_before_output(self):
+    def test_bad_concurrency_and_credentials_fail_before_output(self):
         with tempfile.TemporaryDirectory() as directory:
             root, output = Path(directory)/'experiment', Path(directory)/'results'
             self.setup_experiment(root)
             with self.assertRaises(ValidationError):
                 calibrate(root, root/'labels.jsonl', output, max_concurrency=0)
-            with patch('nir_eval.promptfoo_backend.require_runtime', side_effect=ValidationError('fixture missing runtime')):
+            with patch('nir_eval.experiment.validate_api_config', side_effect=ValidationError('fixture missing credential')):
                 with self.assertRaises(ValidationError): calibrate(root, root/'labels.jsonl', output)
             self.assertFalse(output.exists())
 

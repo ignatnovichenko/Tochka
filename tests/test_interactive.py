@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 
 from nir_eval import app
-from nir_eval.interactive import run_shell, command_parsers
+from nir_eval.interactive import run_shell, command_parsers, MENU_COMMANDS
 
 
 class InteractiveTests(unittest.TestCase):
@@ -23,18 +23,18 @@ class InteractiveTests(unittest.TestCase):
         self.assertEqual(status, 0)
         return output, calls
 
-    def test_menu_includes_every_experiment_command(self):
+    def test_menu_has_eight_product_actions(self):
         output, calls = self.shell(['/', '', '/exit'])
-        for name in command_parsers():
+        self.assertEqual(len(MENU_COMMANDS), 8)
+        for name in MENU_COMMANDS:
             self.assertTrue(any(('/'+name+' —') in line for line in output), name)
         self.assertFalse(calls)
         self.assertNotIn('/help', '\n'.join(output))
+        self.assertFalse(any('/solver-add —' in line for line in output))
 
     def test_menu_selection_and_quoted_args(self):
-        names = list(command_parsers())
-        output, calls = self.shell(['/', str(names.index('init')+1), '"folder with spaces" --demo', '/exit'])
+        output, calls = self.shell(['/init "folder with spaces" --demo', '/exit'])
         self.assertEqual(calls, [['init', 'folder with spaces', '--demo']])
-        self.assertTrue(any('/wizard' in s for s in output))
 
     def test_argument_help_keys_and_wizard_delegated(self):
         _, calls = self.shell(['/run --help', '/keys list', '/wizard', '/exit'])
@@ -53,7 +53,7 @@ class InteractiveTests(unittest.TestCase):
             if args[0] == 'plan':
                 raise KeyboardInterrupt()
             raise SystemExit(0)
-        output, _ = self.shell(['/show', '/run', '/plan', '/init --help', '/exit'], command)
+        output, _ = self.shell(['/show', '/run fixture', '/plan', '/init --help', '/exit'], command)
         joined = '\n'.join(output)
         self.assertNotIn('SECRET', joined)
         self.assertIn('ValueError', joined)
@@ -84,7 +84,7 @@ class InteractiveTests(unittest.TestCase):
                                    main=lambda args, **kw: models.append(args) or 0)
         doctor = SimpleNamespace(run_doctor=lambda **kw: doctors.append(kw) or 0)
         with patch.dict(sys.modules, {'nir_eval.doctor_settings': settings, 'nir_eval.doctor': doctor}):
-            self.shell(['/run', '/model set', '/doctor', '/exit'], lambda a: 2)
+            self.shell(['/run fixture', '/model set', '/doctor', '/exit'], lambda a: 2)
         self.assertEqual(models, [['set']])
         self.assertEqual(doctors[0]['profile'], profile)
         self.assertIsNone(doctors[0]['experiment'])

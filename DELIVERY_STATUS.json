@@ -1,5 +1,5 @@
 {
-  "version": "0.5.1",
+  "version": "0.5.2",
   "date": "2026-11-11",
   "source_archive_sha256": "f81badfdc95135638676234ed035f13c4da6f889bf88e8b249ab7b75214eadae",
   "cli_workflow": "interactive slash menu and command CLI implemented; installed terminal smoke verified",
@@ -37,8 +37,8 @@
   "doctor_model_validation": "mocked responses only; real Go inference not tested",
   "doctor_repairs": "reviewed source patches with syntax check and backups; no behavioral guarantee",
   "api_keys": "local owner-only plaintext store; never committed",
-  "current_transport": "Promptfoo 0.125.1 public evaluate() owns run/resume/calibrate matrices and bounded concurrency; HTTP provider handles transport",
-  "installer": "Full isolated Omarchy Linux x64 wheel+managed Node24.22.2/npm11.19.1+Promptfoo installation passed; fresh-process discovery passed. macOS ARM/Intel CI configured; current workflow not yet run.",
+  "current_transport": "Own native Python HTTP transport and bounded streaming native.threadpool scheduler; Node/Promptfoo not required",
+  "installer": "Native Python package via uv; no Node/npm/Promptfoo dependency. Installed Omarchy CLI readiness, localhost business workflow and calibration checked without Node in PATH; native installer unit tests14pass. macOS not tested locally.",
   "subscription_models_used": true,
   "additional_balance_billing_observed": false,
   "previous_promptfoo_live_0_4_0": {
@@ -109,5 +109,47 @@
     "tests_passed": 39,
     "scope": "interactive console, setup CLI, installer",
     "change": "Removed redundant /help; / is the command menu; command --help remains supported"
+  },
+  "native_restoration": {
+    "version": "0.5.2",
+    "engine": "native",
+    "scheduler": "native.threadpool",
+    "restored_from_commit": "d97e79c",
+    "tests_passed": 394,
+    "finqa_reference_checks": 883,
+    "installed_api_workflow_tests": 4,
+    "installed_calibration_fixture_valid_judgements": 1,
+    "node_absent_from_path": true,
+    "historical_files_unchanged": 688,
+    "real_model_calls": 0,
+    "github_changes_published": true,
+    "limitation": "Already transmitted HTTP requests can finish after cancellation; pending evidence remains unknown, not free."
+  },
+  "interactive_menu": {
+    "commands": [
+      "experiment",
+      "settings",
+      "run",
+      "results",
+      "calibrate",
+      "doctor",
+      "update",
+      "exit"
+    ],
+    "validation": "399 tests and 883 FinQA checks passed; installed menu and demo/settings smoke passed; local API run/results/reselect/resume flow verified",
+    "github_published": true
+  },
+  "model_catalog": {
+    "source": "provider GET /models",
+    "live_opencode_go_catalog_count": 30,
+    "inference_calls": 0,
+    "fallback": "manual model ID",
+    "limitations": "Catalog membership does not guarantee current account access or quota"
+  },
+  "publication": {
+    "tag": "v0.5.2",
+    "tests": 405,
+    "finqa_reference_checks": 883,
+    "old_statistics_files_unchanged": 688
   }
 }

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nir-eval"
-version = "0.5.1"
+version = "0.5.2"
 description = "Reproducible public business-task LLM evaluation MVP"
 requires-python = ">=3.10"
 dependencies = []
@@ -22,4 +22,4 @@ include = ["nir_eval*"]
 namespaces = false
 
 [tool.setuptools.package-data]
-nir_eval = ["demo/*.jsonl", "promptfoo_runtime/package.json", "promptfoo_runtime/package-lock.json", "promptfoo_runtime/worker.mjs"]
+nir_eval = ["demo/*.jsonl"]

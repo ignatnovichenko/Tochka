@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import time
 
+from .. import __version__
 from ..providers import Generation, ProviderError, ProviderUnavailable
 from ..provenance import source_hashes
 from .schema import ValidationError,canonical,digest,strict_json,import_inputs,fields,identifier,string
@@ -65,7 +66,7 @@ def _append(stream,row):
 
 
 def evaluate_jobs(*args,**kwargs):
-    from ..promptfoo_backend import evaluate_jobs as execute
+    from ..native_backend import evaluate_jobs as execute
     return execute(*args,**kwargs)
 
 
@@ -114,7 +115,7 @@ class _ReplayJudge:
 
 
 class _Run:
-    """Per-model evidence writer. Scheduling belongs entirely to Promptfoo."""
+    """Per-model evidence writer. Scheduling belongs entirely to Tochka."""
     def __init__(self,spec,index,max_concurrency):
         self.spec=spec;self.index=index;self.max_concurrency=max_concurrency
         self.cases,self.rubrics,_=import_inputs(spec['cases_path'],spec['rubrics_path'])
@@ -147,21 +148,21 @@ class _Run:
             'case_ids':[c['id'] for c in self.cases],'planned_attempts':self.count,
             'configuration_names':[c['name'] for c in self.solver['configurations']],
             'repetitions':self.solver.get('repetitions',1),
-            'judge_latency_scope':'Sum of Promptfoo scheduled judge API call durations and strict validation; excludes queue wait and worker startup; includes explicit repair attempts.',
+            'judge_latency_scope':'Sum of Native scheduled judge API call durations and strict validation; excludes queue wait and worker startup; includes explicit repair attempts.',
             'total_latency_scope':'solver_plus_judge_call_seconds',
             'solver_model':self.solver['model'],'solver_config_sha256':digest(self.solver),
             'judge_config_sha256':digest(self.judge),'judge_type':self.judge['type'],
             'save_raw_judge':self.spec.get('save_raw_judge',False),'cost_usd':None,
             'code_sha256':source_hashes(),
-            'execution_backend':{'solver':'promptfoo','judge':'disabled' if self.judge['type']=='disabled' else 'promptfoo',
-                                 'version':'0.125.1','cache':False,'transport_retries':0},
-            'scheduler':{'owner':'promptfoo.evaluate','max_concurrency':self.max_concurrency,'cache':False,'automatic_retries':0},
+            'execution_backend':{'solver':'native','judge':'disabled' if self.judge['type']=='disabled' else 'native',
+                                 'version':__version__,'cache':False,'transport_retries':0},
+            'scheduler':{'owner':'native.threadpool','max_concurrency':self.max_concurrency,'cache':False,'automatic_retries':0},
             'execution':{'new_solver_calls':0,'new_judge_calls':0,'reused_solver_answers':0,'reused_judgements':0,
                          'new_call_cost_usd':None,'unresolved_scheduled_jobs':0,'inflight_jobs':{},
                          'cost_scope':'new completed attempted requests, excluding known local cooldown/budget refusals; interrupted outstanding requests have unknown cost'},
             'notes':['Only valid neural-judge outputs determine quality, including numeric answers.',
                      'Unavailable/error judgements remain unknown, never numerical quality zero.',
-                     'Promptfoo owns matrix scheduling and bounded concurrency; queue wait is not model latency.',
+                     'Tochka owns matrix scheduling and bounded concurrency; queue wait is not model latency.',
                      'Resume creates a new run and retains old latency/cost for reused results.',
                      'Configured call limits include explicit structured repairs.',
                      'Interrupted in-flight requests may have reached the provider; their costs remain unknown.']}
@@ -224,7 +225,7 @@ class _Run:
                     job_id=f'solver-{self.index}-{len(jobs)}'
                     record={**base,'messages':messages,'prompt_sha256':digest(messages),'parameters':cfg.get('parameters',{}),
                             'queued_at_utc':now(),'error':None,'token_usage':{},'raw_output':'',
-                            'latency_scope':'Promptfoo scheduled API call; excludes queue wait, worker startup and judge.'}
+                            'latency_scope':'Native scheduled API call; excludes queue wait, worker startup and judge.'}
                     self.pending[job_id]=(record,{**base,'status':'ok','response':''})
                     jobs.append({'job_id':job_id,'provider':self.solver['provider'],'messages':messages,
                                  'model':self.solver['model'],'parameters':cfg.get('parameters',{}),
@@ -254,7 +255,7 @@ class _Run:
         if isinstance(result,Exception):
             response['status']='error';record['error']='solver_provider_error'
             safe=str(result)
-            if safe.startswith(('api_','promptfoo_')) and safe.replace('_','').isalnum():record['error']=safe
+            if safe.startswith(('api_','native_')) and safe.replace('_','').isalnum():record['error']=safe
             if attempted:self.new_costs.append(None)
             _deadline(record,getattr(result,'retry_after_seconds',None))
         else:
@@ -267,7 +268,7 @@ class _Run:
         if self.judge['type']=='generation-provider':
             return self.judge['provider'],self.judge.get('parameters',{'temperature':0,'max_tokens':self.judge.get('max_tokens',2048)})
         provider={key:self.judge[key] for key in ('base_url','api_key_env','timeout_seconds') if key in self.judge}
-        provider.update(type='openai-compatible',engine='promptfoo')
+        provider.update(type='openai-compatible',engine='native')
         provider.setdefault('api_key_env','NIR_JUDGE_API_KEY');provider.setdefault('timeout_seconds',90)
         return provider,{'temperature':0,'max_tokens':self.judge.get('max_tokens',2048)}
 
@@ -352,7 +353,7 @@ class _Run:
 
 
 def run_business_matrix(specs,*,max_concurrency=4):
-    """Execute one matrix through Promptfoo, streaming durable per-model evidence.
+    """Execute one matrix through Tochka, streaming durable per-model evidence.
 
     A spec contains cases_path, rubrics_path, solver_path, output and optional
     judge_path, allow_remote_solver/judge, save_raw_judge, reuse_from. Matrix

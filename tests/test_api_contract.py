@@ -4,6 +4,7 @@ import json
 import os
 import time
 import unittest
+from urllib.error import HTTPError
 from unittest.mock import Mock, patch
 from pathlib import Path
 
@@ -22,15 +23,19 @@ def payload(**changes):
 
 
 def response(data):
-    return {'id': 1, 'ok': True, 'raw_response': json.dumps(data),
-            'engine': 'promptfoo', 'version': '0.125.1', 'latency_ms': 1}
+    return io.BytesIO(json.dumps(data).encode())
+
+
+def http_error(status, body='', retry_after=None):
+    headers = {} if retry_after is None else {'Retry-After': retry_after}
+    return HTTPError('http://127.0.0.1:12345/v1/chat/completions', status, 'fixture', headers,
+                     io.BytesIO(body.encode()))
 
 
 class APIContractTests(unittest.TestCase):
     def setUp(self):
-        runtime = patch('nir_eval.promptfoo_backend.require_runtime', return_value=Path('/unused-fixture-runtime'))
-        runtime.start()
-        self.addCleanup(runtime.stop)
+        from nir_eval import native_backend
+        native_backend._COOLDOWNS.clear()
 
     def provider(self, **changes):
         config = {'type': 'openai-compatible', 'base_url': 'http://127.0.0.1:12345/v1',
@@ -41,20 +46,18 @@ class APIContractTests(unittest.TestCase):
 
     def test_remote_consent_and_key_are_required_before_request(self):
         config = {'type': 'openai-compatible', 'base_url': 'https://api.example.test/v1', 'api_key_env': 'NIR_MISSING_TEST_KEY'}
-        with patch.dict(os.environ, {}, clear=True), patch('nir_eval.promptfoo_backend.Worker.start') as start_worker:
+        with patch.dict(os.environ, {}, clear=True), patch('nir_eval.native_backend.urllib.request.build_opener') as build_opener:
             with self.assertRaises(ValueError): OpenAICompatibleProvider(config, False)
             with self.assertRaises(ValueError): OpenAICompatibleProvider(config, True)
-            start_worker.assert_not_called()
+            build_opener.assert_not_called()
 
-    def test_worker_does_not_inherit_environment_proxy(self):
-        provider = self.provider()
-        with patch.dict(os.environ, {'HTTP_PROXY': 'http://private-proxy', 'HTTPS_PROXY': 'http://private-proxy'}), \
-             patch('nir_eval.promptfoo_backend.subprocess.Popen', side_effect=OSError) as process:
-            with self.assertRaises(OSError): provider.worker.start()
-            env = process.call_args.kwargs['env']
-            self.assertNotIn('HTTP_PROXY', env)
-            self.assertNotIn('HTTPS_PROXY', env)
-        provider.worker.close()
+    def test_local_http_does_not_inherit_environment_proxy(self):
+        with patch.dict(os.environ, {'HTTP_PROXY': 'http://private-proxy', 'HTTPS_PROXY': 'http://private-proxy'}):
+            provider = self.provider()
+        proxy_handlers = [handler for handler in provider.opener.handlers
+                          if hasattr(handler, 'proxies')]
+        self.assertTrue(all(handler.proxies == {} for handler in proxy_handlers))
+        self.assertFalse(any(hasattr(handler, 'proxy_open') for handler in provider.opener.handlers))
 
     def test_credential_query_and_plain_remote_http_urls_rejected(self):
         for url in ['https://u:secret@example.test/v1', 'https://example.test/v1?api_key=secret',
@@ -68,7 +71,7 @@ class APIContractTests(unittest.TestCase):
                        choices=[{'message': {'content': 'echo ' + SECRET}, 'finish_reason': SECRET}],
                        usage={'prompt_tokens':10, 'completion_tokens':4,
                               'opencode': {'billing_source': SECRET}})
-        p.worker.call = Mock(return_value=response(data))
+        p.opener.open = Mock(return_value=response(data))
         result = p.generate([], 'fixture-model', {}, {})
         serialized = json.dumps({'text': result.text, 'usage': result.usage, 'metadata': result.metadata})
         self.assertNotIn(SECRET, serialized)
@@ -99,7 +102,7 @@ class APIContractTests(unittest.TestCase):
 
     def test_429_sets_cooldown_without_repeated_http_request(self):
         p = self.provider()
-        p.worker.call = Mock(return_value={'ok': False, 'status': 429, 'retry_after': '120', 'error': SECRET})
+        p.opener.open = Mock(side_effect=http_error(429, SECRET, '120'))
         with self.assertRaises(ProviderUnavailable) as first:
             p.generate([], 'fixture-model', {}, {})
         self.assertEqual(first.exception.retry_after_seconds, 120)
@@ -107,14 +110,14 @@ class APIContractTests(unittest.TestCase):
         with self.assertRaises(ProviderUnavailable) as second:
             p.generate([], 'fixture-model', {}, {})
         self.assertEqual(str(second.exception),'api_cooldown_active')
-        self.assertEqual(p.worker.call.call_count,1)
+        self.assertEqual(p.opener.open.call_count,1)
 
     def test_safe_400_restrictions_only_accept_known_codes(self):
-        for code, expected in [('api_http_400_region_restricted', 'api_http_400_region_restricted'),
-                               ('api_http_400_training_restricted', 'api_http_400_training_restricted'),
+        for code, expected in [('Hosted outside Europe and the United States', 'api_http_400_region_restricted'),
+                               ('trains on request data', 'api_http_400_training_restricted'),
                                (SECRET, 'api_http_400')]:
             p = self.provider()
-            p.worker.call = Mock(return_value={'ok': False, 'status': 400, 'error': code})
+            p.opener.open = Mock(side_effect=http_error(400, code))
             with self.assertRaises(ProviderError) as error:
                 p.generate([], 'fixture-model', {}, {})
             self.assertEqual(str(error.exception), expected)
@@ -122,13 +125,15 @@ class APIContractTests(unittest.TestCase):
     def test_invalid_retry_after_falls_back_to_finite_delay(self):
         for header in ['NaN', 'inf', 'not-a-date']:
             p = self.provider()
-            p.worker.call = Mock(return_value={'ok': False, 'status': 429, 'retry_after': header})
+            from nir_eval import native_backend
+            native_backend._COOLDOWNS.clear()
+            p.opener.open = Mock(side_effect=http_error(429, retry_after=header))
             with self.assertRaises(ProviderUnavailable) as error: p.generate([], 'fixture-model', {}, {})
             self.assertEqual(error.exception.retry_after_seconds,60)
 
     def test_malformed_shapes_become_sanitized_provider_error(self):
         for data in [payload(choices=['bad']), payload(choices=[{'message': 'bad'}]), payload(choices=[]), []]:
-            p = self.provider(); p.worker.call = Mock(return_value=response(data))
+            p = self.provider(); p.opener.open = Mock(return_value=response(data))
             with self.subTest(data=data):
                 with self.assertRaises(ProviderError): p.generate([], 'fixture-model', {}, {})
 
@@ -143,9 +148,9 @@ class APIContractTests(unittest.TestCase):
     def test_remote_direct_judge_also_requires_key(self):
         config = {'type':'openai-compatible','model':'fixture-judge',
                   'base_url':'https://api.example.test/v1','api_key_env':'NIR_MISSING_TEST_KEY'}
-        with patch.dict(os.environ,{},clear=True), patch('nir_eval.promptfoo_backend.Worker.start') as start_worker:
+        with patch.dict(os.environ,{},clear=True), patch('nir_eval.native_backend.urllib.request.build_opener') as build_opener:
             with self.assertRaises(ValueError): make_judge(config,allow_remote=True)
-            start_worker.assert_not_called()
+            build_opener.assert_not_called()
 
 
 class ExperimentPreflightTests(unittest.TestCase):

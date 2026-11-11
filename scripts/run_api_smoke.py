@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Opt-in live API smoke: Promptfoo Go models on synthetic business cases.
+"""Opt-in live API smoke: Native Go models on synthetic business cases.
 
 Never runs on import or in CI. Maximum 30 provider attempts, no automatic
 transport retry or fallback endpoint. Explicit judge repairs count toward the cap. Credentials are read by Tochka, never saved here.
@@ -32,14 +32,12 @@ def main():
     from nir_eval.experiment import main as cli, read, jsonl
     from nir_eval.credentials import GO_BASE_URL, GO_KEY_ENV
     from nir_eval.providers import ProviderUnavailable
-    from nir_eval import promptfoo_backend
-    from nir_eval.promptfoo_backend import require_runtime
-    require_runtime()
+    from nir_eval import native_backend
     args.output.mkdir(parents=True, exist_ok=False)
     ledger = args.output / 'requests.jsonl'
     state = {'attempts': 0, 'stop': False}
     state['reserved'] = 0
-    original = promptfoo_backend.evaluate_jobs
+    original = native_backend.evaluate_jobs
     batch_number = 0
 
     def guarded(jobs, max_concurrency=4, on_result=None, *, on_started=None):
@@ -58,7 +56,7 @@ def main():
         def completed(job_id, result, seconds):
             from nir_eval.providers import Generation
             row={'batch':number,'job_id':job_id,'model':lookup[job_id]['model'],
-                 'started_at_utc':starts.get(job_id),'engine':'promptfoo.evaluate','wall_seconds':seconds}
+                 'started_at_utc':starts.get(job_id),'engine':'native.threadpool','wall_seconds':seconds}
             if isinstance(result,Generation):
                 row.update(status='success',usage=result.usage,metadata=result.metadata)
                 if result.metadata.get('billing_source')=='balance': state['stop']=True
@@ -75,9 +73,9 @@ def main():
         if cli([str(x) for x in argv]):
             raise RuntimeError('CLI smoke command failed')
 
-    promptfoo_backend.evaluate_jobs = guarded
+    native_backend.evaluate_jobs = guarded
     try:
-        for engine in ('promptfoo',):
+        for engine in ('native',):
             experiment = args.output / (engine + '-experiment')
             command(['init', experiment, '--demo'])
             cases = [json.loads(x) for x in (experiment / 'cases.jsonl').read_text().splitlines()]
@@ -94,7 +92,7 @@ def main():
             command(['plan', experiment])
             command(['run', experiment, '--output', args.output / (engine + '-run'), '--allow-remote','--concurrency',args.concurrency])
         if not args.skip_calibration:
-            experiment = args.output / 'promptfoo-experiment'
+            experiment = args.output / 'native-experiment'
             labels = [json.loads(x) for x in (experiment / 'calibration.jsonl').read_text().splitlines()]
             labels = [x for x in labels if x['case_id'] in {c['id'] for c in cases}]
             jsonl(experiment / 'labels-selected.jsonl', labels)
@@ -105,7 +103,7 @@ def main():
             'max_concurrency':args.concurrency,'cases_per_engine':len(cases), 'calibration_labels':'synthetic author labels; not independent certification',
             'purpose':'integration smoke; insufficient sample to rank models or engines'}, indent=2)+'\n')
     finally:
-        promptfoo_backend.evaluate_jobs = original
+        native_backend.evaluate_jobs = original
 
 
 if __name__ == '__main__': main()

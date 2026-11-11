@@ -1,0 +1,20 @@
+{
+  "version": "0.5.2",
+  "engine": "native",
+  "tests_passed": 405,
+  "finqa_reference_checks": 883,
+  "historical_files_unchanged": 688,
+  "live_catalog_models": 30,
+  "new_neural_model_calls": 0,
+  "api_workflow_validation": "localhost fixture; not model quality statistics",
+  "menu_commands": [
+    "experiment",
+    "settings",
+    "run",
+    "results",
+    "calibrate",
+    "doctor",
+    "update",
+    "exit"
+  ]
+}

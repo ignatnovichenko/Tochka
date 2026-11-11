@@ -35,9 +35,7 @@ class CredentialTests(unittest.TestCase):
         self.database([('opencode', '{"key":"wrong"}', 1), ('opencode-go', '{"key":"fixture"}', 1)])
         db = self.root / 'opencode.db'
         before = db.read_bytes()
-        # Credential isolation clears PATH intentionally; runtime health has its own tests.
-        with patch('nir_eval.promptfoo_backend.require_runtime', return_value=self.root), \
-                patch('nir_eval.promptfoo_backend.Worker.call', side_effect=AssertionError('Unexpected model call')) as model_call:
+        with patch('urllib.request.OpenerDirector.open', side_effect=AssertionError('Unexpected model call')) as model_call:
             p = OpenAICompatibleProvider(self.config, allow_remote=True)
             self.assertEqual(p.api_key, 'fixture')
             model_call.assert_not_called()
@@ -128,8 +126,7 @@ class CredentialTests(unittest.TestCase):
             self.assertEqual(inner(), 'fixture-input')
             self.assertEqual(api_key(self.config), 'fixture-input')
         with patch('sys.stdin.isatty', return_value=True), patch('getpass.getpass', return_value='fixture-input'), \
-                patch('nir_eval.promptfoo_backend.require_runtime', return_value=self.root), \
-                patch('nir_eval.promptfoo_backend.Worker.call', side_effect=AssertionError('Unexpected model call')) as model_call:
+                patch('urllib.request.OpenerDirector.open', side_effect=AssertionError('Unexpected model call')) as model_call:
             outer()
             model_call.assert_not_called()
         self.assertEqual(api_key(self.config), 'fixture-input')

@@ -57,11 +57,7 @@ def load_reusable_run(source,cases_path,rubrics_path,solver,judge):
     manifest=strict_json(mp.read_text())
     if manifest.get('schema_version')!='business-pipeline-v1' or manifest.get('state') not in {'running','interrupted','completed'}:
         raise ValidationError('Unsupported resume source manifest')
-    if solver['provider'].get('type') == 'openai-compatible' and solver['provider'].get('engine') != 'promptfoo' and manifest.get('execution_backend',{}).get('solver') != 'promptfoo':
-        raise ValidationError('Old API engine results remain readable; create a new Promptfoo experiment instead of mixing execution engines on resume')
-    judge_provider = judge.get('provider',{}) if judge.get('type') == 'generation-provider' else judge
-    if judge_provider.get('type') == 'openai-compatible' and judge_provider.get('engine') != 'promptfoo' and manifest.get('execution_backend',{}).get('judge') != 'promptfoo':
-        raise ValidationError('Old judge engine results remain readable; start a new Promptfoo experiment instead of mixing judges on resume')
+    # Historical native and Promptfoo answers retain their recorded timing/cost.
     expected_hashes={'cases_sha256':sha(cases_path),'rubrics_sha256':sha(rubrics_path),
                      'solver_config_sha256':digest(solver),'judge_config_sha256':digest(judge)}
     if any(manifest.get(k)!=v for k,v in expected_hashes.items()):
@@ -224,7 +220,7 @@ def resume_experiment(source,output,allow_remote=False,*,max_concurrency=4):
                 'judge_path':output/'inputs'/cfg['judge'],'allow_remote_solver':allow_remote,
                 'allow_remote_judge':allow_remote,'save_raw_judge':True,
                 'reuse_from':original if original.exists() else None})
-        manifest['scheduler']={'engine':'promptfoo.evaluate','max_concurrency':max_concurrency}
+        manifest['scheduler']={'engine':'native.threadpool','max_concurrency':max_concurrency}
         write(output/'experiment-manifest.json',manifest)
         run_business_matrix(specs,max_concurrency=max_concurrency)
         manifest['runs']=[Path(name).stem for name in cfg['solvers']]

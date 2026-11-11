@@ -25,6 +25,9 @@ def answers(*, confirmation='', endpoint='', mode='1', import_paths=(), document
 
 class WizardTests(unittest.TestCase):
     def setUp(self):
+        catalog = patch('nir_eval.model_catalog.fetch_models', return_value=[])
+        catalog.start()
+        self.addCleanup(catalog.stop)
         self.go_patch = patch('nir_eval.credentials.saved_go_key', return_value='')
         self.go_patch.start()
         self.addCleanup(self.go_patch.stop)

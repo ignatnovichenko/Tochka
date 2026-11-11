@@ -18,5 +18,5 @@ def batch_fixture(solver,judge=None):
                 if hasattr(exc,'retry_after_seconds'):result.retry_after_seconds=exc.retry_after_seconds
             except Exception as exc:result=exc
             on_result(job['job_id'],result,0.001)
-        return {'scheduler':'fixture-not-promptfoo','completed':len(jobs),'max_concurrency':max_concurrency}
+        return {'scheduler':'fixture-dispatcher','completed':len(jobs),'max_concurrency':max_concurrency}
     return execute

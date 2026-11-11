@@ -1,4 +1,4 @@
-"""Actual Promptfoo evaluator contracts against a local HTTP fixture, no models."""
+"""Actual Native evaluator contracts against a local HTTP fixture, no models."""
 import copy
 import json
 import os
@@ -9,13 +9,12 @@ import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from unittest.mock import patch
 
-from nir_eval import promptfoo_backend as backend
+from nir_eval import native_backend as backend
 from nir_eval.business.schema import ValidationError
 from nir_eval.providers import Generation, ProviderError, ProviderUnavailable
 
 
-@unittest.skipUnless(backend.runtime_status()['ready'], 'pinned Promptfoo runtime is not installed')
-class PromptfooMatrixTests(unittest.TestCase):
+class NativeMatrixTests(unittest.TestCase):
     def setUp(self):
         backend._COOLDOWNS.clear()
         self.addCleanup(backend._COOLDOWNS.clear)
@@ -78,20 +77,11 @@ class PromptfooMatrixTests(unittest.TestCase):
         self.thread.start()
         self.addCleanup(self.server.server_close)
         self.addCleanup(self.server.shutdown)
-        self.config = {'type':'openai-compatible', 'engine':'promptfoo',
+        self.config = {'type':'openai-compatible', 'engine':'native',
                        'base_url':f'http://127.0.0.1:{self.server.server_port}/v1',
                        'api_key_env':'TOCHKA_MATRIX_FIXTURE_KEY','timeout_seconds':5}
         env = patch.dict(os.environ, {'TOCHKA_MATRIX_FIXTURE_KEY':self.secret})
         env.start(); self.addCleanup(env.stop)
-        original_start = backend.Worker.start
-        def start(worker):
-            original_start(worker)
-            self.workers.append(worker)
-            self.processes.append(worker.proc)
-            self.scratch_paths.append(Path(worker.scratch.name))
-        capture = patch.object(backend.Worker, 'start', start)
-        capture.start(); self.addCleanup(capture.stop)
-
     def job(self, job_id, model='fixture-a', *, timeout=5, **parameters):
         return {'job_id':job_id, 'model':model,
                 'provider':dict(self.config, timeout_seconds=timeout),
@@ -105,10 +95,9 @@ class PromptfooMatrixTests(unittest.TestCase):
             on_started=lambda job_id, started:self.started.append((job_id, started)))
 
     def assert_workers_closed(self):
-        self.assertTrue(self.processes)
-        self.assertTrue(all(proc.poll() is not None for proc in self.processes))
-        self.assertTrue(all(worker.proc is None for worker in self.workers))
-        self.assertTrue(all(not path.exists() for path in self.scratch_paths))
+        # Native dispatch has no worker process, scratch database or persisted keys.
+        self.assertEqual(self.processes, [])
+        self.assertEqual(self.scratch_paths, [])
 
     def test_filtered_matrix_identity_params_repetitions_and_out_of_order(self):
         jobs = [self.job('a-rep0',delay_seconds=.4,temperature=0,cost_mode='known'),
@@ -116,7 +105,7 @@ class PromptfooMatrixTests(unittest.TestCase):
                 self.job('a-rep1',delay_seconds=.05,temperature=0,cost_mode='known'),
                 self.job('b-rep1','fixture-b',delay_seconds=.05,temperature=.7,cost_mode='known')]
         result = self.evaluate(jobs)
-        self.assertEqual(result['scheduler'],'promptfoo.evaluate')
+        self.assertEqual(result['scheduler'],'native.threadpool')
         self.assertEqual(result['test_count'],4)
         self.assertEqual(result['completed'],4)
         self.assertEqual(result['total_calls'],4)
@@ -137,7 +126,7 @@ class PromptfooMatrixTests(unittest.TestCase):
             answer = by_id[job['job_id']]
             self.assertIsInstance(answer,Generation)
             self.assertEqual(answer.text,'answer:'+job['model']+':'+job['job_id'])
-            self.assertEqual(answer.metadata['execution_scheduler'],'promptfoo.evaluate')
+            self.assertEqual(answer.metadata['execution_scheduler'],'native.threadpool')
             self.assertTrue(answer.metadata['request_attempted'])
         self.assertEqual({x[0] for x in self.started},set(by_id))
         self.assertTrue(all(isinstance(t,str) and 'T' in t for _,t in self.started))
@@ -230,7 +219,7 @@ class PromptfooMatrixTests(unittest.TestCase):
         self.assertEqual(result['total_calls'],2)
         self.assert_workers_closed()
 
-    def test_raw_costs_unknowns_and_key_redaction_not_persisted_by_promptfoo(self):
+    def test_raw_costs_unknowns_and_key_redaction_not_persisted_by_native(self):
         snapshots=[]
         def record(job_id, answer, latency):
             self.completed.append((job_id,answer,latency))
@@ -268,6 +257,9 @@ class PromptfooMatrixTests(unittest.TestCase):
         self.assertEqual(len(self.completed),1)
         self.assertEqual(self.completed[0][0],'first')
         self.assertIsInstance(self.completed[0][1],Generation)
+        time.sleep(.9)
+        self.assertLessEqual(len(self.requests),2, 'Cancelled queued work must never reach HTTP')
+        self.assertEqual(len(self.completed),1, 'Cancelled results must not mutate durable evidence')
         self.assert_workers_closed()
 
     def test_oversized_wire_result_keeps_attempted_event_contract(self):

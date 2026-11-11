@@ -8,7 +8,7 @@ def main(argv=None):
         from .experiment import parser
         parser().print_help()
         print('\nИнтерактивно: tochka → / → номер действия. Добавьте --help к команде для подробностей.')
-        print('Дополнительно: tochka doctor, tochka model, tochka shell; добавьте --help для подробностей.')
+        print('Дополнительно: tochka update, tochka doctor, tochka model, tochka shell; добавьте --help для подробностей.')
         return 0
     if not args:
         if sys.stdin.isatty():
@@ -16,10 +16,12 @@ def main(argv=None):
             return run_shell()
         from .experiment import parser
         parser().print_help()
-        print('Интерактивная консоль: tochka (в терминале). Дополнительно: doctor, model, shell.')
+        print('Интерактивная консоль: tochka (в терминале). Дополнительно: update, doctor, model, shell.')
         return 0
-    if args[0] in {'wizard', 'doctor', 'model', 'shell'}:
-        if args[0] == 'wizard':
+    if args[0] in {'update', 'wizard', 'doctor', 'model', 'shell'}:
+        if args[0] == 'update':
+            from .update_cli import main as command
+        elif args[0] == 'wizard':
             from .wizard import main as command
         elif args[0] == 'doctor':
             from .doctor import main as command

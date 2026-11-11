@@ -10,7 +10,7 @@ def validate_api_config(config, *, allow_remote=False, require_key=False):
                'input_price_per_million', 'output_price_per_million', 'engine'}
     if not isinstance(config, dict) or config.keys() - allowed:
         raise ValidationError('API config accepts URL, key environment name, timeout and optional tariffs only')
-    if config.get('engine', 'promptfoo') != 'promptfoo':
+    if config.get('engine', 'native') not in {'native','promptfoo'}:
         raise ValidationError('Unknown execution engine')
     base = config.get('base_url', '')
     if not isinstance(base, str):

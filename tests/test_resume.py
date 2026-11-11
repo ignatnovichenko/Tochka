@@ -47,18 +47,24 @@ class ResumeTests(unittest.TestCase):
     def run_it(self,solver,judge,output=None,reuse=None):
         with patch('nir_eval.business.running.evaluate_jobs',side_effect=batch_fixture(solver,judge)),contextlib.redirect_stdout(io.StringIO()):
             return run_business(self.cases,self.rubrics,self.solver,output or self.source,judge_path=self.judge,save_raw_judge=True,reuse_from=reuse)
-    def test_old_solver_or_judge_engine_cannot_be_mixed_on_resume(self):
+    def test_historical_native_and_promptfoo_results_can_be_reused(self):
         self.run_it(Solver(), Judge())
         path = self.source/'manifest.json'
         original = json.loads(path.read_text())
-        for role in ('solver', 'judge'):
-            with self.subTest(role=role):
+        for marker in (None, 'native', 'promptfoo'):
+            with self.subTest(engine=marker):
                 manifest = json.loads(json.dumps(original))
-                manifest['execution_backend'].pop(role)
+                if marker is None:
+                    manifest.pop('execution_backend', None)
+                else:
+                    manifest['execution_backend'].update(solver=marker, judge=marker)
                 path.write_text(json.dumps(manifest))
-                with self.assertRaisesRegex(ValidationError, 'engine'):
-                    self.run_it(Solver(), Judge(), self.output, self.source)
-                self.assertFalse(self.output.exists())
+                target = self.root/('resume-'+str(marker))
+                solver, judge = Solver(), Judge()
+                before = hashes(self.source)
+                self.run_it(solver, judge, target, self.source)
+                self.assertEqual((solver.calls, judge.calls), (0, 0))
+                self.assertEqual(hashes(self.source), before)
         path.write_text(json.dumps(original))
 
     def test_reuses_solver_and_valid_judge_only(self):

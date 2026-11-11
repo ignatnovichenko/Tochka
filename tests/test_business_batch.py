@@ -19,7 +19,7 @@ class BusinessBatchTests(unittest.TestCase):
         self.cases=self.root/'cases.jsonl';self.rubrics=self.root/'rubrics.jsonl'
         self.cases.write_text(''.join(json.dumps({'id':f'case{i}','task':'Return 5','context':'five','reference':'PRIVATE_REFERENCE','rubric_id':'r'})+'\n' for i in range(2)))
         self.rubrics.write_text(json.dumps({'id':'r','criteria':[{'id':'right','description':'five'}]})+'\n')
-        self.provider={'type':'openai-compatible','engine':'promptfoo','base_url':'http://127.0.0.1:1/v1'}
+        self.provider={'type':'openai-compatible','engine':'native','base_url':'http://127.0.0.1:1/v1'}
         self.judge=self.root/'judge.json'
         self.judge.write_text(json.dumps({'type':'generation-provider','model':'separate-judge','provider':self.provider,
                                          'parameters':{},'max_calls':100,'structured_retries':0}))
@@ -51,7 +51,7 @@ class BusinessBatchTests(unittest.TestCase):
                 self.assertNotIn('PRIVATE_REFERENCE',json.dumps(job['messages']))
                 self.assertNotIn('rubric',json.dumps(job['messages']))
             on_result(job['job_id'],self.good(job),.25)
-        return {'scheduler':'fixture-not-promptfoo','max_concurrency':max_concurrency,'completed':len(jobs)}
+        return {'scheduler':'fixture-dispatcher','max_concurrency':max_concurrency,'completed':len(jobs)}
 
     def run_specs(self,specs,dispatcher=None,concurrency=3):
         with patch('nir_eval.business.running.evaluate_jobs',side_effect=dispatcher or self.dispatcher),contextlib.redirect_stdout(io.StringIO()):
@@ -69,7 +69,7 @@ class BusinessBatchTests(unittest.TestCase):
             self.assertEqual(len({_identity(r) for r in rows}),8)
             self.assertTrue(all(r['total_cost_usd']==.2 for r in rows))
             manifest=json.loads((output/'manifest.json').read_text())
-            self.assertEqual(manifest['scheduler']['owner'],'promptfoo.evaluate')
+            self.assertEqual(manifest['scheduler']['owner'],'native.threadpool')
             self.assertEqual(manifest['scheduler']['max_concurrency'],3)
             self.assertEqual(manifest['execution']['new_solver_calls'],8)
             self.assertEqual(manifest['execution']['new_judge_calls'],8)

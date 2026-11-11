@@ -1,4 +1,4 @@
-"""Real pinned promptfoo against localhost fixtures; never calls a model.
+"""Real pinned native against localhost fixtures; never calls a model.
 
 TOCHKA_PROMPTFOO_DIR may point to an installed runtime containing worker.mjs
 and node_modules. Tests skip when the optional runtime is not ready.
@@ -10,7 +10,8 @@ import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from unittest.mock import patch
 
-from nir_eval.promptfoo_backend import runtime_status
+from nir_eval.native_backend import runtime_status, _COOLDOWNS
+from nir_eval import __version__
 from nir_eval.providers import make_provider, ProviderError, ProviderUnavailable
 
 
@@ -25,8 +26,7 @@ class APIErrorClassificationTests(unittest.TestCase):
         self.assertEqual(api_error_code(400, 'trains on request data'), 'api_http_400_training_restricted')
 
 
-@unittest.skipUnless(runtime_status()['ready'], 'optional pinned promptfoo runtime is not installed')
-class PromptfooBackendTests(unittest.TestCase):
+class NativeBackendTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.requests = []
@@ -57,17 +57,17 @@ class PromptfooBackendTests(unittest.TestCase):
         config = {'type': 'openai-compatible', 'base_url': f'http://127.0.0.1:{cls.server.server_port}/v1',
                   'api_key_env': 'TOCHKA_FIXTURE_API_KEY', 'timeout_seconds': 10}
         with patch.dict(os.environ, {'TOCHKA_FIXTURE_API_KEY': cls.key}):
-            cls.promptfoo = make_provider(dict(config, engine='promptfoo'))
+            cls.native = make_provider(dict(config, engine='native'))
         cls.addClassCleanup(cls.server.server_close)
         cls.addClassCleanup(cls.server.shutdown)
-        cls.addClassCleanup(cls.promptfoo.worker.close)
 
     def setUp(self):
+        _COOLDOWNS.clear()
         type(self).requests.clear()
         type(self).status = 200
-        self.promptfoo.blocked_until = 0
-        self.promptfoo.config.pop('input_price_per_million', None)
-        self.promptfoo.config.pop('output_price_per_million', None)
+        self.native.blocked_until = 0
+        self.native.config.pop('input_price_per_million', None)
+        self.native.config.pop('output_price_per_million', None)
         self.set_completion({'prompt_tokens': 13, 'completion_tokens': 7, 'total_tokens': 20})
 
     @classmethod
@@ -79,11 +79,11 @@ class PromptfooBackendTests(unittest.TestCase):
         return provider.generate(self.messages, 'fixture-model', {'temperature': 0}, {})
 
     def checked_generation(self):
-        result = self.generate(self.promptfoo)
+        result = self.generate(self.native)
         self.assertEqual(result.text, 'fixture result')
         self.assertEqual(result.usage, {'prompt_tokens': 13, 'completion_tokens': 7, 'total_tokens': 20})
-        self.assertEqual(result.metadata['execution_engine'], 'promptfoo')
-        self.assertEqual(result.metadata['execution_engine_version'], '0.125.1')
+        self.assertEqual(result.metadata['execution_engine'], 'native')
+        self.assertEqual(result.metadata['execution_engine_version'], __version__)
         return result
 
     def test_raw_reported_estimated_unknown_cost_and_usage(self):
@@ -98,10 +98,10 @@ class PromptfooBackendTests(unittest.TestCase):
                 if mode == 'provider-estimate':
                     usage['opencode']['estimated'] = True
                 if mode == 'tariff-estimate':
-                    self.promptfoo.config.update(input_price_per_million=1, output_price_per_million=2)
+                    self.native.config.update(input_price_per_million=1, output_price_per_million=2)
                 else:
-                    self.promptfoo.config.pop('input_price_per_million', None)
-                    self.promptfoo.config.pop('output_price_per_million', None)
+                    self.native.config.pop('input_price_per_million', None)
+                    self.native.config.pop('output_price_per_million', None)
                 self.set_completion(usage)
                 result = self.checked_generation()
                 self.assertEqual(result.metadata['cost_usd'], 0.012 if mode == 'reported' else None)
@@ -119,8 +119,8 @@ class PromptfooBackendTests(unittest.TestCase):
                     self.assertNotIn('estimated_cost_usd', result.metadata)
 
     def test_literal_messages_and_headers_no_cache(self):
-        self.generate(self.promptfoo)
-        self.generate(self.promptfoo)
+        self.generate(self.native)
+        self.generate(self.native)
         self.assertEqual(len(self.requests), 2)
         for path, body, headers in self.requests:
             self.assertEqual(path, '/v1/chat/completions')
@@ -129,30 +129,29 @@ class PromptfooBackendTests(unittest.TestCase):
             headers = {k.lower(): v for k, v in headers.items()}
             self.assertEqual(headers['authorization'], 'Bearer ' + self.key)
             self.assertTrue(headers['user-agent'].startswith('Tochka/'))
-            self.assertEqual(headers['x-opencode-session'], self.promptfoo.session_id)
+            self.assertEqual(headers['x-opencode-session'], self.native.session_id)
 
     def test_health_uses_no_http(self):
-        result = self.promptfoo.worker.call({'op': 'health', 'timeout_seconds': 10})
-        self.assertTrue(result['ok'])
-        self.assertEqual(result['engine'], 'promptfoo')
-        self.assertEqual(result['version'], '0.125.1')
+        result = runtime_status()
+        self.assertTrue(result['ready'])
+        self.assertEqual(result['engine'], 'native')
         self.assertEqual(self.requests, [])
 
     def test_429_no_retry_and_local_cooldown(self):
         type(self).status = 429
         type(self).response = b'{"error":{"message":"private provider diagnostic"}}'
         with self.assertRaisesRegex(ProviderUnavailable, '^api_http_429$') as first:
-            self.generate(self.promptfoo)
+            self.generate(self.native)
         self.assertEqual(first.exception.retry_after_seconds, 120)
         with self.assertRaisesRegex(ProviderUnavailable, '^api_cooldown_active$'):
-            self.generate(self.promptfoo)
+            self.generate(self.native)
         self.assertEqual(len(self.requests), 1)
 
     def test_redirect_never_follows_location(self):
         type(self).status = 307
         type(self).response = b'{}'
         with self.assertRaises(ProviderError):
-            self.generate(self.promptfoo)
+            self.generate(self.native)
         self.assertEqual(len(self.requests), 1)
         self.assertEqual(self.requests[0][0], '/v1/chat/completions')
 
@@ -167,7 +166,7 @@ class PromptfooBackendTests(unittest.TestCase):
             with self.subTest(expected=expected):
                 type(self).response = json.dumps({'error': {'message': message + ' private-key-do-not-save'}}).encode()
                 with self.assertRaises(ProviderError) as caught:
-                    self.generate(self.promptfoo)
+                    self.generate(self.native)
                 self.assertEqual(str(caught.exception), expected)
                 self.assertNotIn('private-key', str(caught.exception))
 
@@ -177,7 +176,7 @@ class PromptfooBackendTests(unittest.TestCase):
             with self.subTest(raw=raw):
                 type(self).response = raw
                 with self.assertRaises(ProviderError):
-                    self.generate(self.promptfoo)
+                    self.generate(self.native)
 
 
 if __name__ == '__main__':

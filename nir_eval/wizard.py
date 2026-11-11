@@ -116,7 +116,8 @@ def _model_questions(q, name, endpoint, key_env, judge=False, forbidden=()):
         if value in forbidden:
             raise ValueError('Судья должен отличаться от каждой решающей модели.')
         return value
-    model = q.ask('ID модели', validate=distinct)
+    from .model_catalog import choose_model
+    model = choose_model(q, endpoint, key_env, distinct, forbidden)
     endpoint = q.ask('Адрес API', endpoint, valid_endpoint)
     key_env = q.ask('Имя переменной с ключом (сам ключ не вводите)', key_env, _env_name)
     temperature = q.number('Температура', 0, low=0, high=2)

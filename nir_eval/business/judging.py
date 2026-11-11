@@ -1,4 +1,4 @@
-"""Promptfoo-scheduled judging of existing candidates with Tochka validation."""
+"""Native-scheduled judging of existing candidates with Tochka validation."""
 from __future__ import annotations
 import time
 import math
@@ -12,7 +12,7 @@ from ..providers import ProviderUnavailable
 
 
 def evaluate_jobs(*args, **kwargs):
-    from ..promptfoo_backend import evaluate_jobs as execute
+    from ..native_backend import evaluate_jobs as execute
     return execute(*args, **kwargs)
 
 
@@ -22,7 +22,7 @@ def evaluate_candidates(items, judge_config, max_concurrency=4, *, allow_remote=
 
     Items contain id, case, rubric, candidate. IDs identify candidates rather than
     cases, so positive and negative calibration labels for one case stay separate.
-    Promptfoo owns concurrent request execution; Python only validates replies and
+    Tochka owns concurrent request execution; Python only validates replies and
     creates the next bounded repair round. Callbacks persist completed evidence.
     """
     if type(max_concurrency) is not int or not 1 <= max_concurrency <= 32:
@@ -118,5 +118,5 @@ def evaluate_candidates(items, judge_config, max_concurrency=4, *, allow_remote=
                 if (job := advance(item['id'])) is not None]
     if not all(state['done'] for state in states.values()):
         raise ValidationError('Incomplete judge matrix')
-    return {'scheduler': 'promptfoo.evaluate', 'max_concurrency': max_concurrency,
+    return {'scheduler': 'native.threadpool', 'max_concurrency': max_concurrency,
             'rounds': rounds, **counts}

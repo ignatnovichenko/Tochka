@@ -75,12 +75,12 @@ class CommandProvider:
 
 
 class OpenAICompatibleProvider:
-    """Compatibility API name; execution is exclusively through Promptfoo."""
+    """Compatibility API name; execution uses Tochka's native Python transport."""
     kind = 'model-inference'
 
     def __init__(self, config, allow_remote=False):
-        from .promptfoo_backend import PromptfooProvider
-        self.backend = PromptfooProvider(config, allow_remote)
+        from .native_backend import NativeProvider
+        self.backend = NativeProvider(config, allow_remote)
 
     def __getattr__(self, name):
         return getattr(self.backend, name)
@@ -122,8 +122,8 @@ def make_provider(config, allow_remote=False):
                 raise ProviderError('api_only_legacy_transport_disabled')
         return APIOnlyProvider()
     if name == "openai-compatible":
-        from .promptfoo_backend import PromptfooProvider
-        return PromptfooProvider(config, allow_remote)
+        from .native_backend import NativeProvider
+        return NativeProvider(config, allow_remote)
     if name == "replay": return ReplayProvider(config, allow_remote)
     if name in {"oracle-control", "invalid-control"}: return None
     raise ValueError(f"Unknown provider type: {name}")

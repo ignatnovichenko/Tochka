@@ -49,7 +49,7 @@ def configure_provider(args):
         raise ValidationError('Подключение моделей доступно только через API. Используйте --provider api.')
     provider = {'type': 'openai-compatible', 'base_url': args.base_url or '',
                 'api_key_env': args.api_key_env, 'timeout_seconds': args.timeout}
-    provider['engine'] = 'promptfoo'
+    provider['engine'] = 'native'
     for key in ('input_price_per_million', 'output_price_per_million'):
         value = getattr(args, key, None)
         if value is not None: provider[key] = value
@@ -97,9 +97,6 @@ def experiment_plan(root, allow_remote=False, check_credentials=False):
             raise ValidationError('Planned calls exceed configured budget')
         solver_calls += n
         configs.append({'model':sc['model'],'calls':n,'config_file':filename})
-    if check_credentials:
-        from .promptfoo_backend import require_runtime
-        require_runtime()
     return {'cases':len(cases),'configurations':configs,'solver_calls':solver_calls,
             'judge_calls':solver_calls,'maximum_judge_calls':sum(min(c['calls']*(1+judge.get('structured_retries',0)),judge.get('max_calls',100)) for c in configs),
             'estimated_total_cost_usd':None,'note':'Total cost unknown before actual usage; subscription fees are not allocated.'}
@@ -172,7 +169,7 @@ def run_experiment(root, output, allow_remote=False, max_concurrency=4):
                   'solver_path': inputs/solver, 'output': output/Path(solver).stem,
                   'judge_path': inputs/cfg['judge'], 'allow_remote_solver':allow_remote,
                   'allow_remote_judge':allow_remote,'save_raw_judge':True} for solver in cfg['solvers']]
-        manifest['scheduler'] = {'engine':'promptfoo.evaluate','max_concurrency':max_concurrency}
+        manifest['scheduler'] = {'engine':'native.threadpool','max_concurrency':max_concurrency}
         write(output/'experiment-manifest.json',manifest)
         run_business_matrix(specs,max_concurrency=max_concurrency)
         manifest['runs'] = [Path(solver).stem for solver in cfg['solvers']]
@@ -210,9 +207,7 @@ def calibrate(root, labels_path, output, allow_remote=False, max_concurrency=4):
     if jc.get('type') != 'generation-provider' or jc.get('provider',{}).get('type') != 'openai-compatible':
         raise ValidationError('Configure an API judge before calibration')
     validate_api_config(jc['provider'], allow_remote=allow_remote, require_key=True)
-    from .promptfoo_backend import require_runtime
     from .business.judging import evaluate_candidates
-    require_runtime()
     output.mkdir(parents=True, exist_ok=False)
     # Persist the validated in-memory snapshots, so concurrent source edits cannot
     # change which inputs were executed or make the manifest describe other bytes.
@@ -223,9 +218,9 @@ def calibrate(root, labels_path, output, allow_remote=False, max_concurrency=4):
     manifest = {'state': 'running', 'judge_config_sha256': digest(jc),
           'started_at_utc': datetime.now(timezone.utc).isoformat(),
           'inputs': {p.name: sha(p) for p in output.iterdir() if p.is_file()},
-          'code_sha256': source_hashes(), 'scheduler': 'promptfoo.evaluate',
+          'code_sha256': source_hashes(), 'scheduler': 'native.threadpool',
           'max_concurrency': max_concurrency, 'started_calls': 0,
-          'judge_latency_scope': 'Sum of Promptfoo provider-call durations and local strict validation; includes explicit repairs, excludes scheduler queue and worker startup'}
+          'judge_latency_scope': 'Sum of Native API-call durations and local strict validation; includes explicit repairs, excludes scheduler queue and worker startup'}
     write(output / 'manifest.json', manifest)
     try:
         rows = []
@@ -277,14 +272,14 @@ def parser():
     p = argparse.ArgumentParser(prog='tochka', description='Полный цикл бизнес-эксперимента без редактирования кода')
     sub = p.add_subparsers(dest='command', required=True)
     sub.add_parser('wizard', help='Пошаговый мастер настройки и запуска')
-    sub.add_parser('setup', help='Установить Promptfoo; setup --check проверяет готовность')
+    sub.add_parser('setup', help='Проверить готовность собственного API-движка')
     sub.add_parser('keys', help='Управление сохранёнными API-ключами; keys --help')
     init = sub.add_parser('init', help='Создать эксперимент'); init.add_argument('directory'); init.add_argument('--demo', action='store_true')
     models = sub.add_parser('models', help='Показать настроенные API-модели без сетевых запросов'); models.add_argument('--directory')
     plan = sub.add_parser('plan', help='План вызовов без inference'); plan.add_argument('directory')
     plan.add_argument('--allow-remote', action='store_true')
     resume = sub.add_parser('resume', help='Продолжить прогон в новой папке, сохранив старый'); resume.add_argument('run'); resume.add_argument('--output', required=True); resume.add_argument('--allow-remote', action='store_true'); resume.add_argument('--plan-only', action='store_true')
-    resume.add_argument('--concurrency', type=concurrency_argument, default=4, help='Максимум одновременных запросов Promptfoo, 1–32 (по умолчанию 4)')
+    resume.add_argument('--concurrency', type=concurrency_argument, default=4, help='Максимум одновременных API-запросов, 1–32 (по умолчанию 4)')
     reselect = sub.add_parser('reselect', help='Пересчитать выбор и отчёт без новых модельных запросов'); reselect.add_argument('run'); reselect.add_argument('--output', required=True)
     for flag in ['min-quality','min-coverage','min-pass-rate','max-latency','max-cost','max-critical-rate']:
         reselect.add_argument('--'+flag,type=float)
@@ -313,7 +308,7 @@ def parser():
             q.add_argument('--max-cost', type=float); q.add_argument('--max-critical-rate', type=float, default=0)
         if name in ['run', 'calibrate']:
             q.add_argument('--output', required=True); q.add_argument('--allow-remote', action='store_true')
-            q.add_argument('--concurrency', type=concurrency_argument, default=4, help='Максимум одновременных запросов Promptfoo, 1–32 (по умолчанию 4)')
+            q.add_argument('--concurrency', type=concurrency_argument, default=4, help='Максимум одновременных API-запросов, 1–32 (по умолчанию 4)')
         if name == 'calibrate': q.add_argument('--labels', required=True)
     q = sub.add_parser('results'); q.add_argument('run'); q.add_argument('--json', action='store_true')
     q = sub.add_parser('select'); q.add_argument('run'); q.add_argument('--policy', required=True); q.add_argument('--output', required=True)

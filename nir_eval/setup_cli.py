@@ -1,4 +1,4 @@
-"""Install or check the required Promptfoo runtime without model inference."""
+"""Check the bundled native Python runtime without downloading dependencies."""
 import argparse
 import json
 from .business.schema import ValidationError
@@ -6,25 +6,24 @@ from .business.schema import ValidationError
 
 def main(argv=None, *, input_fn=None, print_fn=None):
     print_fn = print_fn or print
-    parser = argparse.ArgumentParser(prog='tochka setup', description='Установить Promptfoo; модельные запросы не выполняются')
-    parser.add_argument('--check', action='store_true', help='Только проверить готовность, без установки')
-    args = parser.parse_args(argv)
-    from .promptfoo_backend import runtime_status, setup_runtime
+    parser = argparse.ArgumentParser(prog='tochka setup', description='Проверить собственный Python-движок Tochka; без запросов к моделям')
+    parser.add_argument('--check', action='store_true', help='Проверить готовность локального движка')
+    parser.parse_args(argv)
+    from .native_backend import runtime_status
     try:
-        if args.check:
-            result = runtime_status()
-        else:
-            print_fn('Установка закреплённой версии Promptfoo. Модельные запросы не выполняются.')
-            result = setup_runtime()
+        result = runtime_status()
         print_fn(json.dumps(result, ensure_ascii=False, indent=2))
         if not result.get('ready'):
-            print_fn('Promptfoo не готов. Проверьте Node.js/npm и выполните tochka setup.')
+            print_fn('Движок Tochka не готов. Проверьте установку Python-пакета.')
             return 2
-        print_fn('Promptfoo готов.')
+        print_fn('Собственный Python-движок Tochka готов. Дополнительная установка не требуется.')
         return 0
     except (EOFError, KeyboardInterrupt):
-        print_fn('Установка отменена.'); return 130
+        print_fn('Проверка отменена.')
+        return 130
     except ValidationError as exc:
-        print_fn(str(exc)); return 2
+        print_fn(str(exc))
+        return 2
     except (ValueError, OSError, RuntimeError):
-        print_fn('Не удалось установить Promptfoo. Проверьте Node.js/npm и доступ к сети; повторите tochka setup.'); return 2
+        print_fn('Не удалось проверить движок Tochka. Проверьте установку Python-пакета.')
+        return 2
